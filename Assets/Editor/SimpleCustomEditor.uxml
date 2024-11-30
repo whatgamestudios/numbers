@@ -1,0 +1,5 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <engine:Label text="These controls were created in UI Builder" name="label1" />
+    <engine:Button text="This is button1" parse-escape-sequences="true" name="button1" />
+    <engine:Toggle label="Number?" name="toggle1" />
+</engine:UXML>

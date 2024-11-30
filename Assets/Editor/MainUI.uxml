@@ -1,0 +1,22 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 1; position: relative; top: 0; left: 0;">
+        <ui:Label text="This is a Label" display-tooltip-when-elided="true" />
+        <ui:Button text="Reset" display-tooltip-when-elided="true" name="button" />
+        <ui:TextField picking-mode="Ignore" label="Target" name="text-target" value="filler text" />
+        <ui:TextField picking-mode="Ignore" label="Active" name="text-active" value="filler text" />
+        <ui:Button text="1" name="buttonNum1" style="width: 35px; height: 32px; white-space: pre; -unity-text-align: middle-center; position: relative; top: 0; left: 0;" />
+        <ui:Button text="2" name="buttonNum2" style="width: 35px; height: 32px; position: relative; top: -36px; left: 40px;" />
+        <ui:Button text="3" name="buttonNum3" style="width: 35px; height: 32px; top: -72px; left: 80px;" />
+        <ui:Button text="4" name="buttonNum4" style="width: 35px; height: 32px; position: relative; top: -108px; left: 120px;" />
+        <ui:Button text="5" name="buttonNum5" style="width: 35px; height: 32px; position: relative; top: -144px; left: 160px;" />
+        <ui:Button text="6" name="buttonNum6" style="width: 35px; height: 32px; white-space: pre; -unity-text-align: middle-center; position: relative; top: -140px; left: 0;" />
+        <ui:Button text="7" name="buttonNum7" style="width: 35px; height: 32px; white-space: pre; -unity-text-align: middle-center; position: relative; top: -176px; left: 40px;" />
+        <ui:Button text="8" name="buttonNum8" style="width: 35px; height: 32px; white-space: pre; -unity-text-align: middle-center; position: relative; top: -212px; left: 80px;" />
+        <ui:Button text="9" name="buttonNum9" style="width: 35px; height: 32px; white-space: pre; -unity-text-align: middle-center; position: relative; top: -248px; left: 120px;" />
+        <ui:Button text="0" name="buttonNum0" style="width: 35px; height: 32px; white-space: pre; -unity-text-align: middle-center; position: relative; top: -284px; left: 160px;" />
+        <ui:Button text="+" name="buttonPlus" style="width: 35px; height: 32px; white-space: pre; -unity-text-align: middle-center; position: relative; top: -360px; left: 240px;" />
+        <ui:Button text="-" name="buttonMinus" style="width: 35px; height: 32px; white-space: pre; -unity-text-align: middle-center; position: relative; top: -396px; left: 280px;" />
+        <ui:Button text="*" name="buttonMultiply" style="width: 35px; height: 32px; white-space: pre; -unity-text-align: middle-center; position: relative; top: -390px; left: 240px;" />
+        <ui:Button text="÷" name="buttonDivide" style="width: 35px; height: 32px; white-space: pre; -unity-text-align: middle-center; position: relative; top: -420px; left: 280px;" />
+    </ui:VisualElement>
+</ui:UXML>
