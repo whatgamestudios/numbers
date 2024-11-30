@@ -1,0 +1,13 @@
+SOFTWARE LICENSE AGREEMENT
+
+The software in this respository is copyrighted by Many Games Studio (working name) 
+(referred to as The Studio later in this document). 
+
+The Studio is making the software source code in this github repository available so 
+others may view the software source code. Viewers of this source code may not copy, 
+modify, redistribute, or re-release this software.
+
+The Software is provided "as is" without warranty of any kind. The Studio shall not 
+be liable for any damages arising out of or related to the use or inability to use 
+the Software.
+
