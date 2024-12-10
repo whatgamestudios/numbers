@@ -4,6 +4,7 @@ using UnityEngine.UIElements;
 
 
 
+
 public class SimpleCustomEditor : EditorWindow
 {
     [SerializeField]
@@ -67,7 +68,7 @@ public class SimpleCustomEditor : EditorWindow
 
     private void RegisterHandler(Button button)
     {
-        button.RegisterCallback<ClickEvent>(PrintClickMessage);
+        button.RegisterCallback<ClickEvent>(HandleClick);
     }
 
     private void PrintClickMessage(ClickEvent evt)
@@ -86,6 +87,29 @@ public class SimpleCustomEditor : EditorWindow
         Debug.Log("Button was clicked!" +
             (toggle.value ? " Count: " + m_ClickCount : ""));
     }
+
+
+    private void HandleClick(ClickEvent evt) {
+        VisualElement root = rootVisualElement;
+        System.Collections.Generic.IEnumerable<VisualElement> children = root.Children();
+        Debug.Log("Children");
+        // foreach (var element in children) {
+        //     Debug.Log("_" + element.name);
+        // }
+
+        // ++m_ClickCount;
+
+        // //Because of the names we gave the buttons and toggles, we can use the
+        // //button name to find the toggle name.
+        // Button button = evt.currentTarget as Button;
+        // string buttonNumber = button.name.Substring(m_ButtonPrefix.Length);
+        // string toggleName = "toggle" + buttonNumber;
+        // Toggle toggle = root.Q<Toggle>(toggleName);
+
+        // Debug.Log("Button was clicked!" +
+        //     (toggle.value ? " Count: " + m_ClickCount : ""));
+    }
+
 }
 
 
