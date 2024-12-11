@@ -16,6 +16,13 @@ public class Calculator : MonoBehaviour {
 
     private double targetValue = 765;
 
+    public void Start() {
+        byte[] seed = SeedGen.GenerateSeed(0, 0);
+        uint val = SeedGen.GetNextValue(seed, 0, 1000);
+        targetValue = val;
+    }
+
+
     public void OnButtonClick(string buttonText) {
         if (buttonText == "C") {
             currentInput = "";
