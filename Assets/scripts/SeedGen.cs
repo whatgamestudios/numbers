@@ -3,7 +3,12 @@ using UnityEngine;
 using System;
 using System.Security.Cryptography;
 
-
+/**
+ * Deterministic "random" sequence of numbers generator, based on the game day,
+ * the game being played, the iteration of the game, and the count offset within 
+ * the game. Using this class should ensure people all around the world have to 
+ * tackle the same problem each day.
+ */
 public class SeedGen{
 
     /**

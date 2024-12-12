@@ -60,7 +60,7 @@ public class Calculator : MonoBehaviour {
     }
 
     public void Update() {
-        timeToNext.text = Timeline.TimeToNextDay();
+        timeToNext.text = Timeline.TimeToNextDayStr();
     }
 
 }
