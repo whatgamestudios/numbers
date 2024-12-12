@@ -15,7 +15,7 @@ public class SeedGen{
      * @returns A seed value to be presented to calls to GetNextValue.
      */
     public static byte[] GenerateSeed(uint game, uint iteration) {
-        uint daysSinceStart = Timeline.DaysSinceEpochStart();
+        int daysSinceStart = Timeline.DaysSinceEpochStart();
         byte[] d = BitConverter.GetBytes(daysSinceStart);
         byte[] g = BitConverter.GetBytes(game);
         byte[] i = BitConverter.GetBytes(iteration);

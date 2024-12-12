@@ -8,6 +8,8 @@ public class Calculator : MonoBehaviour {
 
     public TextMeshProUGUI calculated;
 
+    public TextMeshProUGUI timeToNext;
+
     private string currentInput = "";
 
     private string resultText = "";
@@ -55,6 +57,10 @@ public class Calculator : MonoBehaviour {
         input.text = currentInput;
         target.text = targetValue.ToString();
         calculated.text = resultText;
+    }
+
+    public void Update() {
+        timeToNext.text = Timeline.TimeToNextDay();
     }
 
 }
