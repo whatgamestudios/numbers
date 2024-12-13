@@ -18,12 +18,6 @@ public class Calculator : MonoBehaviour {
     public TextMeshProUGUI input3;
     public TextMeshProUGUI calculated3;
     public TextMeshProUGUI points3;
-    public TextMeshProUGUI input4;
-    public TextMeshProUGUI calculated4;
-    public TextMeshProUGUI points4;
-    public TextMeshProUGUI input5;
-    public TextMeshProUGUI calculated5;
-    public TextMeshProUGUI points5;
 
     public Button button1;
     public Button button2;
@@ -188,7 +182,10 @@ public class Calculator : MonoBehaviour {
         uint val = SeedGen.GetNextValue(seed, 0, 1000);
         targetValue = val;
         target.text = val.ToString();
+        currentInput = "";
+        input1.text = currentInput;
         calculated1.text = "";
+        points1.text = "";
 
         leftBracketCount = 0;
         rightBracketCount = 0;
