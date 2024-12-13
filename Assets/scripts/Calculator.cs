@@ -19,6 +19,7 @@ public class Calculator : MonoBehaviour {
     public TextMeshProUGUI input3;
     public TextMeshProUGUI calculated3;
     public TextMeshProUGUI points3;
+    public TextMeshProUGUI pointsTotal;
 
     public Button button1;
     public Button button2;
@@ -196,6 +197,7 @@ public class Calculator : MonoBehaviour {
         input3.text = "";
         calculated3.text = "";
         points3.text = "";
+        pointsTotal.text = "0";
 
         used1 = false;
         used2 = false;
@@ -484,6 +486,7 @@ public class Calculator : MonoBehaviour {
                 Debug.Log("Attempt not supported3");
                 break;
         }
+        pointsTotal.text = pointsEarned.ToString();
     }
 }
 
