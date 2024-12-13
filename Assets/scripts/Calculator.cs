@@ -167,7 +167,7 @@ public class Calculator : MonoBehaviour {
             pointsEarned += pointsEarnedThisAttempt;
         }
         catch (System.Exception ) {
-            resultText = "Error";
+            resultText = "Div 0";
             pointsEarnedThisAttempt = 0;
         }
         updateCalcGui(resultText);
