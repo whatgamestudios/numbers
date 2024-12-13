@@ -5,6 +5,7 @@ using System;
 
 public class Calculator : MonoBehaviour {
     private const int MAX_NUMBERS = 5;
+    private const int NUM_ATTEMPTS = 3;
 
     public TextMeshProUGUI target;
     public TextMeshProUGUI timeToNext;
@@ -62,12 +63,9 @@ public class Calculator : MonoBehaviour {
     bool used50;
     bool used100;
 
-    uint pointsEarned1;
-    uint pointsEarned2;
-    uint pointsEarned3;
-    uint pointsEarned4;
-    uint pointEarned5;
+    uint pointsEarned;
 
+    uint attempt;
 
 
     public void Start() {
@@ -77,8 +75,7 @@ public class Calculator : MonoBehaviour {
 
     public void OnButtonClick(string buttonText) {
         if (buttonText == "C") {
-            // TODO this should be similar to startANewDay, but only for a single input line
-            startANewDay();
+            clearCurrentAttempt();
         }
         else if (buttonText == "B") {
             if (currentInput.Length == 0) {
@@ -104,7 +101,7 @@ public class Calculator : MonoBehaviour {
             currentInput = currentInput.Substring(0, currentInput.Length - lastChars.Length);
 
             if (currentInput.Length == 0) {
-                startANewDay();
+                clearCurrentAttempt();
             }
             else {
                 lastChars = determineLastSymbol();
@@ -113,7 +110,10 @@ public class Calculator : MonoBehaviour {
         }
         else if (buttonText == "=") {
             CalculateResult();
-            // TODO indicate end of round
+            attempt++;
+            if (attempt < NUM_ATTEMPTS) {
+                clearCurrentAttempt();
+            }
             return;
         }
         else {
@@ -124,7 +124,7 @@ public class Calculator : MonoBehaviour {
             }
             enableButtons(buttonText);
         }
-        input1.text = currentInput;
+        updateInputGui(currentInput);
     }
 
     public void CalculateResult() {
@@ -149,6 +149,7 @@ public class Calculator : MonoBehaviour {
         }
 
         string resultText;
+        uint pointsEarnedThisAttempt;
         try {
             double result = System.Convert.ToDouble(new System.Data.DataTable().Compute(currentInput, ""));
             int resultInt = Convert.ToInt32(result);
@@ -162,15 +163,16 @@ public class Calculator : MonoBehaviour {
             if (points < 0) {
                 points = 0;
             }
-            pointsEarned1 = (uint) points;
+            pointsEarnedThisAttempt = (uint) points;
+            pointsEarned += pointsEarnedThisAttempt;
         }
         catch (System.Exception ) {
             resultText = "Error";
-            pointsEarned1 = 0;
+            pointsEarnedThisAttempt = 0;
         }
-        calculated1.text = resultText;
-        input1.text = currentInput;
-        points1.text = pointsEarned1.ToString();
+        updateCalcGui(resultText);
+        updateInputGui(currentInput);
+        updatePointsGui(pointsEarnedThisAttempt.ToString());
     }   
 
     public void Update() {
@@ -182,10 +184,25 @@ public class Calculator : MonoBehaviour {
         uint val = SeedGen.GetNextValue(seed, 0, 1000);
         targetValue = val;
         target.text = val.ToString();
-        currentInput = "";
-        input1.text = currentInput;
+
+        attempt = 0;
+
+        input1.text = "";
         calculated1.text = "";
         points1.text = "";
+        input2.text = "";
+        calculated2.text = "";
+        points2.text = "";
+        input3.text = "";
+        calculated3.text = "";
+        points3.text = "";
+
+        clearCurrentAttempt();
+    }
+
+    private void clearCurrentAttempt() {
+        currentInput = "";
+        updateInputGui("");
 
         leftBracketCount = 0;
         rightBracketCount = 0;
@@ -418,6 +435,56 @@ public class Calculator : MonoBehaviour {
         }
     }
 
+    private void updateInputGui(string val) {
+        switch (attempt) {
+            case 0:
+                input1.text = val;
+                break;
+            case 1:
+                input2.text = val;
+                break;
+            case 2:
+                input3.text = val;
+                break;
+            default:
+                Debug.Log("Attempt not supported2");
+                break;
+        }
+    }
+
+    private void updateCalcGui(string val) {
+        switch (attempt) {
+            case 0:
+                calculated1.text = val;
+                break;
+            case 1:
+                calculated2.text = val;
+                break;
+            case 2:
+                calculated3.text = val;
+                break;
+            default:
+                Debug.Log("Attempt not supported3");
+                break;
+        }
+    }
+
+    private void updatePointsGui(string val) {
+        switch (attempt) {
+            case 0:
+                points1.text = val;
+                break;
+            case 1:
+                points2.text = val;
+                break;
+            case 2:
+                points3.text = val;
+                break;
+            default:
+                Debug.Log("Attempt not supported3");
+                break;
+        }
+    }
 }
 
 
