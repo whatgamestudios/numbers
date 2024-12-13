@@ -197,17 +197,6 @@ public class Calculator : MonoBehaviour {
         calculated3.text = "";
         points3.text = "";
 
-        clearCurrentAttempt();
-    }
-
-    private void clearCurrentAttempt() {
-        currentInput = "";
-        updateInputGui("");
-
-        leftBracketCount = 0;
-        rightBracketCount = 0;
-        numberCount = 0;
-
         used1 = false;
         used2 = false;
         used3 = false;
@@ -220,6 +209,17 @@ public class Calculator : MonoBehaviour {
         used25 = false;
         used50 = false;
         used100 = false;
+
+        clearCurrentAttempt();
+    }
+
+    private void clearCurrentAttempt() {
+        currentInput = "";
+        updateInputGui("");
+
+        leftBracketCount = 0;
+        rightBracketCount = 0;
+        numberCount = 0;
 
         enableAllNumbers();
         enableLeftBracket();
