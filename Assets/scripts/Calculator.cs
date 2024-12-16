@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.Collections;
 
 public class Calculator : MonoBehaviour {
     private const int MAX_NUMBERS = 5;
@@ -64,6 +65,8 @@ public class Calculator : MonoBehaviour {
     bool used50;
     bool used100;
 
+    Stack usedThisAttemptStack;
+
     uint pointsEarned;
 
     uint attempt;
@@ -76,6 +79,7 @@ public class Calculator : MonoBehaviour {
 
     public void OnButtonClick(string buttonText) {
         if (buttonText == "C") {
+            clearUsedButtons(true);
             clearCurrentAttempt();
         }
         else if (buttonText == "B") {
@@ -121,6 +125,7 @@ public class Calculator : MonoBehaviour {
             currentInput += buttonText;
             updateUsed(buttonText, true);
             if (isNumber(buttonText)) {
+                usedThisAttemptStack.Push(buttonText);
                 numberCount++;
             }
             enableButtons(buttonText);
@@ -181,10 +186,8 @@ public class Calculator : MonoBehaviour {
     }
 
     private void startANewDay() {
-        byte[] seed = SeedGen.GenerateSeed(0, 0);
-        uint val = SeedGen.GetNextValue(seed, 0, 1000);
-        targetValue = val;
-        target.text = val.ToString();
+        targetValue = getTarget(250, 1000);;
+        target.text = targetValue.ToString();
 
         attempt = 0;
 
@@ -211,12 +214,24 @@ public class Calculator : MonoBehaviour {
         used25 = false;
         used50 = false;
         used100 = false;
+        usedThisAttemptStack = new Stack();
 
         clearCurrentAttempt();
     }
 
+    private void clearUsedButtons(bool resetButtons) {
+        while (usedThisAttemptStack.Count > 0) {
+            var buttonPressed = (string) usedThisAttemptStack.Pop(); 
+            if (resetButtons) {
+                updateUsed(buttonPressed, false);
+            }
+        }
+    }
+
     private void clearCurrentAttempt() {
         currentInput = "";
+        clearUsedButtons(false);
+
         updateInputGui("");
 
         leftBracketCount = 0;
@@ -487,6 +502,17 @@ public class Calculator : MonoBehaviour {
                 break;
         }
         pointsTotal.text = pointsEarned.ToString();
+    }
+
+    private uint getTarget(uint low, uint high) {
+        byte[] seed = SeedGen.GenerateSeed(0, 0);
+        uint count = 0;
+        uint val = 0;
+        do {
+            val = SeedGen.GetNextValue(seed, count++, high);
+            Debug.Log("Seed value: count: " + count + ", val: " + val);
+        } while (val < low);
+        return val;
     }
 }
 

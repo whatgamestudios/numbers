@@ -75,3 +75,6 @@ crashlytics-build.properties
 
 # Apple files
 .DS_Store
+
+# location for iOS and Androis build
+builds
