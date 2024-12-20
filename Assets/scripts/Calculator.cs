@@ -12,6 +12,7 @@ public class Calculator : MonoBehaviour {
 
     public TextMeshProUGUI target;
     public TextMeshProUGUI timeToNext;
+    public TextMeshProUGUI gameDay;
 
     public TextMeshProUGUI input1;
     public TextMeshProUGUI calculated1;
@@ -192,6 +193,7 @@ public class Calculator : MonoBehaviour {
     }   
 
     public void Update() {
+        gameDay.text = Timeline.GameDayStr();
         timeToNext.text = Timeline.TimeToNextDayStr();
     }
 

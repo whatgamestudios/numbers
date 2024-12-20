@@ -26,6 +26,11 @@ public class Timeline{
         return nextDay.Subtract(now);
     }
 
+    public static string GameDayStr() {
+        int gameDay = DaysSinceEpochStart();
+        return gameDay.ToString();
+    }
+
     /**
      * Return the hours, minutes, and seconds until the next day.
      */
