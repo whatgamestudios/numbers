@@ -31,8 +31,10 @@ public class Calculator : MonoBehaviour {
     public Button button7;
     public Button button8;
     public Button button9;
+    public Button button10;
     public Button button25;
     public Button button50;
+    public Button button75;
     public Button button100;
     public Button buttonPlus;
     public Button buttonMultiply;
@@ -61,8 +63,10 @@ public class Calculator : MonoBehaviour {
     bool used7;
     bool used8;
     bool used9;
+    bool used10;
     bool used25;
     bool used50;
+    bool used75;
     bool used100;
 
     Stack usedThisAttemptStack;
@@ -211,8 +215,10 @@ public class Calculator : MonoBehaviour {
         used7 = false;
         used8 = false;
         used9 = false;
+        used10 = false;
         used25 = false;
         used50 = false;
+        used75 = false;
         used100 = false;
         usedThisAttemptStack = new Stack();
 
@@ -296,8 +302,10 @@ public class Calculator : MonoBehaviour {
         button7.interactable = false;
         button8.interactable = false;
         button9.interactable = false;
+        button10.interactable = false;
         button25.interactable = false;
         button50.interactable = false;
+        button75.interactable = false;
         button100.interactable = false;
     }
 
@@ -330,11 +338,17 @@ public class Calculator : MonoBehaviour {
             if (!used9) {
                 button9.interactable = true;
             }
+            if (!used10) {
+                button10.interactable = true;
+            }
             if (!used25) {
                 button25.interactable = true;
             }
             if (!used50) {
                 button50.interactable = true;
+            }
+            if (!used75) {
+                button75.interactable = true;
             }
             if (!used100) {
                 button100.interactable = true;
@@ -377,7 +391,8 @@ public class Calculator : MonoBehaviour {
             buttonText == "1" || buttonText == "2" || buttonText == "3" ||
             buttonText == "4" || buttonText == "5" || buttonText == "6" ||
             buttonText == "7" || buttonText == "8" || buttonText == "9" ||
-            buttonText == "25" || buttonText == "50" || buttonText == "100") {
+            buttonText == "10" || buttonText == "25" || buttonText == "50" || 
+            buttonText == "75" || buttonText == "100") {
             return true;
         }
         return false;
@@ -398,6 +413,9 @@ public class Calculator : MonoBehaviour {
             if (twoChars == "00") {
                 return "100";
             }
+            else if (twoChars == "10") {
+                return "10";
+            }
             else {
                 return "50";
             }
@@ -406,6 +424,9 @@ public class Calculator : MonoBehaviour {
             string twoChars = currentInput.Substring(currentInput.Length - 2, 2);
             if (twoChars == "25") {
                 return "25";
+            }
+            else if (twoChars == "75") {
+                return "75";
             }
             // Else it will be some symbol followed by 5. Just return 5.
         }
@@ -441,11 +462,17 @@ public class Calculator : MonoBehaviour {
         if (buttonText == "9") {
             used9 = updateTo;
         }
+        if (buttonText == "10") {
+            used10 = updateTo;
+        }
         if (buttonText == "25") {
             used25 = updateTo;
         }
         if (buttonText == "50") {
             used50 = updateTo;
+        }
+        if (buttonText == "75") {
+            used75 = updateTo;
         }
         if (buttonText == "100") {
             used100 = updateTo;

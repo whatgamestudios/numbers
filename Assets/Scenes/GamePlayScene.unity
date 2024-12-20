@@ -1183,16 +1183,16 @@ RectTransform:
   - {fileID: 1769253005}
   - {fileID: 790531922}
   - {fileID: 365607688}
-  - {fileID: 1701123648}
+  - {fileID: 1735591558}
   - {fileID: 1439036205}
   - {fileID: 1547877903}
+  - {fileID: 1701123648}
   - {fileID: 359933253}
   - {fileID: 1244756583}
-  - {fileID: 505725020}
   - {fileID: 151915566}
   - {fileID: 844889091}
-  - {fileID: 1735591558}
   - {fileID: 530390088}
+  - {fileID: 505725020}
   - {fileID: 1024584815}
   - {fileID: 1106210582}
   - {fileID: 1491566163}
@@ -1421,7 +1421,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: 10
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1448,8 +1448,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 70
+  m_fontSizeBase: 70
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2047,7 +2047,7 @@ GameObject:
   - component: {fileID: 429756103}
   - component: {fileID: 429756102}
   m_Layer: 5
-  m_Name: B4Txt
+  m_Name: Txt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2092,7 +2092,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: 75
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2119,8 +2119,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 70
+  m_fontSizeBase: 70
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2680,7 +2680,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 866.6666
+  orthographic size: 225
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2737,7 +2737,7 @@ GameObject:
   - component: {fileID: 530390090}
   - component: {fileID: 530390089}
   m_Layer: 5
-  m_Name: ButtonBlank3
+  m_Name: Button75
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2816,7 +2816,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: 75
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &530390090
@@ -2826,7 +2826,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 530390087}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -7238,7 +7238,7 @@ GameObject:
   - component: {fileID: 1701123650}
   - component: {fileID: 1701123649}
   m_Layer: 5
-  m_Name: ButtonBlank1
+  m_Name: Button10
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7317,7 +7317,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: '?'
+          m_StringArgument: 10
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1701123650
@@ -7327,7 +7327,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1701123647}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -9070,8 +9070,10 @@ MonoBehaviour:
   button7: {fileID: 790531923}
   button8: {fileID: 365607689}
   button9: {fileID: 1547877904}
+  button10: {fileID: 1701123649}
   button25: {fileID: 359933254}
   button50: {fileID: 1244756584}
+  button75: {fileID: 530390089}
   button100: {fileID: 505725021}
   buttonPlus: {fileID: 151915567}
   buttonMultiply: {fileID: 1491566164}
