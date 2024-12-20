@@ -7,6 +7,8 @@ using System.Collections;
 public class Calculator : MonoBehaviour {
     private const int MAX_NUMBERS = 5;
     private const int NUM_ATTEMPTS = 3;
+    private const int MAX_POINTS_PER_ATTEMPT = 50;
+    private const int BONUS_POINTS = 20;
 
     public TextMeshProUGUI target;
     public TextMeshProUGUI timeToNext;
@@ -169,9 +171,13 @@ public class Calculator : MonoBehaviour {
             if (howFarOff < 0) {
                 howFarOff = -howFarOff;
             }
-            int points = 10 - howFarOff;
+
+            int points = MAX_POINTS_PER_ATTEMPT - howFarOff;
             if (points < 0) {
                 points = 0;
+            }
+            if (howFarOff == 0) {
+                points = MAX_POINTS_PER_ATTEMPT + BONUS_POINTS;
             }
             pointsEarnedThisAttempt = (uint) points;
             pointsEarned += pointsEarnedThisAttempt;
