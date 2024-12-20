@@ -12,7 +12,7 @@ public class Timeline{
      */
     public static int DaysSinceEpochStart() {
         DateTime now = getTimeNow();
-        DateTime dawnOfTime = new DateTime(2024, 12, 1, 12, 0, 0);
+        DateTime dawnOfTime = new DateTime(2024, 12, 1, 0, 0, 0);
         TimeSpan diff = now.Subtract(dawnOfTime);
         return diff.Days;
     }
@@ -22,10 +22,7 @@ public class Timeline{
      */
     public static TimeSpan TimeToNextDay() {
         DateTime now = getTimeNow();
-        DateTime nextDay = new DateTime(now.Year, now.Month, now.Day, 12, 0, 0);
-        if (nextDay.CompareTo(now) < 0) {
-            nextDay = nextDay.AddDays(1.0);
-        }
+        DateTime nextDay = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59);
         return nextDay.Subtract(now);
     }
 
@@ -39,15 +36,10 @@ public class Timeline{
     }
 
     /**
-     * Return the time now in Australian Eastern Standard time.
+     * Return the time now in the local time zone.
      */
     private static DateTime getTimeNow() {
-        DateTime timeUtc = DateTime.UtcNow;
-        string displayName = "AEST";
-        string standardName = "AEST"; 
-        TimeSpan offset = new TimeSpan(10, 00, 00);
-        TimeZoneInfo timezone = TimeZoneInfo.CreateCustomTimeZone(standardName, offset, displayName, standardName);
-        return TimeZoneInfo.ConvertTimeFromUtc(timeUtc, timezone);
+        return DateTime.Now;
     }
 
 }
