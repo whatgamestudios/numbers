@@ -79,11 +79,26 @@ public class Calculator : MonoBehaviour {
 
     uint attempt;
 
+    int gameDayInt;
+
 
     public void Start() {
-        startANewDay();
+        gameDayInt = Timeline.DaysSinceEpochStart();
+        startANewDay(gameDayInt);
     }
 
+    public void OnApplicationFocus(bool hasFocus) {
+        Debug.Log("OnApplicationFocus: " + hasFocus);
+        if (hasFocus) {
+            int gameDayNow = Timeline.DaysSinceEpochStart();
+            Debug.Log("Game Day: Existing: " + gameDayInt + " Now: " + gameDayNow);
+            if (gameDayNow != gameDayInt) {
+                gameDayInt = gameDayNow;
+                startANewDay(gameDayInt);
+            }
+        }
+
+    }
 
     public void OnButtonClick(string buttonText) {
         if (buttonText == "C") {
@@ -217,7 +232,8 @@ public class Calculator : MonoBehaviour {
         timeToNext.text = Timeline.TimeToNextDayStr();
     }
 
-    private void startANewDay() {
+    private void startANewDay(int today) {
+        Debug.Log("Starting new game day: " + today);
         targetValue = getTarget(250, 1000);;
         target.text = targetValue.ToString();
 
