@@ -4,6 +4,7 @@ using TMPro;
 using System;
 using System.Collections;
 
+
 public class Calculator : MonoBehaviour {
     private const int MAX_NUMBERS = 5;
     private const int NUM_ATTEMPTS = 3;
@@ -164,27 +165,40 @@ public class Calculator : MonoBehaviour {
         string resultText;
         uint pointsEarnedThisAttempt;
         try {
-            double result = System.Convert.ToDouble(new System.Data.DataTable().Compute(currentInput, ""));
-            int resultInt = Convert.ToInt32(result);
-            resultText =  "" + resultInt;
+            CalcProcessor calcProcessor = new CalcProcessor();
+            int resultInt;
+            int err;
+            (resultInt, err) = calcProcessor.calc(currentInput);
+            if (err != CalcProcessor.ERR_NO_ERROR) {
+                resultText = "E" + err;
+                pointsEarnedThisAttempt = 0;
+            }
+            else {
+                // double result = System.Convert.ToDouble(new System.Data.DataTable().Compute(currentInput, ""));
+                // int resultInt = Convert.ToInt32(result);
+                resultText =  "" + resultInt;
 
-            int howFarOff = (int) (targetValue - resultInt);
-            if (howFarOff < 0) {
-                howFarOff = -howFarOff;
-            }
+                int howFarOff = (int) (targetValue - resultInt);
+                if (howFarOff < 0) {
+                    howFarOff = -howFarOff;
+                }
 
-            int points = MAX_POINTS_PER_ATTEMPT - howFarOff;
-            if (points < 0) {
-                points = 0;
+                int points = MAX_POINTS_PER_ATTEMPT - howFarOff;
+                if (points < 0) {
+                    points = 0;
+                }
+                if (howFarOff == 0) {
+                    points = MAX_POINTS_PER_ATTEMPT + BONUS_POINTS;
+                }
+                pointsEarnedThisAttempt = (uint) points;
+                pointsEarned += pointsEarnedThisAttempt;
             }
-            if (howFarOff == 0) {
-                points = MAX_POINTS_PER_ATTEMPT + BONUS_POINTS;
-            }
-            pointsEarnedThisAttempt = (uint) points;
-            pointsEarned += pointsEarnedThisAttempt;
         }
-        catch (System.Exception ) {
-            resultText = "Div 0";
+        catch (System.Exception ex) {
+            resultText = "Err";
+            resultText = ex.Message;
+            Debug.Log("Ex Message: " + ex.Message);
+            //Debug.Log("Ex Stack: " + ex.StackTrace);
             pointsEarnedThisAttempt = 0;
         }
         updateCalcGui(resultText);
