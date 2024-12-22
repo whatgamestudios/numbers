@@ -45,7 +45,7 @@ public class CalcProcessor {
         }
 
         int result;
-        (result, error) = process(0, input.Length);
+        (result, error) = process(0, tokensUsed);
         return (result, error);
     }
 
@@ -192,32 +192,39 @@ public class CalcProcessor {
         while (newStart < endOfs) {
             int operation = getOp(newStart);
             int rightVal;
-            if (operation == TOKEN_PLUS || operation == TOKEN_MINUS) {
-                (rightVal, error) = process(newStart + 1, endOfs);
-                newStart = endOfs;
-            }
-            else {
-                (rightVal, newStart, error) = getVal(newStart + 1, endOfs);
-            }
+            (rightVal, newStart, error) = getVal(newStart + 1, endOfs);
+            //Debug.Log("getVal rightVal: " + rightVal + " newStart:" + newStart);
             if (error != ERR_NO_ERROR) {
                 return (0, error);
             }
-            switch (operation) {
-                case TOKEN_PLUS: 
-                    result = result + rightVal;
-                    break;
-                case TOKEN_MINUS:
-                    result = result - rightVal;
-                    break;
-                case TOKEN_MULTIPLY:
-                    result = result * rightVal;
-                    break;
-                case TOKEN_DIVIDE:
-                    if (rightVal == 0) {
-                        return (0, ERR_DIVIDE_BY_ZERO);
+
+            // If the current operation is + or -, look ahead to see if
+            // the next operation is * or /, and process it first if it is.
+            if (operation == TOKEN_PLUS || operation == TOKEN_MINUS) {
+                while (newStart < endOfs) {
+                    int nextOperation = getOp(newStart);
+                    if (nextOperation == TOKEN_PLUS || nextOperation == TOKEN_MINUS) {
+                        // When we encounter + or -, we can go back to processing 
+                        // right to left.
+                        break;
                     }
-                    result = result / rightVal;
-                    break;
+                    int nextRightVal;
+                    (nextRightVal, newStart, error) = getVal(newStart + 1, endOfs);
+                    //Debug.Log("getVal nextRightVal: " + rightVal + " newStart:" + newStart);
+                    if (error != ERR_NO_ERROR) {
+                        return (0, error);
+                    }
+                    (rightVal, error) = processSingleCalc(rightVal, nextRightVal, nextOperation);
+                    if (error != ERR_NO_ERROR) {
+                        return (0, error);
+                    }
+                }
+            }
+
+            // Now calculate left to right.
+            (result, error) = processSingleCalc(result, rightVal, operation);
+            if (error != ERR_NO_ERROR) {
+                return (0, error);
             }
         }
         return (result, ERR_NO_ERROR);
@@ -277,4 +284,27 @@ public class CalcProcessor {
 
         return (ofs, ERR_NO_ERROR);
     }
+
+   private (int, int) processSingleCalc(int leftVal, int rightVal, int operation) {
+        int result = 0;
+        switch (operation) {
+            case TOKEN_PLUS: 
+                result = leftVal + rightVal;
+                break;
+            case TOKEN_MINUS:
+                result = leftVal - rightVal;
+                break;
+            case TOKEN_MULTIPLY:
+                result = leftVal * rightVal;
+                break;
+            case TOKEN_DIVIDE:
+                if (rightVal == 0) {
+                    return (0, ERR_DIVIDE_BY_ZERO);
+                }
+                result = leftVal / rightVal;
+                break;
+        }
+        return (result, ERR_NO_ERROR);
+    }
+
 }
