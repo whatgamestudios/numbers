@@ -130,6 +130,12 @@ public class Calculator : MonoBehaviour {
             return;
         }
         else {
+            if (isLeftBracket(buttonText)) {
+                leftBracketCount++;
+            }
+            else if (isRightBracket(buttonText)) {
+                rightBracketCount++;
+            }
             currentInput += buttonText;
             updateUsed(buttonText, true);
             if (isNumber(buttonText)) {
@@ -286,14 +292,12 @@ public class Calculator : MonoBehaviour {
                 enableAllOperations();
             }
             else if (isLeftBracket(buttonText)) {
-                leftBracketCount++;
                 enableAllNumbers();
                 enableLeftBracket();
                 disableRightBracket();
                 disableAllOperations();
             }
             else if (isRightBracket(buttonText)) {
-                rightBracketCount++;
                 disableAllNumbers();
                 disableLeftBracket();
                 if (leftBracketCount > rightBracketCount) {
