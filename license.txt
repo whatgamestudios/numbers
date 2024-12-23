@@ -1,6 +1,6 @@
 SOFTWARE LICENSE AGREEMENT
 
-The software in this respository is copyrighted by Many Games Studio (working name) 
+The software in this respository is copyrighted by Whatgame Studio (working name) 
 (referred to as The Studio later in this document). 
 
 The Studio is making the software source code in this github repository available so 
