@@ -1,5 +1,5 @@
 using UnityEngine;
-[ExecuteInEditMode]
+// [ExecuteInEditMode]
 [RequireComponent(typeof(Camera))]
 public class CameraAutoAdjust : MonoBehaviour {
 
@@ -7,19 +7,31 @@ public class CameraAutoAdjust : MonoBehaviour {
     public float sceneWidth = 800;
 
     Camera _camera;
+
+    public float orthographicSize = 5.3f;
+
+    public float aspect = 1.5f;
+
     void Start() {
-        _camera = GetComponent<Camera>();
+//        _camera = GetComponent<Camera>();
+
+        // Camera.main.projectionMatrix = Matrix4x4.Ortho(
+        //     -orthographicSize * aspect, 
+        //     orthographicSize * aspect, 
+        //     -orthographicSize, orthographicSize, 
+        //     GetComponent<Camera>().nearClipPlane, 
+        //     GetComponent<Camera>().farClipPlane);
     }
 
     // Adjust the camera's height so the desired scene width fits in view
     // even if the screen/window size changes dynamically.
-    void Update() {
-//        Debug.Log("Screen width: " + Screen.width + ", height: " + Screen.height);
+//     void Update() {
+// //        Debug.Log("Screen width: " + Screen.width + ", height: " + Screen.height);
 
-        float unitsPerPixel = sceneWidth / Screen.width;
+//         float unitsPerPixel = sceneWidth / Screen.width;
 
-        float desiredHalfHeight = 0.5f * unitsPerPixel * Screen.height;
+//         float desiredHalfHeight = 0.5f * unitsPerPixel * Screen.height;
 
-        _camera.orthographicSize = desiredHalfHeight;
-    }
+//         _camera.orthographicSize = desiredHalfHeight;
+//     }
 }
