@@ -9,36 +9,34 @@ public class SceneSwitcher : MonoBehaviour {
 
     public Button buttonPlay;
     public Button buttonStats;
-    public Button buttonDebug;
-
-    public TextMeshProUGUI dbg;
-
-
-    void Start() {
-        dbg.text = "start";
-    }
+    public Button buttonSettings;
+    public Button buttonCredits;
+    public Button buttonHelp;
+    public Button buttonBack;
 
 
     public void OnButtonClick(string buttonText) {
-        dbg.text = buttonText;
         if (buttonText == "Play") {
             // Only specifying the sceneName or sceneBuildIndex will load the Scene with the Single mode
             SceneManager.LoadScene("GamePlayScene", LoadSceneMode.Single);
         }
         else if (buttonText == "Stats") {
-            Debug.Log("Stats not supported yet");
+            SceneManager.LoadScene("StatsScene", LoadSceneMode.Single);
         }
-        else if (buttonText == "Debug") {
-            Debug.Log("Debug not supported yet");
+        else if (buttonText == "Settings") {
+            SceneManager.LoadScene("SettingsScene", LoadSceneMode.Single);
+        }
+        else if (buttonText == "Credits") {
+            SceneManager.LoadScene("CreditsScene", LoadSceneMode.Single);
+        }
+        else if (buttonText == "Help") {
+            SceneManager.LoadScene("HelpScene", LoadSceneMode.Single);
+        }
+        else if (buttonText == "Menu") {
+            SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
         }
         else {
             Debug.Log("Unknown button");
         }
     }
-
-
-    // void Update() {
-
-
-    // }
 }
