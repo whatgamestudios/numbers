@@ -844,7 +844,22 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Sorry. There is no help available yet.
+  m_text: "14Numbers is a puzzle game in which everyone in the world is trying to
+    solve the same puzzle. There is a new puzzle each day. You have 14 numbers and
+    need to come up with three equations to solve for the daily target number.\n\nTo
+    play the game:\n- Type in three equations with the aim to calculate to the target
+    number. \n- Press the equals sign to indicate the end of an equation.\n- Each
+    number can only be used once.\n- Each equation can only contain five numbers.\n-
+    Integer arithmetic is used. That is, 15 \xF7 6 is 2, and not 2.5.\n\nPoints are
+    scored for each equation. 70 points is awarded if an equation calculates precisely
+    to the daily target number. If the equation results in a value the is one different
+    from the target number then 49 points are awarded. The points awarded decreases
+    by one for each extra one further away from the target number.\n\nThe goal of
+    the game is the have a high overall points score each day. The points you acrue
+    each day go towards your long term statistics.\n\nA secondary goal of the game
+    is to provide a social connection discussion point. Please reach out to friends
+    and family and ask them how they went today.\n\nThe game resets daily at midnight
+    for the timezone set on your phone or tablet."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
