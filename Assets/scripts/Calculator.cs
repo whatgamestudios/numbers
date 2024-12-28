@@ -243,7 +243,12 @@ public class Calculator : MonoBehaviour {
                 cursorOn = false;
             }
             else {
-                updateInputGui(currentInput + " ?");
+                if (currentInput.Length > 0) {
+                    updateInputGui(currentInput + " ?");
+                }
+                else {
+                    updateInputGui(currentInput + "?");
+                }
                 cursorOn = true;
             }
         }
