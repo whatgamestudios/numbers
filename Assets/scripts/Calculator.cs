@@ -81,6 +81,11 @@ public class Calculator : MonoBehaviour {
 
     int gameDayInt;
 
+    private const string CURSOR = "▮";
+    private const int TIME_PER_FLASH = 500;
+    DateTime timeOfLastFlash = DateTime.Now;
+    bool cursorOn = false;
+
 
     public void Start() {
         gameDayInt = Timeline.DaysSinceEpochStart();
@@ -230,6 +235,19 @@ public class Calculator : MonoBehaviour {
     public void Update() {
         gameDay.text = Timeline.GameDayStr();
         timeToNext.text = Timeline.TimeToNextDayStr();
+
+        DateTime now = DateTime.Now;
+        if ((now - timeOfLastFlash).TotalMilliseconds > TIME_PER_FLASH) {
+            timeOfLastFlash = now;
+            if (cursorOn) {
+                updateInputGui(currentInput + "");
+                cursorOn = false;
+            }
+            else {
+                updateInputGui(currentInput + " ?");
+                cursorOn = true;
+            }
+        }
     }
 
     private void startANewDay(int today) {
