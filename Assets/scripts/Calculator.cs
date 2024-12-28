@@ -81,7 +81,6 @@ public class Calculator : MonoBehaviour {
 
     int gameDayInt;
 
-    private const string CURSOR = "▮";
     private const int TIME_PER_FLASH = 500;
     DateTime timeOfLastFlash = DateTime.Now;
     bool cursorOn = false;
@@ -240,7 +239,7 @@ public class Calculator : MonoBehaviour {
         if ((now - timeOfLastFlash).TotalMilliseconds > TIME_PER_FLASH) {
             timeOfLastFlash = now;
             if (cursorOn) {
-                updateInputGui(currentInput + "");
+                updateInputGui(currentInput);
                 cursorOn = false;
             }
             else {
