@@ -10330,6 +10330,7 @@ GameObject:
   - component: {fileID: 2063394973}
   - component: {fileID: 2063394972}
   - component: {fileID: 2063394975}
+  - component: {fileID: 2063394976}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -10439,7 +10440,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 7981057472521113418, guid: 2a97552cb71a8458781679e867db5927, type: 3}
+  m_Sprite: {fileID: 4766891260965647410, guid: d40edce80727144cd845edc115dbc53c, type: 3}
   m_Type: 2
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10475,6 +10476,19 @@ MonoBehaviour:
   buttonCredits: {fileID: 0}
   buttonHelp: {fileID: 0}
   buttonBack: {fileID: 1080917852}
+--- !u!114 &2063394976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2063394970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b6dc630fa3e94478b35e4710103eb94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panel: {fileID: 2063394970}
 --- !u!1 &2077577273
 GameObject:
   m_ObjectHideFlags: 0
