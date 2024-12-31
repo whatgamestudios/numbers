@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 2a97552cb71a8458781679e867db5927
+guid: d40edce80727144cd845edc115dbc53c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7981057472521113418
-    second: default-background2_0
+      213: 4766891260965647410
+    second: free-background3_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: default-background2_0
+      name: free-background3_0
       rect:
         serializedVersion: 2
         x: 0
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a4f099d5c7962ce60800000000000000
-      internalID: 7981057472521113418
+      spriteID: 23475c48856672240800000000000000
+      internalID: 4766891260965647410
       vertices: []
       indices: 
       edges: []
