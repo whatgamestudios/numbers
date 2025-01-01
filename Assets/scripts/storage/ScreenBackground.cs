@@ -1,9 +1,33 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
+
 public class ScreenBackground {
     public const string BG_OPTION = "OPTION_BACKGROUND";
 
+
+    /**
+     * Set the background used by all scenes.
+     */
+    public static void SetBackground(int option) {
+        PlayerPrefs.SetInt(BG_OPTION, option);
+        PlayerPrefs.Save();
+    }
+
+    /**
+     * Get the background option to be used.
+     *
+     * @return the background option number to use.
+     */
+    public static int GetBackground() {
+        return PlayerPrefs.GetInt(BG_OPTION, 1);
+    }
+
+
+    /**
+     * Pass in the scene's main panel and set the background image.
+     */
     public static void SetPanelBackground(GameObject panel) {
         Image img = panel.GetComponent<Image>();
         if (img == null) {
@@ -11,44 +35,41 @@ public class ScreenBackground {
             return;
         }
 
-        Texture2D tex;
-        Rect size;
-        Vector2 pivot = new Vector2(0.0f, 0.0f);
-        Sprite s;
         int option = PlayerPrefs.GetInt(BG_OPTION, 1);
-        switch (option) {
-            case 2:
-                tex = Resources.Load<Texture2D>("free-background2");
-                Debug.Log("tex null: " + (tex == null));
-                Debug.Log("tex: " + tex.ToString());
-                size = new Rect(0.0f, 0.0f, tex.width, tex.height);
-                s = Sprite.Create(tex, size, pivot);
-                img.sprite = s;
-                Debug.Log("Setting background 2");
-                break;
-            case 3:
-                tex = Resources.Load<Texture2D>("free-background3");
-                size = new Rect(0.0f, 0.0f, tex.width, tex.height);
-                s = Sprite.Create(tex, size, pivot);
-                img.sprite = s;
-                Debug.Log("Setting background 3");
-                break;
-            default:
-                tex = Resources.Load<Texture2D>("free-background1");
-                size = new Rect(0.0f, 0.0f, tex.width, tex.height);
-                s = Sprite.Create(tex, size, pivot);
-                img.sprite = s;
-                Debug.Log("Setting background 1");
-                break;
+        string resourceName;
+        UnityEngine.Color faceColour;
+        UnityEngine.Color outlineColour;
+        (resourceName, faceColour, outlineColour) = getInfo(option);
+
+        // Set the background image.
+        Texture2D tex = Resources.Load<Texture2D>(resourceName);
+        Debug.Log("tex null: " + (tex == null));
+        Debug.Log("tex: " + tex.ToString());
+        Rect size = new Rect(0.0f, 0.0f, tex.width, tex.height);
+        Vector2 pivot = new Vector2(0.0f, 0.0f);
+        Sprite s = Sprite.Create(tex, size, pivot);
+        img.sprite = s;
+
+        // Find all tagged objects and set their colour to the contract colour.
+        GameObject[] textMeshes = GameObject.FindGameObjectsWithTag("ColMe");
+        foreach (GameObject textMeshObj in textMeshes) {
+            TextMeshProUGUI textMeshProGUI = textMeshObj.GetComponent<TextMeshProUGUI>();
+            textMeshProGUI.color = faceColour;    
+            textMeshProGUI.outlineColor = outlineColour;
         }
     }
 
-    public static void SetBackground(int option) {
-        PlayerPrefs.SetInt(BG_OPTION, option);
-        PlayerPrefs.Save();
-    }
 
-    public static int GetBackground() {
-        return PlayerPrefs.GetInt(BG_OPTION, 1);
+
+    private static (string, UnityEngine.Color, UnityEngine.Color) getInfo(int option) {
+        switch (option) {
+            case 2:
+                return ("free-background2", UnityEngine.Color.black, UnityEngine.Color.white);
+            case 3:
+                return ("free-background3", UnityEngine.Color.white, UnityEngine.Color.black);
+            default:
+                return ("free-background1", UnityEngine.Color.black, UnityEngine.Color.white);
+        }
+
     }
 }
