@@ -264,10 +264,10 @@ public class Calculator : MonoBehaviour {
         input1.text = "";
         calculated1.text = "";
         points1.text = "";
-        input2.text = "Attempt 2";
+        input2.text = "Solution 2";
         calculated2.text = "";
         points2.text = "";
-        input3.text = "Attempt 3";
+        input3.text = "Solution 3";
         calculated3.text = "";
         points3.text = "";
         pointsTotal.text = "0";
