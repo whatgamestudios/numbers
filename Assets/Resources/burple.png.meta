@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      burple_0: -2591447644168548488
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
