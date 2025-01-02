@@ -43,8 +43,8 @@ public class ScreenBackground {
 
         // Set the background image.
         Texture2D tex = Resources.Load<Texture2D>(resourceName);
-        Debug.Log("tex null: " + (tex == null));
-        Debug.Log("tex: " + tex.ToString());
+        // Debug.Log("tex null: " + (tex == null));
+        // Debug.Log("tex: " + tex.ToString());
         Rect size = new Rect(0.0f, 0.0f, tex.width, tex.height);
         Vector2 pivot = new Vector2(0.0f, 0.0f);
         Sprite s = Sprite.Create(tex, size, pivot);
