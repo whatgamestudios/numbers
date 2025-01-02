@@ -1,364 +1,294 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:editor="UnityEditor.UIElements" xmlns:engine="UnityEngine.UIElements" xmlns="UnityEditor.Accessibility" elementFormDefault="qualified" targetNamespace="UnityEditor.Tilemaps" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="UnityEngine.UIElements.xsd" namespace="UnityEngine.UIElements" />
+<xs:schema
+    xmlns:editor="UnityEditor.UIElements"
+    xmlns:engine="UnityEngine.UIElements"
+    xmlns="UnityEditor.Accessibility"
+    elementFormDefault="qualified"
+    targetNamespace="UnityEditor.Tilemaps"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!-- 
+    Import the UIElements.xsd for 'engine:' references
+    If the imported file is in the same folder, ensure schemaLocation is correct 
+  -->
+  <xs:import schemaLocation="UnityEngine.UIElements.xsd" namespace="UnityEngine.UIElements"/>
+
+  <!--
+    1) Define a named group for attributes common to all "TilePalette" elements.
+       This helps reduce duplication by referencing this group in each restriction.
+  -->
+  <xs:group name="CommonUnityAttributes">
+    <xs:sequence>
+      <!-- No child elements here, only attributes, so we leave <xs:sequence> empty -->
+    </xs:sequence>
+    <xs:attribute default="" name="name" type="xs:string" use="optional"/>
+    <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional"/>
+    <xs:attribute default="" name="view-data-key" type="xs:string" use="optional"/>
+    <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional"/>
+    <xs:attribute default="" name="tooltip" type="xs:string" use="optional"/>
+    <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional"/>
+    <xs:attribute default="0" name="tabindex" type="xs:int" use="optional"/>
+    <xs:attribute default="true" name="focusable" type="xs:boolean" use="optional"/>
+    <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional"/>
+    <xs:attribute default="" name="data-source" type="xs:string" use="optional"/>
+    <xs:attribute default="" name="data-source-path" type="xs:string" use="optional"/>
+    <xs:attribute default="" name="data-source-type" type="xs:string" use="optional"/>
+    <xs:attribute default="" name="content-container" type="xs:string" use="optional"/>
+    <xs:attribute default="" name="class" type="xs:string" use="optional"/>
+    <xs:attribute default="" name="style" type="xs:string" use="optional"/>
+    <!-- 
+      Allow any additional attributes from other namespaces or future expansions 
+    -->
+    <xs:anyAttribute processContents="lax"/>
+  </xs:group>
+
+  <!--
+    2) Define an optional group for text-related attributes 
+       (like 'text', 'enable-rich-text', etc.) 
+       Only used in some elements.
+  -->
+  <xs:group name="CommonTextAttributes">
+    <xs:sequence />
+    <xs:attribute default="" name="text" type="xs:string" use="optional"/>
+    <xs:attribute default="true" name="enable-rich-text" type="xs:boolean" use="optional"/>
+    <xs:attribute default="true" name="emoji-fallback-support" type="xs:boolean" use="optional"/>
+    <xs:attribute default="false" name="parse-escape-sequences" type="xs:boolean" use="optional"/>
+    <xs:attribute default="false" name="selectable" type="xs:boolean" use="optional"/>
+    <xs:attribute default="true" name="double-click-selects-word" type="xs:boolean" use="optional"/>
+    <xs:attribute default="true" name="triple-click-selects-line" type="xs:boolean" use="optional"/>
+    <xs:attribute default="true" name="display-tooltip-when-elided" type="xs:boolean" use="optional"/>
+    <xs:attribute default="" name="icon-image" type="xs:string" use="optional"/>
+  </xs:group>
+
+  <!-- 
+    3) Now define each complexType, referencing these common groups 
+        plus any specific attributes or different defaults. 
+  -->
+
+  <!-- TilePaletteBrushesButtonType -->
   <xs:complexType name="TilePaletteBrushesButtonType">
     <xs:complexContent mixed="false">
       <xs:restriction base="engine:VisualElementType">
-        <xs:attribute default="" name="name" type="xs:string" use="optional" />
-        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
-        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
-        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
-        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
-        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
-        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
-        <xs:attribute default="true" name="focusable" type="xs:boolean" use="optional" />
-        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
-        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
-        <xs:attribute default="" name="binding-path" type="xs:string" use="optional" />
-        <xs:attribute default="" name="text" type="xs:string" use="optional" />
-        <xs:attribute default="true" name="enable-rich-text" type="xs:boolean" use="optional" />
-        <xs:attribute default="true" name="emoji-fallback-support" type="xs:boolean" use="optional" />
-        <xs:attribute default="false" name="parse-escape-sequences" type="xs:boolean" use="optional" />
-        <xs:attribute default="false" name="selectable" type="xs:boolean" use="optional" />
-        <xs:attribute default="true" name="double-click-selects-word" type="xs:boolean" use="optional" />
-        <xs:attribute default="true" name="triple-click-selects-line" type="xs:boolean" use="optional" />
-        <xs:attribute default="true" name="display-tooltip-when-elided" type="xs:boolean" use="optional" />
-        <xs:attribute default="" name="icon-image" type="xs:string" use="optional" />
-        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
-        <xs:attribute default="" name="class" type="xs:string" use="optional" />
-        <xs:attribute default="" name="style" type="xs:string" use="optional" />
-        <xs:anyAttribute processContents="lax" />
+        <!-- Insert the group of common attributes -->
+        <xs:group ref="CommonUnityAttributes"/>
+        <!-- Insert text-related attributes, if needed -->
+        <xs:group ref="CommonTextAttributes"/>
+
+        <!-- 
+          Overwrite or add any custom defaults or attributes specific to TilePaletteBrushesButton 
+        -->
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="TilePaletteBrushesButton" substitutionGroup="engine:VisualElement" xmlns:q1="UnityEditor.Tilemaps" type="q1:TilePaletteBrushesButtonType" />
+  <xs:element name="TilePaletteBrushesButton"
+              substitutionGroup="engine:VisualElement"
+              xmlns:q1="UnityEditor.Tilemaps"
+              type="q1:TilePaletteBrushesButtonType"/>
+
+  <!-- TilePaletteActivePalettePopupType -->
   <xs:complexType name="TilePaletteActivePalettePopupType">
     <xs:complexContent mixed="false">
       <xs:restriction base="engine:VisualElementType">
-        <xs:attribute default="" name="name" type="xs:string" use="optional" />
-        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
-        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
-        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
-        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
-        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
-        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
-        <xs:attribute default="true" name="focusable" type="xs:boolean" use="optional" />
-        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
-        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
-        <xs:attribute default="" name="binding-path" type="xs:string" use="optional" />
-        <xs:attribute default="" name="label" type="xs:string" use="optional" />
-        <xs:attribute default="" name="value" type="xs:string" use="optional" />
-        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
-        <xs:attribute default="" name="class" type="xs:string" use="optional" />
-        <xs:attribute default="" name="style" type="xs:string" use="optional" />
-        <xs:anyAttribute processContents="lax" />
+        <xs:group ref="CommonUnityAttributes"/>
+        <!-- Some don't require text attributes, so we skip "CommonTextAttributes" here -->
+        <xs:attribute default="" name="label" type="xs:string" use="optional"/>
+        <xs:attribute default="" name="value" type="xs:string" use="optional"/>
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="TilePaletteActivePalettePopup" substitutionGroup="engine:VisualElement" xmlns:q2="UnityEditor.Tilemaps" type="q2:TilePaletteActivePalettePopupType" />
+  <xs:element name="TilePaletteActivePalettePopup"
+              substitutionGroup="engine:VisualElement"
+              xmlns:q2="UnityEditor.Tilemaps"
+              type="q2:TilePaletteActivePalettePopupType"/>
+
+  <!-- TilePaletteElementType -->
   <xs:complexType name="TilePaletteElementType">
     <xs:complexContent mixed="false">
       <xs:restriction base="engine:VisualElementType">
-        <xs:attribute default="Tile Palette Element" name="name" type="xs:string" use="optional" />
-        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
-        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
-        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
-        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
-        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
-        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
-        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional" />
-        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
-        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
-        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
-        <xs:attribute default="" name="class" type="xs:string" use="optional" />
-        <xs:attribute default="" name="style" type="xs:string" use="optional" />
-        <xs:anyAttribute processContents="lax" />
+        <xs:group ref="CommonUnityAttributes"/>
+        <!-- Possibly skip text attributes if not relevant -->
+        <!-- Overwrite any default for 'name': "Tile Palette Element" -->
+        <xs:attribute default="Tile Palette Element" name="name" type="xs:string" use="optional"/>
+        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional"/>
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="TilePaletteElement" substitutionGroup="engine:VisualElement" xmlns:q3="UnityEditor.Tilemaps" type="q3:TilePaletteElementType" />
+  <xs:element name="TilePaletteElement"
+              substitutionGroup="engine:VisualElement"
+              xmlns:q3="UnityEditor.Tilemaps"
+              type="q3:TilePaletteElementType"/>
+
+  <!-- 
+    TilePaletteBrushInspectorElementType, skipping repeated attributes for brevity 
+    but the same approach is used: referencing CommonUnityAttributes or CommonTextAttributes 
+  -->
   <xs:complexType name="TilePaletteBrushInspectorElementType">
     <xs:complexContent mixed="false">
       <xs:restriction base="engine:VisualElementType">
-        <xs:attribute default="" name="name" type="xs:string" use="optional" />
-        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
-        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
-        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
-        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
-        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
-        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
-        <xs:attribute default="true" name="focusable" type="xs:boolean" use="optional" />
-        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
-        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
-        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
-        <xs:attribute default="" name="class" type="xs:string" use="optional" />
-        <xs:attribute default="" name="style" type="xs:string" use="optional" />
-        <xs:anyAttribute processContents="lax" />
+        <xs:group ref="CommonUnityAttributes"/>
+        <!-- Potentially add text attributes if needed -->
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="TilePaletteBrushInspectorElement" substitutionGroup="engine:VisualElement" xmlns:q4="UnityEditor.Tilemaps" type="q4:TilePaletteBrushInspectorElementType" />
+  <xs:element name="TilePaletteBrushInspectorElement"
+              substitutionGroup="engine:VisualElement"
+              xmlns:q4="UnityEditor.Tilemaps"
+              type="q4:TilePaletteBrushInspectorElementType"/>
+
+  <!-- TilePaletteClipboardErrorElementType -->
   <xs:complexType name="TilePaletteClipboardErrorElementType">
     <xs:complexContent mixed="false">
       <xs:restriction base="engine:VisualElementType">
-        <xs:attribute default="Tile Palette Clipboard Error Element" name="name" type="xs:string" use="optional" />
-        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
-        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
-        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
-        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
-        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
-        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
-        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional" />
-        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
-        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
-        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
-        <xs:attribute default="" name="class" type="xs:string" use="optional" />
-        <xs:attribute default="" name="style" type="xs:string" use="optional" />
-        <xs:anyAttribute processContents="lax" />
+        <xs:group ref="CommonUnityAttributes"/>
+        <!-- Overwrite default name, focusable, etc. if necessary -->
+        <xs:attribute default="Tile Palette Clipboard Error Element" name="name" type="xs:string" use="optional"/>
+        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional"/>
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="TilePaletteClipboardErrorElement" substitutionGroup="engine:VisualElement" xmlns:q5="UnityEditor.Tilemaps" type="q5:TilePaletteClipboardErrorElementType" />
+  <xs:element name="TilePaletteClipboardErrorElement"
+              substitutionGroup="engine:VisualElement"
+              xmlns:q5="UnityEditor.Tilemaps"
+              type="q5:TilePaletteClipboardErrorElementType"/>
+
+  <!-- TilePaletteClipboardViewElementType -->
   <xs:complexType name="TilePaletteClipboardViewElementType">
     <xs:complexContent mixed="false">
       <xs:restriction base="engine:VisualElementType">
-        <xs:attribute default="Tile Palette Clipboard View Element" name="name" type="xs:string" use="optional" />
-        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
-        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
-        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
-        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
-        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
-        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
-        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional" />
-        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
-        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
-        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
-        <xs:attribute default="" name="class" type="xs:string" use="optional" />
-        <xs:attribute default="" name="style" type="xs:string" use="optional" />
-        <xs:anyAttribute processContents="lax" />
+        <xs:group ref="CommonUnityAttributes"/>
+        <xs:attribute default="Tile Palette Clipboard View Element" name="name" type="xs:string" use="optional"/>
+        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional"/>
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="TilePaletteClipboardViewElement" substitutionGroup="engine:VisualElement" xmlns:q6="UnityEditor.Tilemaps" type="q6:TilePaletteClipboardViewElementType" />
+  <xs:element name="TilePaletteClipboardViewElement"
+              substitutionGroup="engine:VisualElement"
+              xmlns:q6="UnityEditor.Tilemaps"
+              type="q6:TilePaletteClipboardViewElementType"/>
+
+  <!-- TilePaletteActiveTargetsPopupType -->
   <xs:complexType name="TilePaletteActiveTargetsPopupType">
     <xs:complexContent mixed="false">
       <xs:restriction base="engine:VisualElementType">
-        <xs:attribute default="" name="name" type="xs:string" use="optional" />
-        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
-        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
-        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
-        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
-        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
-        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
-        <xs:attribute default="true" name="focusable" type="xs:boolean" use="optional" />
-        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
-        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
-        <xs:attribute default="" name="binding-path" type="xs:string" use="optional" />
-        <xs:attribute default="" name="label" type="xs:string" use="optional" />
-        <xs:attribute default="" name="value" type="xs:string" use="optional" />
-        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
-        <xs:attribute default="" name="class" type="xs:string" use="optional" />
-        <xs:attribute default="" name="style" type="xs:string" use="optional" />
-        <xs:anyAttribute processContents="lax" />
+        <xs:group ref="CommonUnityAttributes"/>
+        <xs:attribute default="" name="binding-path" type="xs:string" use="optional"/>
+        <xs:attribute default="" name="label" type="xs:string" use="optional"/>
+        <xs:attribute default="" name="value" type="xs:string" use="optional"/>
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="TilePaletteActiveTargetsPopup" substitutionGroup="engine:VisualElement" xmlns:q7="UnityEditor.Tilemaps" type="q7:TilePaletteActiveTargetsPopupType" />
+  <xs:element name="TilePaletteActiveTargetsPopup"
+              substitutionGroup="engine:VisualElement"
+              xmlns:q7="UnityEditor.Tilemaps"
+              type="q7:TilePaletteActiveTargetsPopupType"/>
+
+  <!-- TilePaletteFocusDropdownType -->
   <xs:complexType name="TilePaletteFocusDropdownType">
     <xs:complexContent mixed="false">
       <xs:restriction base="engine:VisualElementType">
-        <xs:attribute default="Focus Dropdown" name="name" type="xs:string" use="optional" />
-        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
-        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
-        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
-        <xs:attribute default="Focus Mode is not active." name="tooltip" type="xs:string" use="optional" />
-        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
-        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
-        <xs:attribute default="true" name="focusable" type="xs:boolean" use="optional" />
-        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
-        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
-        <xs:attribute default="" name="binding-path" type="xs:string" use="optional" />
-        <xs:attribute default="None" name="text" type="xs:string" use="optional" />
-        <xs:attribute default="true" name="enable-rich-text" type="xs:boolean" use="optional" />
-        <xs:attribute default="true" name="emoji-fallback-support" type="xs:boolean" use="optional" />
-        <xs:attribute default="false" name="parse-escape-sequences" type="xs:boolean" use="optional" />
-        <xs:attribute default="false" name="selectable" type="xs:boolean" use="optional" />
-        <xs:attribute default="true" name="double-click-selects-word" type="xs:boolean" use="optional" />
-        <xs:attribute default="true" name="triple-click-selects-line" type="xs:boolean" use="optional" />
-        <xs:attribute default="true" name="display-tooltip-when-elided" type="xs:boolean" use="optional" />
-        <xs:attribute default="" name="icon-image" type="xs:string" use="optional" />
-        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
-        <xs:attribute default="" name="class" type="xs:string" use="optional" />
-        <xs:attribute default="" name="style" type="xs:string" use="optional" />
-        <xs:anyAttribute processContents="lax" />
+        <xs:group ref="CommonUnityAttributes"/>
+        <xs:group ref="CommonTextAttributes"/>
+        <xs:attribute default="Focus Dropdown" name="name" type="xs:string" use="optional"/>
+        <xs:attribute default="Focus Mode is not active." name="tooltip" type="xs:string" use="optional"/>
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="TilePaletteFocusDropdown" substitutionGroup="engine:VisualElement" xmlns:q8="UnityEditor.Tilemaps" type="q8:TilePaletteFocusDropdownType" />
+  <xs:element name="TilePaletteFocusDropdown"
+              substitutionGroup="engine:VisualElement"
+              xmlns:q8="UnityEditor.Tilemaps"
+              type="q8:TilePaletteFocusDropdownType"/>
+
+  <!-- GridPaintingToolbarType -->
   <xs:complexType name="GridPaintingToolbarType">
     <xs:complexContent mixed="false">
       <xs:restriction base="engine:VisualElementType">
-        <xs:attribute default="Tile Palette Toolbar" name="name" type="xs:string" use="optional" />
-        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
-        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
-        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
-        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
-        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
-        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
-        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional" />
-        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
-        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
-        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
-        <xs:attribute default="" name="class" type="xs:string" use="optional" />
-        <xs:attribute default="" name="style" type="xs:string" use="optional" />
-        <xs:anyAttribute processContents="lax" />
+        <xs:group ref="CommonUnityAttributes"/>
+        <xs:attribute default="Tile Palette Toolbar" name="name" type="xs:string" use="optional"/>
+        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional"/>
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="GridPaintingToolbar" substitutionGroup="engine:VisualElement" xmlns:q9="UnityEditor.Tilemaps" type="q9:GridPaintingToolbarType" />
+  <xs:element name="GridPaintingToolbar"
+              substitutionGroup="engine:VisualElement"
+              xmlns:q9="UnityEditor.Tilemaps"
+              type="q9:GridPaintingToolbarType"/>
+
+  <!-- TilePaletteClipboardElementType -->
   <xs:complexType name="TilePaletteClipboardElementType">
     <xs:complexContent mixed="false">
       <xs:restriction base="engine:VisualElementType">
-        <xs:attribute default="Tile Palette Clipboard Element" name="name" type="xs:string" use="optional" />
-        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
-        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
-        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
-        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
-        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
-        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
-        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional" />
-        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
-        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
-        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
-        <xs:attribute default="" name="class" type="xs:string" use="optional" />
-        <xs:attribute default="" name="style" type="xs:string" use="optional" />
-        <xs:anyAttribute processContents="lax" />
+        <xs:group ref="CommonUnityAttributes"/>
+        <xs:attribute default="Tile Palette Clipboard Element" name="name" type="xs:string" use="optional"/>
+        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional"/>
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="TilePaletteClipboardElement" substitutionGroup="engine:VisualElement" xmlns:q10="UnityEditor.Tilemaps" type="q10:TilePaletteClipboardElementType" />
+  <xs:element name="TilePaletteClipboardElement"
+              substitutionGroup="engine:VisualElement"
+              xmlns:q10="UnityEditor.Tilemaps"
+              type="q10:TilePaletteClipboardElementType"/>
+
+  <!-- TilePaletteBrushesLabelType -->
   <xs:complexType name="TilePaletteBrushesLabelType">
     <xs:complexContent mixed="false">
       <xs:restriction base="engine:VisualElementType">
-        <xs:attribute default="" name="name" type="xs:string" use="optional" />
-        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
-        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
-        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
-        <xs:attribute default="Specifies the currently active Brush used for painting in the Scene View." name="tooltip" type="xs:string" use="optional" />
-        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
-        <xs:attribute default="-1" name="tabindex" type="xs:int" use="optional" />
-        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional" />
-        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
-        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
-        <xs:attribute default="" name="binding-path" type="xs:string" use="optional" />
-        <xs:attribute default="" name="text" type="xs:string" use="optional" />
-        <xs:attribute default="true" name="enable-rich-text" type="xs:boolean" use="optional" />
-        <xs:attribute default="true" name="emoji-fallback-support" type="xs:boolean" use="optional" />
-        <xs:attribute default="false" name="parse-escape-sequences" type="xs:boolean" use="optional" />
-        <xs:attribute default="false" name="selectable" type="xs:boolean" use="optional" />
-        <xs:attribute default="true" name="double-click-selects-word" type="xs:boolean" use="optional" />
-        <xs:attribute default="true" name="triple-click-selects-line" type="xs:boolean" use="optional" />
-        <xs:attribute default="true" name="display-tooltip-when-elided" type="xs:boolean" use="optional" />
-        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
-        <xs:attribute default="" name="class" type="xs:string" use="optional" />
-        <xs:attribute default="" name="style" type="xs:string" use="optional" />
-        <xs:anyAttribute processContents="lax" />
+        <xs:group ref="CommonUnityAttributes"/>
+        <!-- Also text-based attributes (some are used for labeling) -->
+        <xs:group ref="CommonTextAttributes"/>
+        <xs:attribute default="Specifies the currently active Brush used for painting in the Scene View." name="tooltip" type="xs:string" use="optional"/>
+        <xs:attribute default="-1" name="tabindex" type="xs:int" use="optional"/>
+        <xs:attribute default="" name="binding-path" type="xs:string" use="optional"/>
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="TilePaletteBrushesLabel" substitutionGroup="engine:VisualElement" xmlns:q11="UnityEditor.Tilemaps" type="q11:TilePaletteBrushesLabelType" />
+  <xs:element name="TilePaletteBrushesLabel"
+              substitutionGroup="engine:VisualElement"
+              xmlns:q11="UnityEditor.Tilemaps"
+              type="q11:TilePaletteBrushesLabelType"/>
+
+  <!-- TilePaletteBrushPickElementType -->
   <xs:complexType name="TilePaletteBrushPickElementType">
     <xs:complexContent mixed="false">
       <xs:restriction base="engine:VisualElementType">
-        <xs:attribute default="" name="name" type="xs:string" use="optional" />
-        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
-        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
-        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
-        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
-        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
-        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
-        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional" />
-        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
-        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
-        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
-        <xs:attribute default="" name="class" type="xs:string" use="optional" />
-        <xs:attribute default="" name="style" type="xs:string" use="optional" />
-        <xs:anyAttribute processContents="lax" />
+        <xs:group ref="CommonUnityAttributes"/>
+        <xs:attribute default="" name="data-source" type="xs:string" use="optional"/>
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="TilePaletteBrushPickElement" substitutionGroup="engine:VisualElement" xmlns:q12="UnityEditor.Tilemaps" type="q12:TilePaletteBrushPickElementType" />
+  <xs:element name="TilePaletteBrushPickElement"
+              substitutionGroup="engine:VisualElement"
+              xmlns:q12="UnityEditor.Tilemaps"
+              type="q12:TilePaletteBrushPickElementType"/>
+
+  <!-- TilePaletteBrushesPopupType -->
   <xs:complexType name="TilePaletteBrushesPopupType">
     <xs:complexContent mixed="false">
       <xs:restriction base="engine:VisualElementType">
-        <xs:attribute default="" name="name" type="xs:string" use="optional" />
-        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
-        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
-        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
-        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
-        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
-        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
-        <xs:attribute default="true" name="focusable" type="xs:boolean" use="optional" />
-        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
-        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
-        <xs:attribute default="" name="binding-path" type="xs:string" use="optional" />
-        <xs:attribute default="" name="label" type="xs:string" use="optional" />
-        <xs:attribute default="Default Brush (UnityEditor.Tilemaps.GridBrush)" name="value" type="xs:string" use="optional" />
-        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
-        <xs:attribute default="" name="class" type="xs:string" use="optional" />
-        <xs:attribute default="" name="style" type="xs:string" use="optional" />
-        <xs:anyAttribute processContents="lax" />
+        <xs:group ref="CommonUnityAttributes"/>
+        <xs:attribute default="" name="binding-path" type="xs:string" use="optional"/>
+        <xs:attribute default="" name="label" type="xs:string" use="optional"/>
+        <xs:attribute default="Default Brush (UnityEditor.Tilemaps.GridBrush)" name="value" type="xs:string" use="optional"/>
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="TilePaletteBrushesPopup" substitutionGroup="engine:VisualElement" xmlns:q13="UnityEditor.Tilemaps" type="q13:TilePaletteBrushesPopupType" />
+  <xs:element name="TilePaletteBrushesPopup"
+              substitutionGroup="engine:VisualElement"
+              xmlns:q13="UnityEditor.Tilemaps"
+              type="q13:TilePaletteBrushesPopupType"/>
+
+  <!-- TilePaletteClipboardFirstUserElementType -->
   <xs:complexType name="TilePaletteClipboardFirstUserElementType">
     <xs:complexContent mixed="false">
       <xs:restriction base="engine:VisualElementType">
-        <xs:attribute default="Tile Palette Clipboard First User Element" name="name" type="xs:string" use="optional" />
-        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
-        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
-        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
-        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
-        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
-        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
-        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional" />
-        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
-        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
-        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
-        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
-        <xs:attribute default="" name="class" type="xs:string" use="optional" />
-        <xs:attribute default="" name="style" type="xs:string" use="optional" />
-        <xs:anyAttribute processContents="lax" />
+        <xs:group ref="CommonUnityAttributes"/>
+        <xs:attribute default="Tile Palette Clipboard First User Element" name="name" type="xs:string" use="optional"/>
+        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional"/>
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="TilePaletteClipboardFirstUserElement" substitutionGroup="engine:VisualElement" xmlns:q14="UnityEditor.Tilemaps" type="q14:TilePaletteClipboardFirstUserElementType" />
+  <xs:element name="TilePaletteClipboardFirstUserElement"
+              substitutionGroup="engine:VisualElement"
+              xmlns:q14="UnityEditor.Tilemaps"
+              type="q14:TilePaletteClipboardFirstUserElementType"/>
+
 </xs:schema>
