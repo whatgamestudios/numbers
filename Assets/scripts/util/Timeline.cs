@@ -17,6 +17,11 @@ public class Timeline{
         return diff.Days;
     }
 
+    public static DateTime GetRelativeDate(int gameDay) {
+        DateTime dawnOfTime = new DateTime(2024, 12, 1, 0, 0, 0);
+        return dawnOfTime.AddDays((double) gameDay);
+    }
+
     /**
      * Return the time until the next day of game play.
      */

@@ -75,10 +75,13 @@ public class Calculator : MonoBehaviour {
 
     Stack usedThisAttemptStack;
 
-    uint pointsEarned;
+    uint pointsEarnedToday;
 
     uint attempt;
 
+    // Int representing which game day is being played.
+    // Stored here to detect when the game was loaded into memory, switch focus away and then 
+    // back to the game, but the game day had changed.
     int gameDayInt;
 
     private const int TIME_PER_FLASH = 500;
@@ -87,6 +90,7 @@ public class Calculator : MonoBehaviour {
 
 
     public void Start() {
+        Debug.Log("Game Scene Start");
         gameDayInt = Timeline.DaysSinceEpochStart();
         startANewDay(gameDayInt);
     }
@@ -105,6 +109,10 @@ public class Calculator : MonoBehaviour {
     }
 
     public void OnButtonClick(string buttonText) {
+        OnButtonClickInternal(buttonText, true);
+    }
+
+    public void OnButtonClickInternal(string buttonText, bool updateStats) {
         if (buttonText == "C") {
             clearUsedButtons(true);
             clearCurrentAttempt();
@@ -141,7 +149,7 @@ public class Calculator : MonoBehaviour {
             }
         }
         else if (buttonText == "=") {
-            CalculateResult();
+            calculateResult(updateStats);
             attempt++;
             if (attempt < NUM_ATTEMPTS) {
                 clearCurrentAttempt();
@@ -166,7 +174,7 @@ public class Calculator : MonoBehaviour {
         updateInputGui(currentInput);
     }
 
-    public void CalculateResult() {
+    private void calculateResult(bool publishStats) {
         // If the last character will make the equation invalid, remove it.
         if (currentInput.EndsWith("+") || currentInput.EndsWith("-") || 
             currentInput.EndsWith("*") || currentInput.EndsWith("/")) {
@@ -193,7 +201,7 @@ public class Calculator : MonoBehaviour {
             CalcProcessor calcProcessor = new CalcProcessor();
             int resultInt;
             int err;
-            (resultInt, err) = calcProcessor.calc(currentInput);
+            (resultInt, err) = calcProcessor.Calc(currentInput);
             if (err != CalcProcessor.ERR_NO_ERROR) {
                 resultText = "E" + err;
                 pointsEarnedThisAttempt = 0;
@@ -216,7 +224,7 @@ public class Calculator : MonoBehaviour {
                     points = MAX_POINTS_PER_ATTEMPT + BONUS_POINTS;
                 }
                 pointsEarnedThisAttempt = (uint) points;
-                pointsEarned += pointsEarnedThisAttempt;
+                pointsEarnedToday += pointsEarnedThisAttempt;
             }
         }
         catch (System.Exception ex) {
@@ -229,36 +237,44 @@ public class Calculator : MonoBehaviour {
         updateCalcGui(resultText);
         updateInputGui(currentInput);
         updatePointsGui(pointsEarnedThisAttempt.ToString());
+        if (publishStats) {
+            publishStatsThisSolution(currentInput, pointsEarnedThisAttempt);
+        }
     }   
 
     public void Update() {
         gameDay.text = Timeline.GameDayStr();
         timeToNext.text = Timeline.TimeToNextDayStr();
 
-        DateTime now = DateTime.Now;
-        if ((now - timeOfLastFlash).TotalMilliseconds > TIME_PER_FLASH) {
-            timeOfLastFlash = now;
-            if (cursorOn) {
-                updateInputGui(currentInput);
-                cursorOn = false;
-            }
-            else {
-                if (currentInput.Length > 0) {
-                    updateInputGui(currentInput + " ?");
+        if (attempt < NUM_ATTEMPTS) {
+            // Show a flashing ? as the end of the input line.
+            DateTime now = DateTime.Now;
+            if ((now - timeOfLastFlash).TotalMilliseconds > TIME_PER_FLASH) {
+                timeOfLastFlash = now;
+                if (cursorOn) {
+                    updateInputGui(currentInput);
+                    cursorOn = false;
                 }
                 else {
-                    updateInputGui(currentInput + "?");
+                    if (currentInput.Length > 0) {
+                        updateInputGui(currentInput + " ?");
+                    }
+                    else {
+                        updateInputGui(currentInput + "?");
+                    }
+                    cursorOn = true;
                 }
-                cursorOn = true;
             }
         }
     }
 
-    private void startANewDay(int today) {
-        Debug.Log("Starting new game day: " + today);
+    private void startANewDay(int todaysGameDay) {
+        Debug.Log("Starting new game day: " + todaysGameDay);
+
         targetValue = getTarget(250, 1000);;
         target.text = targetValue.ToString();
 
+        pointsEarnedToday = 0;
         attempt = 0;
 
         input1.text = "";
@@ -289,6 +305,16 @@ public class Calculator : MonoBehaviour {
         usedThisAttemptStack = new Stack();
 
         clearCurrentAttempt();
+
+        int lastPlayedGameDay = Stats.GetLastGameDay();
+        if (lastPlayedGameDay == todaysGameDay) {
+            // The game was knocked out of memory after one or more solutions for today's game.
+            reprocessSolutions();
+        }
+        else {
+            // The game has not been played today yet.
+            Stats.StartNewGameDay();
+        }
     }
 
     private void clearUsedButtons(bool resetButtons) {
@@ -592,8 +618,26 @@ public class Calculator : MonoBehaviour {
                 Debug.Log("Attempt not supported3");
                 break;
         }
-        pointsTotal.text = pointsEarned.ToString();
+        pointsTotal.text = pointsEarnedToday.ToString();
     }
+
+    private void publishStatsThisSolution(string solution, uint points) {
+        switch (attempt) {
+            case 0:
+                Stats.SetSolution1(solution, (int)points);
+                break;
+            case 1:
+                Stats.SetSolution2(solution, (int)points);
+                break;
+            case 2:
+                Stats.SetSolution3(solution, (int)points);
+                break;
+            default:
+                Debug.Log("Attempt not supported4");
+                break;
+        }
+    }
+
 
     private uint getTarget(uint low, uint high) {
         byte[] seed = SeedGen.GenerateSeed(0, 0);
@@ -604,6 +648,51 @@ public class Calculator : MonoBehaviour {
             Debug.Log("Seed value: count: " + count + ", val: " + val);
         } while (val < low);
         return val;
+    }
+
+
+
+    /**
+     * If the last day played was today, then there should be at least one solution.
+     * Process all solutions.
+     */
+    private void reprocessSolutions() {
+        Debug.Log("Reprocessing solutions");
+        string solution1;
+        string solution2;
+        string solution3;
+        (solution1, solution2, solution3) = Stats.GetSolutions();
+        if (solution1.Length == 0) {
+            // This shouldn't happen, because the first solution should have been submitted
+            // to register the new game day.
+            Debug.Log("Unexpectedly, solution1 has zero length");
+            return;
+        }
+        reprocessSingleSolution(solution1);
+
+        if (solution3.Length != 0) {
+            reprocessSingleSolution(solution2);
+            reprocessSingleSolution(solution3);
+        }
+        else if (solution2.Length != 0) {
+            reprocessSingleSolution(solution2);
+        }
+    }
+
+    private void reprocessSingleSolution(string solution) {
+        Debug.Log("Reprocessing solution: " + solution);
+        CalcProcessor processor = new CalcProcessor();
+        int errorCode = processor.Parse(solution);
+        if (errorCode != CalcProcessor.ERR_NO_ERROR) {
+            // This shouldn't happen as the input should be valid coming from storage.
+            Debug.Log("Reprocessing solution error: " + errorCode);
+            return;
+        }
+        string[] buttonPresses = processor.GetTokensAsStrings();
+        foreach (string buttonPress in buttonPresses) {
+            OnButtonClickInternal(buttonPress, false);
+        }
+        OnButtonClickInternal("=", false);
     }
 }
 

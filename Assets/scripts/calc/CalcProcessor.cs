@@ -37,9 +37,9 @@ public class CalcProcessor {
     }
 
 
-    public (int, int) calc(string input) {
+    public (int, int) Calc(string input) {
         //Debug.Log("Input: " + input);
-        int error = parse(input);
+        int error = Parse(input);
         if (error != ERR_NO_ERROR) {
             return (0, error);
         }
@@ -49,8 +49,88 @@ public class CalcProcessor {
         return (result, error);
     }
 
+    /**
+     * Return tokens determined by the parse function.
+     */
+    public string[] GetTokensAsStrings() {
+        string[] strs = new string[tokensUsed];
+        for (int i = 0; i < tokensUsed; i++) {
+            int token = tokens[i];
+            string s = "";
+            switch (token) {
+                case TOKEN_PLUS:
+                    s = "+";
+                    break;
+                case TOKEN_MINUS:
+                    s = "-";
+                    break;
+                case TOKEN_MULTIPLY:
+                    s = "*";
+                    break;
+                case TOKEN_DIVIDE:
+                    s = "/";
+                    break;
+                case TOKEN_LEFT:
+                    s = "(";
+                    break;
+                case TOKEN_RIGHT:
+                    s = ")";
+                    break;
+                case 0:
+                    s = "0";
+                    break;
+                case 1:
+                    s = "1";
+                    break;
+                case 2:
+                    s = "2";
+                    break;
+                case 3:
+                    s = "3";
+                    break;
+                case 4:
+                    s = "4";
+                    break;
+                case 5:
+                    s = "5";
+                    break;
+                case 6:
+                    s = "6";
+                    break;
+                case 7:
+                    s = "7";
+                    break;
+                case 8:
+                    s = "8";
+                    break;
+                case 9:
+                    s = "9";
+                    break;
+                case 10:
+                    s = "10";
+                    break;
+                case 25:
+                    s = "25";
+                    break;
+                case 50:
+                    s = "50";
+                    break;
+                case 75:
+                    s = "75";
+                    break;
+                case 100:
+                    s = "100";
+                    break;
+                default:
+                    Debug.Log("Unknown symbol");
+                    break;
+            }
+            strs[i] = s;
+        }
+        return strs;
+    }
 
-    public int parse(string input) {
+    public int Parse(string input) {
         tokens = new int[100]; // TODO how big should this be?
         int len = input.Length;
         int numberCount = 0;
