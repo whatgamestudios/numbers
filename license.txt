@@ -1,7 +1,8 @@
 SOFTWARE LICENSE AGREEMENT
 
-The software in this respository is copyrighted by Whatgame Studio (working name) 
-(referred to as The Studio later in this document). 
+The software in this respository is copyrighted by Whatgame Studios (referred to as The Studio 
+later in this document). Whatgame Studios is a trading name of Nelladragon Pty Ltd, an 
+Australian registered company.
 
 The Studio is making the software source code in this github repository available so 
 others may view the software source code. Viewers of this source code may not copy, 
