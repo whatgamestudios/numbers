@@ -1,3 +1,4 @@
+// Copyright Whatgame Studios 2024 - 2025
 using UnityEngine;
 
 

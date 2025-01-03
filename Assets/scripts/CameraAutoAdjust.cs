@@ -1,6 +1,8 @@
+// Copyright (c) Whatgame Studios 2024 - 2025
 using UnityEngine;
 // [ExecuteInEditMode]
 [RequireComponent(typeof(Camera))]
+
 public class CameraAutoAdjust : MonoBehaviour {
 
     // Set this to the in-world distance between the left & right edges of your scene.
