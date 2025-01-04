@@ -68,6 +68,12 @@ public class ScreenBackground {
                 return ("free-background2", UnityEngine.Color.black, UnityEngine.Color.white);
             case 3:
                 return ("free-background3", UnityEngine.Color.white, UnityEngine.Color.black);
+            case 4:
+                return ("free-background4", UnityEngine.Color.black, UnityEngine.Color.white);
+            case 5:
+                return ("free-background5", UnityEngine.Color.black, UnityEngine.Color.white);
+            case 6:
+                return ("free-background6", UnityEngine.Color.white, UnityEngine.Color.black);
             default:
                 return ("free-background1", UnityEngine.Color.black, UnityEngine.Color.white);
         }
