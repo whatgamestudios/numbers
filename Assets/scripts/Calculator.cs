@@ -571,6 +571,8 @@ public class Calculator : MonoBehaviour {
     }
 
     private void updateInputGui(string val) {
+        val = val.Replace('*', '×');
+        val = val.Replace('/', '÷');
         switch (attempt) {
             case 0:
                 input1.text = val;

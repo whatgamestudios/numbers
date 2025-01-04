@@ -19,7 +19,7 @@ public class CalcProcessor {
     public const int ERR_INVALID_NUMBER3 = 12;
     public const int ERR_INVALID_NUMBER4 = 13;
     public const int ERR_NO_MATCHING_RIGHT_BRACKET = 14;
-
+    public const int ERR_NOT_DIVISIBLE = 15;
 
     public const int TOKEN_PLUS = 200;
     public const int TOKEN_MINUS = 201;
@@ -383,6 +383,9 @@ public class CalcProcessor {
                     return (0, ERR_DIVIDE_BY_ZERO);
                 }
                 result = leftVal / rightVal;
+                if (result * rightVal != leftVal) {
+                    return (0, ERR_NOT_DIVISIBLE);
+                }
                 break;
         }
         return (result, ERR_NO_ERROR);

@@ -541,7 +541,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 1100}
-  m_SizeDelta: {x: 800, y: 1700}
+  m_SizeDelta: {x: 900, y: 1700}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &340115957
 MonoBehaviour:
@@ -586,7 +586,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.78431374}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -836,7 +836,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -20}
-  m_SizeDelta: {x: 700, y: 3000}
+  m_SizeDelta: {x: 800, y: 3000}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1073067873
 MonoBehaviour:
@@ -864,16 +864,20 @@ MonoBehaviour:
     play the game:\n- Type in three equations with the aim to calculate to the target
     number. \n- Press the equals sign to indicate the end of an equation.\n- Each
     number can only be used once.\n- Each equation can only contain five numbers.\n-
-    Integer arithmetic is used. That is, 15 \xF7 6 is 2, and not 2.5.\n\nPoints are
-    scored for each equation. 70 points is awarded if an equation calculates precisely
-    to the daily target number. If the equation results in a value the is one different
-    from the target number then 49 points are awarded. The points awarded decreases
-    by one for each extra one further away from the target number.\n\nThe goal of
-    the game is the have a high overall points score each day. The points you acrue
-    each day go towards your long term statistics.\n\nA secondary goal of the game
-    is to provide a social connection discussion point. Please reach out to friends
-    and family and ask them how they went today.\n\nThe game resets daily at midnight
-    for the timezone set on your phone or tablet."
+    Dividing by zero results in an error, with zero points awarded.\n- Division results
+    in a error if there is a remainder. That is, an error is reported if the numerator
+    is not divisible by the denominator. For example, 8 divided by 4 is OK, but 9
+    divided by 4 results in a error as the remainder would be 1. No points are awarded
+    if this issue is detected.\n\nPoints are scored for each equation. 70 points
+    is awarded if an equation calculates precisely to the daily target number. If
+    the equation results in a value the is one different from the target number then
+    49 points are awarded. The points awarded decreases by one for each extra one
+    further away from the target number.\n\nThe goal of the game is the have a high
+    overall points score each day. The points you acrue each day go towards your
+    long term statistics.\n\nA secondary goal of the game is to provide a social
+    connection discussion point. Please reach out to friends and family and ask them
+    how they went today.\n\nThe game resets daily at midnight for the timezone set
+    on your phone or tablet."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1035,7 +1039,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 531484458}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.56666666
+  m_Size: 0.5666666
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
