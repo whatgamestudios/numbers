@@ -26,6 +26,7 @@ public class Calculator : MonoBehaviour {
     public TextMeshProUGUI calculated3;
     public TextMeshProUGUI points3;
     public TextMeshProUGUI pointsTotal;
+    public TextMeshProUGUI helpTextMesh;
 
     public Button button1;
     public Button button2;
@@ -89,9 +90,13 @@ public class Calculator : MonoBehaviour {
     DateTime timeOfLastFlash = DateTime.Now;
     bool cursorOn = false;
 
+    // True if the player is new to the game.
+    bool newPlayer;
 
     public void Start() {
         Debug.Log("Game Scene Start");
+        int daysPlayed = Stats.GetNumDaysPlayed();
+        newPlayer = daysPlayed < 4;
         gameDayInt = Timeline.DaysSinceEpochStart();
         startANewDay(gameDayInt);
     }
@@ -110,6 +115,7 @@ public class Calculator : MonoBehaviour {
     }
 
     public void OnButtonClick(string buttonText) {
+        showAfterFirstCharacter();
         OnButtonClickInternal(buttonText, true);
     }
 
@@ -152,6 +158,17 @@ public class Calculator : MonoBehaviour {
         else if (buttonText == "=") {
             calculateResult(updateStats);
             attempt++;
+            switch (attempt) {
+                case 1:
+                    showSecondSoltionHelp();
+                    break;
+                case 2:
+                    showThirdSolutionHelp();
+                    break;
+                case 3:
+                    showEndResult();
+                    break;
+            }
             if (attempt < NUM_ATTEMPTS) {
                 clearCurrentAttempt();
             }
@@ -206,6 +223,17 @@ public class Calculator : MonoBehaviour {
             if (err != CalcProcessor.ERR_NO_ERROR) {
                 resultText = "E" + err;
                 pointsEarnedThisAttempt = 0;
+                switch (err) {
+                    case CalcProcessor.ERR_DIVIDE_BY_ZERO:
+                        showDivideByZero();
+                        break;
+                    case CalcProcessor.ERR_NOT_DIVISIBLE:
+                        showDivisionWithRemainder();
+                        break;
+                    default:
+                        Debug.Log("CalcProcessor error: " + err);
+                        break;
+                }
             }
             else {
                 // double result = System.Convert.ToDouble(new System.Data.DataTable().Compute(currentInput, ""));
@@ -315,6 +343,7 @@ public class Calculator : MonoBehaviour {
         else {
             // The game has not been played today yet.
             Stats.StartNewGameDay();
+            showWelcomeMessage();
         }
     }
 
@@ -697,6 +726,98 @@ public class Calculator : MonoBehaviour {
         }
         OnButtonClickInternal("=", false);
     }
+
+
+
+    private void showWelcomeMessage() {
+        if (newPlayer) {
+            displayHelp("Find three solutions for the target number");
+        }
+        else {
+            displayHelp("Welcome back!");
+        }
+    }
+
+    private void showAfterFirstCharacter() {
+        if (newPlayer) {
+            displayHelp("Press the = button to complete your solution");
+        }
+        else {
+            showBestScoreToday();
+        }
+    }
+
+    private void showSecondSoltionHelp() {
+        if (newPlayer) {
+            displayHelp("Time to do Solution 2");
+        }
+        else {
+            showBestScoreToday();
+        }
+    }
+
+    private void showThirdSolutionHelp() {
+        if (newPlayer) {
+            displayHelp("Time to do Solution 3");
+        }
+        else {
+            showBestScoreToday();
+        }
+    }
+
+    private void showEndResult() {
+        string timeToNextDay = Timeline.TimeToNextDayStr();
+        string baseText = "";
+
+        if (pointsEarnedToday < 70) {
+            baseText = "Practice Makes Perfect.";
+        }
+        else if (pointsEarnedToday < 120) {
+            baseText = "Good work!";
+        }
+        else if (pointsEarnedToday < 140) {
+            baseText = "Well done!";
+        }
+        else if (pointsEarnedToday < 150) {
+            baseText = "Very good day today!";
+        }
+        else if (pointsEarnedToday < 160) {
+            baseText = "Awesome day!";
+        }
+        else if (pointsEarnedToday < 170) {
+            baseText = "So close. You are exceptional!";
+        }
+        else if (pointsEarnedToday < 210) {
+            baseText = "So very close. You are exceptional!";
+        }
+        else if (pointsEarnedToday == 210) {
+            displayHelp("Perfect Score Day!!!");
+        }
+        else {
+            baseText = "Well done";
+            Debug.Log("ShowEndResult with: " + pointsEarnedToday);
+        }
+
+        displayHelp(baseText + "\nNext game starts in " + timeToNextDay);
+    }
+
+    private void showDivideByZero() {
+        displayHelp("Divide by zero detected. Zero points awarded.");
+    }
+
+    private void showDivisionWithRemainder() {
+        displayHelp("Division with remainder detected. Zero points awarded.");
+    }
+
+    private void showBestScoreToday() {
+        displayHelp("The best score so far today is TODO");
+    }
+
+
+    private void displayHelp(string text) {
+        helpTextMesh.text = text;
+    }
+
 }
 
 

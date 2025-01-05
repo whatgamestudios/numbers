@@ -111,4 +111,8 @@ public class Stats {
         return PlayerPrefs.GetInt(STATS_LAST_PLAYED, 0);
     }
 
+   public static int GetNumDaysPlayed() {
+        return PlayerPrefs.GetInt(STATS_TIMES_PLAYED, 0);
+    }
+
 }
