@@ -46,6 +46,12 @@ public class Timeline{
         return string.Format(format, diff.Hours, diff.Minutes, diff.Seconds);
     }
 
+    public static string TimeToNextDayStrShort() {
+        TimeSpan diff = TimeToNextDay();
+        string format = "{0,2:D2} hours {1,2:D2} minutes";
+        return string.Format(format, diff.Hours, diff.Minutes);
+    }
+
     /**
      * Return the time now in the local time zone.
      */

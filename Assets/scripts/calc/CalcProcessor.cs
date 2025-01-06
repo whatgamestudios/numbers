@@ -20,6 +20,8 @@ public class CalcProcessor {
     public const int ERR_INVALID_NUMBER4 = 13;
     public const int ERR_NO_MATCHING_RIGHT_BRACKET = 14;
     public const int ERR_NOT_DIVISIBLE = 15;
+    public const int ERR_TOO_MANY_LEFT_BRACKETS = 16;
+    public const int ERR_RIGHT_BRACKET_BEFORE_LEFT = 17;
 
     public const int TOKEN_PLUS = 200;
     public const int TOKEN_MINUS = 201;
@@ -29,6 +31,7 @@ public class CalcProcessor {
     public const int TOKEN_RIGHT = 205;
 
     public const int MAX_NUMBERS = 5;
+    public const int MAX_BRACKETS = 5;
     
     private int[] tokens;
     private int tokensUsed;
@@ -204,16 +207,21 @@ public class CalcProcessor {
                     }
                     break;
                 case '(':
-                    // TODO limit number of bracket depth
+                    if (leftBracketCount > MAX_BRACKETS) {
+                        return ERR_TOO_MANY_LEFT_BRACKETS;
+                    }
                     if (inNumber) {
                         return ERR_LEFT_BRACKET_AFTER_NUMERIC;
                     }
                     tokens[index++] = TOKEN_LEFT;
                     currentNumber = 0;
                     inNumber = false;
+                    leftBracketCount++;
                     break;
                 case ')':
-                    // TODO ensure right is after left
+                    if (leftBracketCount < rightBracketCount) {
+                        return ERR_RIGHT_BRACKET_BEFORE_LEFT;
+                    }
                     if (!inNumber && tokens[index-1] != TOKEN_RIGHT) {
                         return ERR_RIGHT_BRACKET_AFTER_NON_NUMERIC;
                     }

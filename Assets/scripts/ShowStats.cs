@@ -32,7 +32,10 @@ public class ShowStats : MonoBehaviour {
             lastPlayedS = lastPlayedDate.ToString("D");
         }
 
-        int ave = totalPoints / timesPlayed;
+        int ave = 0;
+        if (timesPlayed != 0) {
+            ave = totalPoints / timesPlayed;
+        }
 
         string stats = 
             "Points Average: " + ave + "\n" +

@@ -7,7 +7,12 @@ using System.Collections;
 
 
 public class Calculator : MonoBehaviour {
-    private const int MAX_NUMBERS = 5;
+    // Maximum number of numbers in a solution
+    private const int MAX_NUMBERS = CalcProcessor.MAX_NUMBERS;
+
+    // Maximum number of left brackets in a solution
+    private const int MAX_BRACKETS = CalcProcessor.MAX_BRACKETS;
+
     private const int NUM_ATTEMPTS = 3;
     private const int MAX_POINTS_PER_ATTEMPT = 50;
     private const int BONUS_POINTS = 20;
@@ -80,6 +85,8 @@ public class Calculator : MonoBehaviour {
     uint pointsEarnedToday;
 
     uint attempt;
+
+    bool waitingForNextDay = false;
 
     // Int representing which game day is being played.
     // Stored here to detect when the game was loaded into memory, switch focus away and then 
@@ -167,6 +174,7 @@ public class Calculator : MonoBehaviour {
                     break;
                 case 3:
                     showEndResult();
+                    waitingForNextDay = true;
                     break;
             }
             if (attempt < NUM_ATTEMPTS) {
@@ -271,6 +279,11 @@ public class Calculator : MonoBehaviour {
         }
     }   
 
+    public void OnCopyButtonPressed() {
+        GUIUtility.systemCopyBuffer = "Test123";
+    }
+
+
     public void Update() {
         gameDay.text = Timeline.GameDayStr();
         timeToNext.text = Timeline.TimeToNextDayStr();
@@ -295,10 +308,16 @@ public class Calculator : MonoBehaviour {
                 }
             }
         }
+
+        if (waitingForNextDay) {
+            showEndResult();
+        }
     }
 
     private void startANewDay(int todaysGameDay) {
         Debug.Log("Starting new game day: " + todaysGameDay);
+
+        waitingForNextDay = false;
 
         targetValue = getTarget(250, 1000);;
         target.text = targetValue.ToString();
@@ -493,9 +512,7 @@ public class Calculator : MonoBehaviour {
         buttonLeft.interactable = false;
     }
     private void enableLeftBracket() {
-        if (numberCount < MAX_NUMBERS) {
-            buttonLeft.interactable = true;
-        }
+        buttonLeft.interactable = numberCount < MAX_NUMBERS && leftBracketCount < MAX_BRACKETS;
     }
     private void disableRightBracket() {
         buttonRight.interactable = false;
@@ -766,7 +783,6 @@ public class Calculator : MonoBehaviour {
     }
 
     private void showEndResult() {
-        string timeToNextDay = Timeline.TimeToNextDayStr();
         string baseText = "";
 
         if (pointsEarnedToday < 70) {
@@ -779,26 +795,27 @@ public class Calculator : MonoBehaviour {
             baseText = "Well done!";
         }
         else if (pointsEarnedToday < 150) {
-            baseText = "Very good day today!";
+            baseText = "Very well done!";
         }
         else if (pointsEarnedToday < 160) {
             baseText = "Awesome day!";
         }
         else if (pointsEarnedToday < 170) {
-            baseText = "So close. You are exceptional!";
+            baseText = "So close...";
         }
         else if (pointsEarnedToday < 210) {
-            baseText = "So very close. You are exceptional!";
+            baseText = "You are exceptional!";
         }
         else if (pointsEarnedToday == 210) {
-            displayHelp("Perfect Score Day!!!");
+            baseText = "Perfect Score Day!!!";
         }
         else {
             baseText = "Well done";
             Debug.Log("ShowEndResult with: " + pointsEarnedToday);
         }
 
-        displayHelp(baseText + "\nNext game starts in " + timeToNextDay);
+        string timeToNextDay = Timeline.TimeToNextDayStrShort();
+        displayHelp(baseText + "\nNext game in " + timeToNextDay);
     }
 
     private void showDivideByZero() {
