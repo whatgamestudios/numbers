@@ -22,18 +22,20 @@ public class SeedGen{
      */
     public static byte[] GenerateSeed(uint game, uint iteration) {
         int daysSinceStart = Timeline.DaysSinceEpochStart();
-        byte[] d = BitConverter.GetBytes(daysSinceStart);
-        byte[] g = BitConverter.GetBytes(game);
-        byte[] i = BitConverter.GetBytes(iteration);
+        byte[] d = getBytesBigEndian((uint)daysSinceStart);
+        byte[] g = getBytesBigEndian(game);
+        byte[] i = getBytesBigEndian(iteration);
 
         byte[] derivationPath = new byte[d.Length + g.Length + i.Length];
         System.Buffer.BlockCopy(d, 0, derivationPath, 0, d.Length);
         System.Buffer.BlockCopy(g, 0, derivationPath, d.Length, g.Length);
         System.Buffer.BlockCopy(i, 0, derivationPath, d.Length + g.Length, i.Length);
+        // Debug.Log("Derivation path[]: " + HexDump.Dump(derivationPath));
 
-//        HashAlgorithm sha = SHA3_256.Create();
         HashAlgorithm sha = SHA256.Create();
-        return sha.ComputeHash(derivationPath);
+        byte[] seed = sha.ComputeHash(derivationPath);
+        // Debug.Log("Seed: " + HexDump.Dump(seed));
+        return seed;
     }
 
 
@@ -45,18 +47,36 @@ public class SeedGen{
      * @param mod One more than the maximum value that should be returned.
      */
     public static uint GetNextValue(byte[] seed, uint count, uint mod) {
-        byte[] c = BitConverter.GetBytes(count);
+        byte[] c = getBytesBigEndian(count);
 
         byte[] combined = new byte[seed.Length + c.Length];
         System.Buffer.BlockCopy(seed, 0, combined, 0, seed.Length);
         System.Buffer.BlockCopy(c, 0, combined, seed.Length, c.Length);
+        // Debug.Log("Combined: " + HexDump.Dump(combined));
 
-//        HashAlgorithm sha = SHA3_256.Create();
         HashAlgorithm sha = SHA256.Create();
         byte[] raw = sha.ComputeHash(combined);
-        uint raw1 = BitConverter.ToUInt32(raw, 0);
+        // Debug.Log("Raw: " + HexDump.Dump(raw));
+        int intLen = 4;
+        byte[] raw2 = new byte[intLen];
+        System.Buffer.BlockCopy(raw, raw.Length - intLen, raw2, 0, intLen);
+        uint raw1 = bytesToUIntBigEndian(raw);
         return raw1 % mod;
     }
 
+    private static byte[] getBytesBigEndian(uint a) {
+        byte[] b = BitConverter.GetBytes(a);
+        if (BitConverter.IsLittleEndian) {
+             Array.Reverse(b);
+        }
+        return b;
+    }
+
+    private static uint bytesToUIntBigEndian(byte[] b) {
+        if (BitConverter.IsLittleEndian) {
+             Array.Reverse(b);
+        }
+        return BitConverter.ToUInt32(b, 0);
+    }
     
 }
