@@ -24,31 +24,66 @@ contract TargetValueTest is Test {
         impl = new TargetValueImpl();
     }
 
-    function testDetermineCurrentGameDays() public {
-        // Move to January 7, 7:22:37 GMT
-        vm.warp(1736234560);
-
-        uint32 gameDay = uint32((block.timestamp - UNIX_TIME_GAME_START) / SECONDS_PER_DAY);
+    function testDetermineCurrentGameDaysAcrossThree() public {
+        // 	Sat Jan 04 2025 11:00:00 GMT+0000
+        vm.warp(1735988400);
+        uint32 gmt0GameDay = uint32((block.timestamp - UNIX_TIME_GAME_START) / SECONDS_PER_DAY);
         (uint32 minGameDay, uint32 maxGameDay) = impl.determineCurrentGameDays();
-        // console.log("game day: %s", gameDay);
-        // console.log("min game day: %s", minGameDay);
-        // console.log("max game day: %s", maxGameDay);
-        assertTrue(gameDay >= minGameDay && gameDay <= maxGameDay, "Game day incorrect");
+        assertEq(minGameDay, 33, "Min game day1");
+        assertEq(gmt0GameDay, 34, "GMT+0 game day1");
+        assertEq(maxGameDay, 35, "Max game day1");
     }
 
-    function testTargetValue() public {
-        // Move to January 7, 7:22:37 GMT
-        vm.warp(1736290738);
+    function testDetermineCurrentGameDaysPreviousDay() public {
+        // 	Sat Jan 04 2025 09:00:00 GMT+0000
+        vm.warp(1735981200);
+        uint32 gmt0GameDay = uint32((block.timestamp - UNIX_TIME_GAME_START) / SECONDS_PER_DAY);
+        (uint32 minGameDay, uint32 maxGameDay) = impl.determineCurrentGameDays();
+        assertEq(minGameDay, 33, "Min game day2");
+        assertEq(gmt0GameDay, 34, "GMT+0 game day2");
+        assertEq(maxGameDay, 34, "Max game day2");
+    }
+
+    function testDetermineCurrentGameDaysNextDay() public {
+        // 	Sat Jan 04 2025 13:00:00 GMT+0000
+        vm.warp(1735995600);
+        uint32 gmt0GameDay = uint32((block.timestamp - UNIX_TIME_GAME_START) / SECONDS_PER_DAY);
+        (uint32 minGameDay, uint32 maxGameDay) = impl.determineCurrentGameDays();
+        assertEq(minGameDay, 34, "Min game day3");
+        assertEq(gmt0GameDay, 34, "GMT+0 game day3");
+        assertEq(maxGameDay, 35, "Max game day3");
+    }
+
+    function testTargetValueDay10() public {
+        // Wed Dec 11 2024 02:00:00 GMT+0000
+        vm.warp(1733882400);
+        // Check that game day will be value based on the UNIX TIME just set.
         uint32 gameDay = uint32((block.timestamp - UNIX_TIME_GAME_START) / SECONDS_PER_DAY);
-        console.log("game day: %s", gameDay);
-        gameDay = 38;
-        console.log("game day: %s", gameDay);
+        assertEq(gameDay, 10, "UNIX time not right1");
 
         uint256 target = impl.getTargetValue(gameDay);
-
-        console.log("target: %s", target);
-        assertEq(target, 948, "Wrong target");
+        assertEq(target, 492, "Wrong target1");
     }
 
+    function testTargetValueDay38() public {
+        // Wed Jan 08 2025 02:00:00 GMT+0000
+        vm.warp(1736301600);
+        // Check that game day will be value based on the UNIX TIME just set.
+        uint32 gameDay = uint32((block.timestamp - UNIX_TIME_GAME_START) / SECONDS_PER_DAY);
+        assertEq(gameDay, 38, "UNIX time not right2");
 
+        uint256 target = impl.getTargetValue(gameDay);
+        assertEq(target, 948, "Wrong target2");
+    }
+
+    function testTargetValueDay39() public {
+        // 	Thu Jan 09 2025 02:00:00 GMT+0000
+        vm.warp(1736388000);
+        // Check that game day will be value based on the UNIX TIME just set.
+        uint32 gameDay = uint32((block.timestamp - UNIX_TIME_GAME_START) / SECONDS_PER_DAY);
+        assertEq(gameDay, 39, "UNIX time not right3");
+
+        uint256 target = impl.getTargetValue(gameDay);
+        assertEq(target, 881, "Wrong target3");
+    }
 }
