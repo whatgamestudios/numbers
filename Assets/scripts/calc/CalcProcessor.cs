@@ -22,6 +22,7 @@ public class CalcProcessor {
     public const int ERR_NOT_DIVISIBLE = 15;
     public const int ERR_TOO_MANY_LEFT_BRACKETS = 16;
     public const int ERR_RIGHT_BRACKET_BEFORE_LEFT = 17;
+    public const int ERR_LESS_THAN_ZERO = 18;
 
     public const int TOKEN_PLUS = 200;
     public const int TOKEN_MINUS = 201;
@@ -185,7 +186,7 @@ public class CalcProcessor {
                         }
                         tokens[index++] = currentNumber;
                         numberCount++;
-                        if (numberCount > MAX_NUMBERS) {
+                        if (numberCount >= MAX_NUMBERS) {
                             return ERR_TOO_MANY_NUMBERS;
                         }
                         currentNumber = 0;
@@ -329,7 +330,7 @@ public class CalcProcessor {
         int error;
         if (tokens[startOfs] == TOKEN_LEFT) {
             int ofsRight;
-            (ofsRight, error) = scanForMatchingRight(startOfs+1);
+            (ofsRight, error) = scanForMatchingRight(startOfs+1, endOfs);
             if (error != ERR_NO_ERROR) {
                 return (0, 0, error);
             }
@@ -348,11 +349,11 @@ public class CalcProcessor {
     }
 
 
-    private (int, int) scanForMatchingRight(int startOfs) {
+    private (int, int) scanForMatchingRight(int startOfs, int endOfs) {
         //Debug.Log("scan start: " + startOfs + " len: " + tokens.Length);
         int ofs = startOfs;
         int leftRightCount = 0;
-        for (ofs = startOfs; ofs < tokens.Length; ofs++) {
+        for (ofs = startOfs; ofs < endOfs; ofs++) {
             //Debug.Log("scan at ofs: " + ofs);
             if (tokens[ofs] == TOKEN_LEFT) {
                 //Debug.Log("scan left found");
@@ -381,6 +382,9 @@ public class CalcProcessor {
                 result = leftVal + rightVal;
                 break;
             case TOKEN_MINUS:
+                if (leftVal < rightVal) {
+                    return (0, ERR_LESS_THAN_ZERO);
+                }
                 result = leftVal - rightVal;
                 break;
             case TOKEN_MULTIPLY:

@@ -238,6 +238,9 @@ public class Calculator : MonoBehaviour {
                     case CalcProcessor.ERR_NOT_DIVISIBLE:
                         showDivisionWithRemainder();
                         break;
+                    case CalcProcessor.ERR_LESS_THAN_ZERO:
+                        showLessThanZero();
+                        break;
                     default:
                         Debug.Log("CalcProcessor error: " + err);
                         break;
@@ -319,7 +322,7 @@ public class Calculator : MonoBehaviour {
 
         waitingForNextDay = false;
 
-        targetValue = getTarget(250, 1000);;
+        targetValue = getTarget(250, 1000);
         target.text = targetValue.ToString();
 
         pointsEarnedToday = 0;
@@ -824,6 +827,10 @@ public class Calculator : MonoBehaviour {
 
     private void showDivisionWithRemainder() {
         displayHelp("Division with remainder detected. Zero points awarded.");
+    }
+
+    private void showLessThanZero() {
+        displayHelp("Subtraction resulted in negative number. Zero points awarded.");
     }
 
     private void showBestScoreToday() {

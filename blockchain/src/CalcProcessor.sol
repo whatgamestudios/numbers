@@ -87,7 +87,7 @@ abstract contract CalcProcessor {
                     }
                     tokens[index++] = currentNumber;
                     numberCount++;
-                    if (numberCount > MAX_NUMBERS) {
+                    if (numberCount >= MAX_NUMBERS) {
                         revert TooManyNumbers();
                     }
                     currentNumber = 0;
