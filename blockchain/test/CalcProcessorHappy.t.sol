@@ -65,6 +65,11 @@ contract CalcProcessorTest is Test {
         assertEq(48, impl.calc("8*25/4-2"), "8*25/4-2");
         assertEq(1, impl.calc("1+2+3-5"), "1+2+3-5");
         assertEq(3, impl.calc("2*10+3-5*4"), "2*10+3-5*4");
+        assertEq(10, impl.calc("8+2"), "8+2");
+        assertEq(6, impl.calc("8-2"), "8-2");
+        assertEq(16, impl.calc("8*2"), "8*2");
+        assertEq(4, impl.calc("8/2"), "8/2");
+
     }
 
     function testBrackets() public {

@@ -3,6 +3,8 @@
 pragma solidity ^0.8.24;
 
 abstract contract TargetValue {
+    error GameDayInvalid(uint32 _requestedGameDay, uint32 _minGameDay, uint32 _maxGameDay);
+
     // GMT	Sun Dec 01 2024 00:00:00 GMT+0000
     uint256 public constant UNIX_TIME_GAME_START = 1733011200;
     // To convert to days: 24 x 60 x 60
@@ -17,12 +19,6 @@ abstract contract TargetValue {
     uint256 public constant MIN_TARGET_VALUE = 250;
     uint256 public constant MAX_TARGET_VALUE = 1000;
 
-
-    error GameDayInvalid(uint32 _requestedGameDay, uint32 _minGameDay, uint32 _maxGameDay);
-
-    event Dump(bytes32 data);
-    event Dump2(bytes data);
-    event Dump3(uint32 data);
 
     function getTargetValue(uint32 _gameDay) public view returns (uint256) {
         (uint32 minGameDay, uint32 maxGameDay) = determineCurrentGameDays();

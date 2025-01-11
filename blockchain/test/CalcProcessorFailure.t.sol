@@ -31,6 +31,7 @@ contract CalcProcessorTest is Test {
     error TooManyLeftBrackets();
     error RightBracketBeforeLeft();
     error LessThanZero();
+    error InvalidStart();
 
     CalcProcessorImpl impl;
 
@@ -67,6 +68,8 @@ contract CalcProcessorTest is Test {
     function testRightBracketAfterNonNumeric() public {
         vm.expectRevert(RightBracketAfterNonNumeric.selector);
         impl.calc("2+(9+)+1");
+        vm.expectRevert(RightBracketAfterNonNumeric.selector);
+        impl.calc("()");
     }
 
     function testUnknownSymbol() public {
@@ -98,23 +101,79 @@ contract CalcProcessorTest is Test {
     }
 
     function testTooManyNumbers() public {
+        // Five numbers OK
+        impl.calc("100+25-10-9-6");
+        impl.calc("(100+25-10-9-6)");
+
+        // Six numbers, where the detection is the end of the equation.
         vm.expectRevert(TooManyNumbers.selector);
         impl.calc("100+25-10-9-6+1");
+
+        // Six numbers, where the detection is an operation.
         vm.expectRevert(TooManyNumbers.selector);
-        impl.calc("100+25-10-9-6+1+2");
+        impl.calc("100+25-10-9-6+1+");
+
+        // Six numbers, where the detection is a bracket.
+        vm.expectRevert(TooManyNumbers.selector);
+        impl.calc("(100+25-10-9-6+1)");
     }
 
+    function testInvalidNumber3() public {
+        vm.expectRevert(InvalidNumber3.selector);
+        impl.calc("(100+250)");
+    }
 
-    // TODO
-    // error TooManyNumbers();
-    // error InvalidNumber2();
-    // error InvalidNumber3();
-    // error InvalidNumber4();
-    // error NoMatchingRightBracket();
-    // error NotDivisible();
-    // error TooManyLeftBrackets();
-    // error RightBracketBeforeLeft();
-    // error LessThanZero();
+    function testInvalidNumber4() public {
+        vm.expectRevert(InvalidNumber4.selector);
+        impl.calc("100+250");
+        vm.expectRevert(InvalidNumber4.selector);
+        impl.calc("70");
+    }
 
+    function testNoMatchingRightBracket() public {
+        vm.expectRevert(NoMatchingRightBracket.selector);
+        impl.calc("(100+25");
+        vm.expectRevert(NoMatchingRightBracket.selector);
+        impl.calc("(((1+2)*3+4)*5");
+    }
+
+    function testNotDivisible() public {
+        vm.expectRevert(NotDivisible.selector);
+        impl.calc("7/2");
+    }
+
+    function testTooManyLeftBrackets() public {
+        impl.calc("(1)");
+        impl.calc("((1))");
+        impl.calc("(((1)))");
+        impl.calc("(((1+2)*3+4)*5)");
+        impl.calc("((((1))))");
+        impl.calc("((((1))))");
+        vm.expectRevert(TooManyLeftBrackets.selector);
+        impl.calc("((((((1))))))");
+    }
+
+    function testRightBracketBeforeLeft() public {
+        vm.expectRevert(RightBracketBeforeLeft.selector);
+        impl.calc("3+(2))+4");
+    }
+
+    function testLessThanZero() public {
+        vm.expectRevert(LessThanZero.selector);
+        impl.calc("3-4");
+    }
+
+    function testInvalidStart() public {
+        vm.expectRevert(InvalidStart.selector);
+        impl.calc("+4");
+        vm.expectRevert(InvalidStart.selector);
+        impl.calc("-4");
+        vm.expectRevert(InvalidStart.selector);
+        impl.calc("*4");
+        vm.expectRevert(InvalidStart.selector);
+        impl.calc("/4");
+        vm.expectRevert(InvalidStart.selector);
+        impl.calc(")4");
+    }
 
 }

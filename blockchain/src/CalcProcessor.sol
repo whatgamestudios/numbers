@@ -13,7 +13,6 @@ abstract contract CalcProcessor {
     error EndedOnInvalidCharacter(uint256 _unknownChar);
     error DivideByZero();
     error TooManyNumbers();
-    error InvalidNumber2();
     error InvalidNumber3();
     error InvalidNumber4();
     error NoMatchingRightBracket();
@@ -21,6 +20,7 @@ abstract contract CalcProcessor {
     error TooManyLeftBrackets();
     error RightBracketBeforeLeft();
     error LessThanZero();
+    error InvalidStart();
 
     uint256 private constant TOKEN_PLUS = 200;
     uint256 private constant TOKEN_MINUS = 201;
@@ -78,6 +78,9 @@ abstract contract CalcProcessor {
                 inNumber = true;
             }
             else if (c == '+' || c == '-' || c == '/' || c == '*') {
+                if (i == 0) {
+                    revert InvalidStart();
+                }
                 if (!inNumber && tokens[index - 1] != TOKEN_RIGHT) {
                     revert OperationAfterNonNumeric();
                 }
@@ -87,7 +90,7 @@ abstract contract CalcProcessor {
                     }
                     tokens[index++] = currentNumber;
                     numberCount++;
-                    if (numberCount >= MAX_NUMBERS) {
+                    if (numberCount > MAX_NUMBERS) {
                         revert TooManyNumbers();
                     }
                     currentNumber = 0;
@@ -108,7 +111,7 @@ abstract contract CalcProcessor {
                 }
             }
             else if (c == '(') {
-                if (leftBracketCount > MAX_BRACKETS) {
+                if (leftBracketCount >= MAX_BRACKETS) {
                     revert TooManyLeftBrackets();
                 }
                 if (inNumber) {
@@ -120,7 +123,10 @@ abstract contract CalcProcessor {
                 leftBracketCount++;
             }
             else if (c == ')') {
-                if (leftBracketCount < rightBracketCount) {
+                if (i == 0) {
+                    revert InvalidStart();
+                }
+                if (leftBracketCount <= rightBracketCount) {
                     revert RightBracketBeforeLeft();
                 }
                 if (!inNumber && tokens[index-1] != TOKEN_RIGHT) {
@@ -139,6 +145,7 @@ abstract contract CalcProcessor {
                     inNumber = false;
                 }
                 tokens[index++] = TOKEN_RIGHT;
+                rightBracketCount++;
             }
             else {
                 revert UnknownSymbol();
@@ -153,6 +160,10 @@ abstract contract CalcProcessor {
                 revert InvalidNumber4();
             }
             tokens[index++] = currentNumber;
+            numberCount++;
+            if (numberCount > MAX_NUMBERS) {
+                revert TooManyNumbers();
+            }
         }
 
         return (tokens, index);
@@ -249,7 +260,7 @@ abstract contract CalcProcessor {
      */
     function scanForMatchingRight(uint256[] memory _tokens, uint256 _startOfs, uint256 _endOfs) private pure returns(uint256) {
         uint256 leftRightCount = 0;
-        for (uint256 ofs = _startOfs; ofs < _endOfs; ofs++) {
+        for (uint256 ofs = _startOfs; ofs <= _endOfs; ofs++) {
             if (_tokens[ofs] == TOKEN_LEFT) {
                 leftRightCount++;
             }

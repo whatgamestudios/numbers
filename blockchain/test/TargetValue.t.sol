@@ -13,6 +13,8 @@ contract TargetValueImpl is TargetValue {
 }
 
 contract TargetValueTest is Test {
+    error GameDayInvalid(uint32 _requestedGameDay, uint32 _minGameDay, uint32 _maxGameDay);
+
     // GMT	Sun Dec 01 2024 00:00:00 GMT+0000
     uint256 public constant UNIX_TIME_GAME_START = 1733011200;
     // To convert to days: 24 x 60 x 60
@@ -85,5 +87,23 @@ contract TargetValueTest is Test {
 
         uint256 target = impl.getTargetValue(gameDay);
         assertEq(target, 881, "Wrong target3");
+    }
+
+    function testTargetValueDayTooEarly() public {
+        // 	Thu Jan 09 2025 02:00:00 GMT+0000
+        vm.warp(1736388000);
+        // Check that game day will be value based on the UNIX TIME just set.
+        uint32 gameDay = uint32((block.timestamp - UNIX_TIME_GAME_START) / SECONDS_PER_DAY);
+        vm.expectRevert(abi.encodeWithSelector(GameDayInvalid.selector, gameDay-2, gameDay-1, gameDay));
+        impl.getTargetValue(gameDay-2);
+    }
+
+    function testTargetValueDayTooLate() public {
+        // 	Thu Jan 09 2025 02:00:00 GMT+0000
+        vm.warp(1736388000);
+        // Check that game day will be value based on the UNIX TIME just set.
+        uint32 gameDay = uint32((block.timestamp - UNIX_TIME_GAME_START) / SECONDS_PER_DAY);
+        vm.expectRevert(abi.encodeWithSelector(GameDayInvalid.selector, gameDay+1, gameDay-1, gameDay));
+        impl.getTargetValue(gameDay+1);
     }
 }
