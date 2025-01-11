@@ -2,6 +2,12 @@
 // SPDX-License-Identifier: PROPRIETORY
 pragma solidity ^0.8.24;
 
+
+/**
+ * Calculate a result based on a text equation.
+ *
+ * This contract is designed to be upgradeable.
+ */
 abstract contract CalcProcessor {
     error LeadingZero();
     error OperationAfterNonNumeric();
@@ -309,4 +315,10 @@ abstract contract CalcProcessor {
         }
         return result;
     }
+
+    /// @notice storage gap for additional variables for upgrades
+    // slither-disable-start unused-state
+    // solhint-disable-next-line var-name-mixedcase
+    uint256[100] private __CalcProcessorGap;
+    // slither-disable-end unused-state
 }

@@ -80,4 +80,10 @@ abstract contract TargetValue {
         uint32 raw2 = uint32(uint256(raw));
         return (uint256(raw2)) % _mod;
     }
+
+    /// @notice storage gap for additional variables for upgrades
+    // slither-disable-start unused-state
+    // solhint-disable-next-line var-name-mixedcase
+    uint256[100] private __CalcProcessorGap;
+    // slither-disable-end unused-state
 }
