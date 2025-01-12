@@ -17,6 +17,9 @@ contract FourteenNumbersSolutions is
     /// @notice Error: Attempting to upgrade contract storage to version 0.
     error CanNotUpgradeToLowerOrSameVersion(uint256 _storageVersion);
 
+    // One or more numbers is used in more than one equation.
+    error NumbersRepeated();
+
     event Congratulations(address player, bytes solution1, bytes solution2, bytes solution3, uint256 points);
     event NextTime(address player, bytes solution1, bytes solution2, bytes solution3, uint256 points, uint256 bestPoints);
 
@@ -74,9 +77,16 @@ contract FourteenNumbersSolutions is
         uint256 points;
         {
             uint256 target = getTargetValue(_gameDay);
-            uint256 res1 = calc(_sol1);
-            uint256 res2 = calc(_sol2);
-            uint256 res3 = calc(_sol3);
+            (uint256 res1, uint256 numbersUsed1) = calc(_sol1);
+            (uint256 res2, uint256 numbersUsed2) = calc(_sol2);
+            (uint256 res3, uint256 numbersUsed3) = calc(_sol3);
+
+            if (numbersUsed1 & numbersUsed2 != 0 || 
+                numbersUsed1 & numbersUsed3 != 0 ||
+                numbersUsed2 & numbersUsed3 != 0) {
+                revert NumbersRepeated();
+            }
+
             points = calcPoints(target, res1, res2, res3);
         }
 

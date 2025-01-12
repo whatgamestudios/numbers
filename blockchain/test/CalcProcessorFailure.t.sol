@@ -32,6 +32,7 @@ contract CalcProcessorTest is Test {
     error RightBracketBeforeLeft();
     error LessThanZero();
     error InvalidStart();
+    error NumberPreviouslyUsed(uint256 _repeatedNumber);
 
     CalcProcessorImpl impl;
 
@@ -174,6 +175,24 @@ contract CalcProcessorTest is Test {
         impl.calc("/4");
         vm.expectRevert(InvalidStart.selector);
         impl.calc(")4");
+    }
+
+    function testNumberPreviouslyUsed() public {
+        // Repeated number at end
+        vm.expectRevert(abi.encodeWithSelector(NumberPreviouslyUsed.selector, 4));
+        impl.calc("4+4");
+        vm.expectRevert(abi.encodeWithSelector(NumberPreviouslyUsed.selector, 1));
+        impl.calc("1+25+8+7+1");
+        // Repeated number before close bracket.
+        vm.expectRevert(abi.encodeWithSelector(NumberPreviouslyUsed.selector, 4));
+        impl.calc("(4+4)");
+        vm.expectRevert(abi.encodeWithSelector(NumberPreviouslyUsed.selector, 4));
+        impl.calc("5*(4+4)");
+        // Repeated number before operand.
+        vm.expectRevert(abi.encodeWithSelector(NumberPreviouslyUsed.selector, 4));
+        impl.calc("4+4+5");
+        vm.expectRevert(abi.encodeWithSelector(NumberPreviouslyUsed.selector, 4));
+        impl.calc("5*4/4*6");
     }
 
 }

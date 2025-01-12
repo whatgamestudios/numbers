@@ -19,63 +19,148 @@ contract CalcProcessorTest is Test {
         impl = new CalcProcessorImpl();
     }
 
-    function testCalcSingleNumbers() public {
-        assertEq(1, impl.calc("1"), "1");
-        assertEq(2, impl.calc("2"), "1");
-        assertEq(3, impl.calc("3"), "1");
-        assertEq(4, impl.calc("4"), "1");
-        assertEq(5, impl.calc("5"), "1");
-        assertEq(6, impl.calc("6"), "1");
-        assertEq(7, impl.calc("7"), "1");
-        assertEq(8, impl.calc("8"), "1");
-        assertEq(9, impl.calc("9"), "1");
-        assertEq(10, impl.calc("10"), "1");
-        assertEq(25, impl.calc("25"), "1");
-        assertEq(50, impl.calc("50"), "1");
-        assertEq(75, impl.calc("75"), "1");
-        assertEq(100, impl.calc("100"), "1");
+    function testCalcSingleNumbers() public view {
+        (uint256 val, uint256 mask) = impl.calc("1");
+        assertEq(1, val, "1a");
+        assertEq(2, mask, "1b");
+
+        (val, mask) = impl.calc("2");
+        assertEq(2, val, "2a");
+        assertEq(4, mask, "2b");
+
+        (val, mask) = impl.calc("2");
+        assertEq(2, val, "2a");
+        assertEq(4, mask, "2b");
+
+        (val, mask) = impl.calc("3");
+        assertEq(3, val, "3a");
+        assertEq(8, mask, "3b");
+
+        (val, mask) = impl.calc("4");
+        assertEq(4, val, "4a");
+        assertEq(16, mask, "4b");
+
+        (val, mask) = impl.calc("5");
+        assertEq(5, val, "5a");
+        assertEq(32, mask, "5b");
+
+        (val, mask) = impl.calc("6");
+        assertEq(6, val, "6a");
+        assertEq(64, mask, "6b");
+
+        (val, mask) = impl.calc("7");
+        assertEq(7, val, "7a");
+        assertEq(128, mask, "7b");
+
+        (val, mask) = impl.calc("8");
+        assertEq(8, val, "8a");
+        assertEq(256, mask, "8b");
+
+        (val, mask) = impl.calc("9");
+        assertEq(9, val, "9a");
+        assertEq(512, mask, "9b");
+
+        (val, mask) = impl.calc("10");
+        assertEq(10, val, "10a");
+        assertEq(1024, mask, "10b");
+
+        (val, mask) = impl.calc("25");
+        assertEq(25, val, "25a");
+        assertEq(1 << 25, mask, "25b");
+
+        (val, mask) = impl.calc("50");
+        assertEq(50, val, "50a");
+        assertEq(1 << 50, mask, "50b");
+
+        (val, mask) = impl.calc("75");
+        assertEq(75, val, "75a");
+        assertEq(1 << 75, mask, "75b");
+
+        (val, mask) = impl.calc("100");
+        assertEq(100, val, "100a");
+        assertEq(1 << 100, mask, "100b");
     }
 
-    function testTwoNumAdd() public {
-        assertEq(3, impl.calc("1+2"), "1+2");
-        assertEq(109, impl.calc("100+9"), "100+9");
-        assertEq(100, impl.calc("75+25"), "75+25");
-        assertEq(57, impl.calc("50+7"), "50+7");
+    function testTwoNumAdd() public view {
+        (uint256 val, uint256 mask) = impl.calc("1+2");
+        assertEq(3, val, "1+2a");
+        assertEq(6, mask, "1+2b");
+
+        (val, mask) = impl.calc("100+9");
+        assertEq(109, val, "100+9a");
+        assertEq(1 << 100 | 1 << 9, mask, "100+9b");
+
+        (val, mask) = impl.calc("100+9");
+        assertEq(109, val, "100+9a");
+        assertEq(1 << 100 | 1 << 9, mask, "100+9b");
+
+        (val, mask) = impl.calc("75+25");
+        assertEq(100, val, "75+25a");
+        assertEq(1 << 75 | 1 << 25, mask, "75+25b");
+
+        (val, mask) = impl.calc("50+7");
+        assertEq(57, val, "50+7a");
+        assertEq(1 << 50 | 1 << 7, mask, "50+7b");
     }
 
-    function testTwoNumMul() public {
-        assertEq(500, impl.calc("5*100"), "5*100");
+    function testTwoNumMul() public view {
+        (uint256 val, uint256 mask) = impl.calc("5*100");
+        assertEq(500, val, "5*100a");
+        assertEq(1 << 5 | 1 << 100, mask, "5*100b");
     }
 
-    function testTwoNumSub() public {
-        assertEq(75, impl.calc("100-25"), "100-25");
+    function testTwoNumSub() public view {
+        (uint256 val, uint256 mask) = impl.calc("100-25");
+        assertEq(75, val, "100-25");
+        assertEq(1 << 25 | 1 << 100, mask, "5*100b");
     }
 
-    function testTwoNumDiv() public {
-        assertEq(2, impl.calc("8/4"), "8/4");
+    function testTwoNumDiv() public view {
+        (uint256 val, uint256 mask) = impl.calc("8/4");
+        assertEq(2, val, "8/4a");
+        assertEq(1 << 8 | 1 << 4, mask, "8/4b");
     }
 
-    function testScenarios() public {
-        assertEq(501, impl.calc("5*100+1"), "5*100+1");
-        assertEq(501, impl.calc("1+5*100"), "1+5*100");
-        assertEq(21, impl.calc("1+100/5"), "1+100/5");
-        assertEq(21, impl.calc("100/5+1"), "100/5+1");
-        assertEq(125, impl.calc("5*100/4"), "5*100/4");
-        assertEq(50, impl.calc("100-8*25/4"), "100-8*25/4");
-        assertEq(48, impl.calc("8*25/4-2"), "8*25/4-2");
-        assertEq(1, impl.calc("1+2+3-5"), "1+2+3-5");
-        assertEq(3, impl.calc("2*10+3-5*4"), "2*10+3-5*4");
-        assertEq(10, impl.calc("8+2"), "8+2");
-        assertEq(6, impl.calc("8-2"), "8-2");
-        assertEq(16, impl.calc("8*2"), "8*2");
-        assertEq(4, impl.calc("8/2"), "8/2");
+    function testScenarios() public view {
+        (uint256 val, uint256 mask) = impl.calc("5*100+1");
+        assertEq(501, val, "5*100+1a");
+        assertEq(1 << 5 | 1 << 100 | 2, mask, "5*100+1b");
 
+        (val, mask) = impl.calc("1+5*100");
+        assertEq(501, val, "1+5*100a");
+
+        (val, mask) = impl.calc("1+100/5");
+        assertEq(21, val, "1+100/5a");
+
+        (val, mask) = impl.calc("100/5+1");
+        assertEq(21, val, "100/5+1a");
+
+        (val, mask) = impl.calc("5*100/4");
+        assertEq(125, val, "5*100/4a");
+
+        (val, mask) = impl.calc("100-8*25/4");
+        assertEq(50, val, "100-8*25/4a");
+
+        (val, mask) = impl.calc("8*25/4-2");
+        assertEq(48, val, "8*25/4-2a");
+
+        (val, mask) = impl.calc("1+2+3-5");
+        assertEq(1, val, "1+2+3-5a");
+
+        (val, mask) = impl.calc("2*10+3-5*4");
+        assertEq(3, val, "2*10+3-5*4a");
     }
 
-    function testBrackets() public {
-        assertEq(505, impl.calc("5*(100+1)"), "5*(100+1)");
-        assertEq(600, impl.calc("(1+5)*100"), "(1+5)*100");
-        assertEq(25, impl.calc("(100+25)/(4+1)"), "(100+25)/(4+1)");
+    function testBrackets() public view {
+        (uint256 val, uint256 mask) = impl.calc("5*(100+1)");
+        assertEq(505, val, "5*(100+1)a");
+        assertEq(1 << 5 | 1 << 100 | 2, mask, "5*(100+1)b");
+
+        (val, mask) = impl.calc("(1+5)*100");
+        assertEq(600, val, "(1+5)*100a");
+
+        (val, mask) = impl.calc("(100+25)/(4+1)");
+        assertEq(25, val, "(100+25)/(4+1)a");
     }
 
 }

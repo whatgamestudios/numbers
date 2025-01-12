@@ -27,6 +27,7 @@ abstract contract CalcProcessor {
     error RightBracketBeforeLeft();
     error LessThanZero();
     error InvalidStart();
+    error NumberPreviouslyUsed(uint256 _repeatedNumber);
 
     uint256 private constant TOKEN_PLUS = 200;
     uint256 private constant TOKEN_MINUS = 201;
@@ -42,20 +43,20 @@ abstract contract CalcProcessor {
      * Process an equation and return a result.
      *
      * @param _input Equation to process.
-     * @return result of the equation.
+     * @return result of the equation and bitmask of numbers used.
      */
-    function calc(bytes memory _input) public pure returns (uint256) {
-        (uint256[] memory tokens, uint256 numTokens) = parse(_input);
-        return process(tokens, 0, numTokens);
+    function calc(bytes memory _input) public pure returns (uint256, uint256) {
+        (uint256[] memory tokens, uint256 numTokens, uint256 numbersUsedBitMask) = parse(_input);
+        return (process(tokens, 0, numTokens), numbersUsedBitMask);
     }
 
     /**
      * Parse an equation to create a set of tokens representing the equation.
      * 
      * @param _input The equation to process.
-     * @return tokens array and length of array used.
+     * @return tokens array, length of array used, and bitmask of numbers used.
      */
-    function parse(bytes memory _input) private pure returns (uint256[] memory, uint256) {
+    function parse(bytes memory _input) private pure returns (uint256[] memory, uint256, uint256) {
         uint256[] memory tokens = new uint256[](100); // TODO how big should this be?
         uint256 len = _input.length;
         uint256 numberCount = 0;
@@ -63,6 +64,7 @@ abstract contract CalcProcessor {
         uint256 rightBracketCount = 0;
         bool inNumber = false;
         uint256 currentNumber = 0;
+        uint256 numbersUsed = 0;
 
         uint256 index = 0;
 
@@ -91,6 +93,7 @@ abstract contract CalcProcessor {
                     revert OperationAfterNonNumeric();
                 }
                 if (inNumber) {
+                    // Number prior to operand
                     if (!isValidNumber(currentNumber)) {
                         revert InvalidNumber1();
                     }
@@ -99,6 +102,7 @@ abstract contract CalcProcessor {
                     if (numberCount > MAX_NUMBERS) {
                         revert TooManyNumbers();
                     }
+                    numbersUsed = updateNumbersUsedBitMask(numbersUsed, currentNumber);
                     currentNumber = 0;
                     inNumber = false;
                 }
@@ -139,6 +143,7 @@ abstract contract CalcProcessor {
                     revert RightBracketAfterNonNumeric();
                 }
                 if (inNumber) {
+                    // Number prior to right bracket
                     if (!isValidNumber(currentNumber)) {
                         revert InvalidNumber3();
                     }
@@ -147,6 +152,7 @@ abstract contract CalcProcessor {
                     if (numberCount > MAX_NUMBERS) {
                         revert TooManyNumbers();
                     }
+                    numbersUsed = updateNumbersUsedBitMask(numbersUsed, currentNumber);
                     currentNumber = 0;
                     inNumber = false;
                 }
@@ -162,6 +168,7 @@ abstract contract CalcProcessor {
             revert EndedOnInvalidCharacter(tokens[index - 1]);
         }
         if (inNumber) {
+            // Number prior to end
             if (!isValidNumber(currentNumber)) {
                 revert InvalidNumber4();
             }
@@ -170,10 +177,12 @@ abstract contract CalcProcessor {
             if (numberCount > MAX_NUMBERS) {
                 revert TooManyNumbers();
             }
+            numbersUsed = updateNumbersUsedBitMask(numbersUsed, currentNumber);
         }
 
-        return (tokens, index);
+        return (tokens, index, numbersUsed);
     }
+
 
     /**
      * Check if the number is valid.
@@ -187,6 +196,14 @@ abstract contract CalcProcessor {
                 (number == 25 || number == 50 ||
                     number == 50 || number == 75 || 
                     number == 100)));
+    }
+
+    function updateNumbersUsedBitMask(uint256 _numbersUsed, uint256 _currentNumber) private pure returns (uint256) {
+        uint256 bitMask = 1 << _currentNumber;
+        if (_numbersUsed & bitMask != 0) {
+            revert NumberPreviouslyUsed(_currentNumber);
+        }
+        return _numbersUsed | bitMask;
     }
 
 
