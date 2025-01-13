@@ -6,13 +6,14 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/extensions/AccessControlEnumerableUpgradeable.sol";
 
+import {GameDayCheck} from "./GameDayCheck.sol";
 import {TargetValue} from "./TargetValue.sol";
 import {CalcProcessor} from "./CalcProcessor.sol";
 import {Points} from "./Points.sol";
 
 
 contract FourteenNumbersSolutions is 
-    AccessControlEnumerableUpgradeable, TargetValue, CalcProcessor, Points, UUPSUpgradeable {
+    AccessControlEnumerableUpgradeable, GameDayCheck, TargetValue, CalcProcessor, Points, UUPSUpgradeable {
 
     /// @notice Error: Attempting to upgrade contract storage to version 0.
     error CanNotUpgradeToLowerOrSameVersion(uint256 _storageVersion);
@@ -27,6 +28,9 @@ contract FourteenNumbersSolutions is
     /// @notice Only UPGRADE_ROLE can upgrade the contract
     bytes32 public constant UPGRADE_ROLE = bytes32("UPGRADE_ROLE");
 
+    /// @notice The first Owner role is returned as the owner of the contract.
+    bytes32 public constant OWNER_ROLE = bytes32("OWNER_ROLE");
+
     /// @notice Version 0 version number
     uint256 private constant _VERSION0 = 0;
 
@@ -35,24 +39,32 @@ contract FourteenNumbersSolutions is
     uint256 public version;
 
     struct BestGame {
-        bytes solution1;
-        bytes solution2;
-        bytes solution3;
+        bytes combinedSolution;
         uint256 points;
         address player;
     }
 
     mapping(uint256 => BestGame) solutions;
 
+    struct Stats {
+        uint256 firstGameDay;
+        uint256 mostRecentGameDay;
+        uint256 totalPoints;
+        uint256 daysPlayed;
+    }
+    mapping(address => Stats) stats;
+
     /**
      * @notice Initialises the upgradeable contract, setting up admin accounts.
-     * @param _roleAdmin the address to grant `DEFAULT_ADMIN_ROLE` to
-     * @param _upgradeAdmin the address to grant `UPGRADE_ROLE` to
+     * @param _roleAdmin the address to grant `DEFAULT_ADMIN_ROLE` to.
+     * @param _owner the address to grant `OWNER_ROLE` to.
+     * @param _upgradeAdmin the address to grant `UPGRADE_ROLE` to.
      */
-    function initialize(address _roleAdmin, address _upgradeAdmin) public initializer {
+    function initialize(address _roleAdmin, address _owner, address _upgradeAdmin) public initializer {
         __UUPSUpgradeable_init();
         __AccessControl_init();
         _grantRole(DEFAULT_ADMIN_ROLE, _roleAdmin);
+        _grantRole(OWNER_ROLE, _owner);
         _grantRole(UPGRADE_ROLE, _upgradeAdmin);
         version = _VERSION0;
     }
@@ -73,7 +85,21 @@ contract FourteenNumbersSolutions is
     }
 
 
-    function newBestGame(uint32 _gameDay, bytes calldata _sol1, bytes calldata _sol2, bytes calldata _sol3) external {
+    /**
+     * Store results and update the best solution of the day.
+     *
+     * @param _gameDay The day since the game epoch start.
+     * @param _sol1 First equation.
+     * @param _sol2 Second equation.
+     * @param _sol3 Third equation.
+     * @param _store True if the game player stats should be updated.
+     */
+    function storeResults(
+        uint32 _gameDay, bytes calldata _sol1, bytes calldata _sol2, bytes calldata _sol3, bool _store) external {
+
+        // Reverts if game day is in the future or in the past.
+        checkGameDay(_gameDay);
+
         uint256 points;
         {
             uint256 target = getTargetValue(_gameDay);
@@ -90,11 +116,12 @@ contract FourteenNumbersSolutions is
             points = calcPoints(target, res1, res2, res3);
         }
 
+        // Update the best solution of the day.
         uint256 bestPoints = solutions[_gameDay].points;
         if (points > bestPoints) {
-            solutions[_gameDay].solution1 = _sol1;
-            solutions[_gameDay].solution2 = _sol2;
-            solutions[_gameDay].solution3 = _sol3;
+            bytes1 separator = "=";
+            bytes memory solution = abi.encodePacked(_sol1, separator, _sol2, separator, _sol3);
+            solutions[_gameDay].combinedSolution = solution;
             solutions[_gameDay].points = points;
             solutions[_gameDay].player = msg.sender;
             emit Congratulations(msg.sender, _sol1, _sol2, _sol3, points);
@@ -102,9 +129,26 @@ contract FourteenNumbersSolutions is
         else {
             emit NextTime(msg.sender, _sol1, _sol2, _sol3, points, bestPoints);
         }
+
+        // Store statistics if requested.
+        if (_store) {
+            Stats storage playerStats = stats[msg.sender];
+            if (_gameDay > playerStats.mostRecentGameDay) {
+                if (playerStats.firstGameDay == 0) {
+                    playerStats.firstGameDay = _gameDay;
+                }
+                playerStats.mostRecentGameDay = _gameDay;
+                playerStats.totalPoints += points;
+                playerStats.daysPlayed++;
+            }
+        }
     }
 
-
+    // Calls to this function are used to determine the number of people playing the game,
+    // who are using Passport login.
+    function checkIn() external {
+        // Do nothing.
+    }
 
 
     /**
@@ -112,7 +156,7 @@ contract FourteenNumbersSolutions is
      * This is the first role admin.
      */
     function owner() public view virtual returns (address) {
-        return getRoleMember(DEFAULT_ADMIN_ROLE, 0);
+        return getRoleMember(OWNER_ROLE, 0);
     }
 
 
