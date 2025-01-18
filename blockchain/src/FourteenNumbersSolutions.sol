@@ -44,15 +44,15 @@ contract FourteenNumbersSolutions is
         address player;
     }
 
-    mapping(uint256 => BestGame) solutions;
+    mapping(uint256 => BestGame) public solutions;
 
     struct Stats {
-        uint256 firstGameDay;
-        uint256 mostRecentGameDay;
+        uint32 firstGameDay;
+        uint32 mostRecentGameDay;
         uint256 totalPoints;
         uint256 daysPlayed;
     }
-    mapping(address => Stats) stats;
+    mapping(address => Stats) public stats;
 
     /**
      * @notice Initialises the upgradeable contract, setting up admin accounts.
@@ -144,10 +144,21 @@ contract FourteenNumbersSolutions is
         }
     }
 
-    // Calls to this function are used to determine the number of people playing the game,
-    // who are using Passport login.
-    function checkIn() external {
-        // Do nothing.
+    /**
+     * Log the first day the game was played. 
+     * Subsequent calls to this function are used to determine the number of people playing the game,
+     * who are using Passport login.
+     *
+     * @param _gameDay The day since the game epoch start.
+     */
+    function checkIn(uint32 _gameDay) external {
+        // Reverts if game day is in the future or in the past.
+        checkGameDay(_gameDay);
+
+        Stats storage playerStats = stats[msg.sender];
+        if (playerStats.firstGameDay == 0) {
+            playerStats.firstGameDay = _gameDay;
+        }
     }
 
 
