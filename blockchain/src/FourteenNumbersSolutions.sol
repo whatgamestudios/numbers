@@ -120,7 +120,7 @@ contract FourteenNumbersSolutions is
         uint256 bestPoints = solutions[_gameDay].points;
         if (points > bestPoints) {
             bytes1 separator = "=";
-            bytes memory solution = abi.encodePacked(_sol1, separator, _sol2, separator, _sol3);
+            bytes memory solution = bytes.concat(_sol1, separator, _sol2, separator, _sol3);
             solutions[_gameDay].combinedSolution = solution;
             solutions[_gameDay].points = points;
             solutions[_gameDay].player = msg.sender;

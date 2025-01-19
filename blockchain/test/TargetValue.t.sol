@@ -24,6 +24,16 @@ contract TargetValueTest is Test {
         assertEq(target, 492, "Wrong target1");
     }
 
+    function testTargetValueDay34() public view {
+        uint256 target = impl.getTargetValue(34);
+        assertEq(target, 444, "Wrong target34");
+    }
+
+    function testTargetValueDay35() public view {
+        uint256 target = impl.getTargetValue(35);
+        assertEq(target, 575, "Wrong target35");
+    }
+
     function testTargetValueDay38() public view {
         uint256 target = impl.getTargetValue(38);
         assertEq(target, 948, "Wrong target2");
