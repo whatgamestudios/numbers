@@ -6,15 +6,15 @@ abstract contract GameDayCheck {
     error GameDayInvalid(uint32 _requestedGameDay, uint32 _minGameDay, uint32 _maxGameDay);
 
     // GMT	Sun Dec 01 2024 00:00:00 GMT+0000
-    uint256 public constant UNIX_TIME_GAME_START = 1733011200;
+    uint256 private constant UNIX_TIME_GAME_START = 1733011200;
     // To convert to days: 24 x 60 x 60
-    uint256 public constant SECONDS_PER_DAY = 86400;
+    uint256 private constant SECONDS_PER_DAY = 86400;
     // GMT+14 timezone offset: 14 x 60 x 60
     // Kiribati: Line Islands: https://en.wikipedia.org/wiki/Time_zone
-    uint256 public constant PLUS_FORTEEN = 50400;
+    uint256 private constant PLUS_FORTEEN = 50400;
     // GMT-12 timezone offset: 12 x 60 x 60
     // USA: Baker and Howard Island: https://en.wikipedia.org/wiki/Time_zone
-    uint256 public constant MINUS_TWELVE = 43200;
+    uint256 private constant MINUS_TWELVE = 43200;
 
 
     function checkGameDay(uint32 _gameDay) public view {

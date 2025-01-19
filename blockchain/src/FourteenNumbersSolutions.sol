@@ -12,6 +12,11 @@ import {CalcProcessor} from "./CalcProcessor.sol";
 import {Points} from "./Points.sol";
 
 
+/**
+ * Manage players submitting solutions for the 14Numbers game.
+ *
+ * This contract is designed to be upgradeable.
+ */
 contract FourteenNumbersSolutions is 
     AccessControlEnumerableUpgradeable, GameDayCheck, TargetValue, CalcProcessor, Points, UUPSUpgradeable {
 
@@ -44,14 +49,18 @@ contract FourteenNumbersSolutions is
         address player;
     }
 
+    // Map: game day => best solution
     mapping(uint256 => BestGame) public solutions;
 
+    // Holds a player's stats.
     struct Stats {
         uint32 firstGameDay;
         uint32 mostRecentGameDay;
         uint256 totalPoints;
         uint256 daysPlayed;
     }
+
+    // Map: player address => player's stats.
     mapping(address => Stats) public stats;
 
     /**
@@ -169,7 +178,6 @@ contract FourteenNumbersSolutions is
     function owner() public view virtual returns (address) {
         return getRoleMember(OWNER_ROLE, 0);
     }
-
 
 
     // Override the _authorizeUpgrade function

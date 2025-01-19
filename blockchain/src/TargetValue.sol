@@ -4,10 +4,13 @@ pragma solidity ^0.8.24;
 
 abstract contract TargetValue {
 
-    uint256 public constant MIN_TARGET_VALUE = 250;
-    uint256 public constant MAX_TARGET_VALUE = 1000;
+    uint256 private constant MIN_TARGET_VALUE = 250;
+    uint256 private constant MAX_TARGET_VALUE = 1000;
 
 
+    /**
+     * Determine the target value given a game day.
+     */
     function getTargetValue(uint32 _gameDay) public pure returns (uint256) {
         return getTarget(_gameDay, MIN_TARGET_VALUE, MAX_TARGET_VALUE);
     }

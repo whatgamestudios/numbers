@@ -9,6 +9,7 @@ import "forge-std/Test.sol";
 import {FourteenNumbersSolutionsBaseTest} from "./FourteenNumbersSolutionsBase.t.sol";
 import {FourteenNumbersSolutions} from "../src/FourteenNumbersSolutions.sol";
 import {GameDayCheck} from "../src/GameDayCheck.sol";
+import {CalcProcessor} from "../src/CalcProcessor.sol";
 
 contract FourteenNumbersSolutionsOperationalTest is FourteenNumbersSolutionsBaseTest {
 
@@ -217,7 +218,7 @@ contract FourteenNumbersSolutionsOperationalTest is FourteenNumbersSolutionsBase
 
         sol1 = "(100+10+1)*4"; // 444: perfect: 70 points
         sol2 = "75*6";         // 450: 6 off:   44 points
-        sol3 = "50*9+7";       // 457: 1 off:   37 points
+        sol3 = "50*9+7";       // 457: 13off:   37 points
 
         vm.expectEmit(true, true, true, true);
         emit FourteenNumbersSolutions.NextTime(player2, sol1, sol2, sol3, 151, 158);
@@ -229,6 +230,95 @@ contract FourteenNumbersSolutionsOperationalTest is FourteenNumbersSolutionsBase
         assertEq(combinedSolution, "(100+10+1)*4=75*6=50*9", "Combined solution1");
         assertEq(points, 158, "points");
         assertEq(player, player1, "player");
+    }
+
+    // Best solution can be set with a second attempt, but the player's stats
+    // don't get updated
+    function testStoreResultsAttemptToUpdateResult() public {
+        // 	Sat Jan 04 2025 13:00:00 GMT+0000
+        vm.warp(1735995600);
+        // Min game day is 34, max is 35
+
+        bytes memory sol1 = "(100+10+1)*4"; // 444: perfect: 70 points
+        bytes memory sol2 = "75*6";         // 450: 6 off:   44 points
+        bytes memory sol3 = "50*9";         // 450: 6 off:   44 points
+
+        vm.expectEmit(true, true, true, true);
+        emit FourteenNumbersSolutions.Congratulations(player1, sol1, sol2, sol3, 158);
+        vm.prank(player1);
+        fourteenNumbersSolutions.storeResults(34, sol1, sol2, sol3, true);
+
+        sol1 = "(100+10+1)*4"; // 444: perfect: 70 points
+        sol2 = "75*6";         // 450: 6 off:   44 points
+        sol3 = "50*9-7";       // 443: 1 off:   49 points
+
+        vm.expectEmit(true, true, true, true);
+        emit FourteenNumbersSolutions.Congratulations(player1, sol1, sol2, sol3, 163);
+        vm.prank(player1);
+        fourteenNumbersSolutions.storeResults(34, sol1, sol2, sol3, true);
+
+        (bytes memory combinedSolution, uint256 points, address player) = 
+            fourteenNumbersSolutions.solutions(34);
+        assertEq(combinedSolution, "(100+10+1)*4=75*6=50*9-7", "Combined solution1");
+        assertEq(points, 163, "points");
+        assertEq(player, player1, "player");
+
+        (uint32 firstGameDay, uint32 mostRecentGameDay, uint256 totalPoints, uint256 daysPlayed) = 
+            fourteenNumbersSolutions.stats(player1);
+        assertEq(firstGameDay, 34, "first game day 1");
+        assertEq(mostRecentGameDay, 34, "most recent game day1");
+        assertEq(totalPoints, 158, "total points1");
+        assertEq(daysPlayed, 1, "days played 1");
+    }
+
+    function testStoreResultsRepeatedNumbers() public {
+        // 	Sat Jan 04 2025 13:00:00 GMT+0000
+        vm.warp(1735995600);
+        // Min game day is 34, max is 35
+
+        // 1 repeated between sol1 and sol3
+        bytes memory sol1 = "(100+10+1)*4";
+        bytes memory sol2 = "75*6";    
+        bytes memory sol3 = "50*9-7+1";
+        vm.prank(player1);
+        vm.expectRevert(FourteenNumbersSolutions.NumbersRepeated.selector);
+        fourteenNumbersSolutions.storeResults(34, sol1, sol2, sol3, true);
+
+        // 1 repeated between sol1 and sol2
+        sol1 = "(100+10+1)*4";
+        sol2 = "75*6+1";    
+        sol3 = "50*9-7";
+        vm.prank(player1);
+        vm.expectRevert(FourteenNumbersSolutions.NumbersRepeated.selector);
+        fourteenNumbersSolutions.storeResults(34, sol1, sol2, sol3, true);
+
+        // 1 repeated between sol2 and sol3
+        sol1 = "(100+10)*4";
+        sol2 = "75*6+1";    
+        sol3 = "50*9-7+1";
+        vm.prank(player1);
+        vm.expectRevert(FourteenNumbersSolutions.NumbersRepeated.selector);
+        fourteenNumbersSolutions.storeResults(34, sol1, sol2, sol3, true);
+    }
+
+    function testStoreResultsInvalidSolution() public {
+        // 	Sat Jan 04 2025 13:00:00 GMT+0000
+        vm.warp(1735995600);
+        // Min game day is 34, max is 35
+
+        bytes memory sol1 = "(100+10+1*4";
+        bytes memory sol2 = "75*6";    
+        bytes memory sol3 = "50*9-7";
+        vm.prank(player1);
+        vm.expectRevert(CalcProcessor.NoMatchingRightBracket.selector);
+        fourteenNumbersSolutions.storeResults(34, sol1, sol2, sol3, true);
+
+        sol1 = "?1*4";
+        sol2 = "75*6";    
+        sol3 = "50*9-7";
+        vm.prank(player1);
+        vm.expectRevert(CalcProcessor.UnknownSymbol.selector);
+        fourteenNumbersSolutions.storeResults(34, sol1, sol2, sol3, true);
     }
 
 
