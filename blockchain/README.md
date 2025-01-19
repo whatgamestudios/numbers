@@ -2,55 +2,18 @@
 
 This directory contains code to hold the best solutions for each day.
 
+Build and test:
 
-## Usage
-
-### Build
-
-```shell
-$ forge build
+```
+forge build
+forge test
+forge coverage
 ```
 
-### Test
+Deployment:
 
-```shell
-$ forge test
 ```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
+export DEPLOYER_ADDRESS=0x575710d33d35d5274343ecb7A4Bc67D932303Fa2
+export APIKEY= <blockscout API key>
+sh script/deploy14Numbers.sh  
 ```
