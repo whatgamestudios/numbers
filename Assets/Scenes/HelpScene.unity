@@ -853,26 +853,17 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "14Numbers is a puzzle game in which everyone in the world is trying to
-    solve the same puzzle. There is a new puzzle each day. You have 14 numbers and
-    need to come up with three equations to solve for the daily target number.\n\nTo
-    play the game:\n- Type in three equations with the aim to calculate to the target
-    number. \n- Press the equals sign to indicate the end of an equation.\n- Each
-    number can only be used once.\n- Each equation can only contain five numbers.\n-
-    Dividing by zero results in an error, with zero points awarded.\n- Division results
-    in a error if there is a remainder. That is, an error is reported if the numerator
-    is not divisible by the denominator. For example, 8 divided by 4 is OK, but 9
-    divided by 4 results in a error as the remainder would be 1. No points are awarded
-    if this issue is detected.\n\nPoints are scored for each equation. 70 points
-    is awarded if an equation calculates precisely to the daily target number. If
-    the equation results in a value the is one different from the target number then
-    49 points are awarded. The points awarded decreases by one for each extra one
-    further away from the target number.\n\nThe goal of the game is the have a high
-    overall points score each day. The points you acrue each day go towards your
-    long term statistics.\n\nA secondary goal of the game is to provide a social
-    connection discussion point. Please reach out to friends and family and ask them
-    how they went today.\n\nThe game resets daily at midnight for the timezone set
-    on your phone or tablet."
+  m_text: "14Numbers is a puzzle game. Everyone in the world is trying to solve the
+    same puzzle each day. You have 14 numbers and need to come up with three equations
+    to solve for the daily target number\n\nTo play the game:\n- Type in an equation
+    with the aim to calculate to the target number. \n- Press the = sign to indicate
+    the end of an equation.\n- Each number can only be used once.\n- Each equation
+    can only contain five numbers.\n- Division rules: no divide by zero, and whole
+    number division only.\n\nPoints:\n- 70 points per equation that precisely matches
+    the target. \n- 49 points for 1 off the target\n- 48 points for 2 off the target\n\nFor
+    example, assuming the target is 257, the three equations could be:\nEquation            
+    Result   Points\n50x5+7               257        70\n(100-10-4)x3-1  257       
+    70\n75x(9-6)             225        18\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

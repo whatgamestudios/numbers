@@ -82,7 +82,9 @@ public class Calculator : MonoBehaviour {
 
     Stack usedThisAttemptStack;
 
-    uint pointsEarnedToday;
+    uint pointsEarned1;
+    uint pointsEarned2;
+    uint pointsEarned3;
 
     uint attempt;
 
@@ -264,7 +266,7 @@ public class Calculator : MonoBehaviour {
                     points = MAX_POINTS_PER_ATTEMPT + BONUS_POINTS;
                 }
                 pointsEarnedThisAttempt = (uint) points;
-                pointsEarnedToday += pointsEarnedThisAttempt;
+                updatePointsEarned(pointsEarnedThisAttempt);
             }
         }
         catch (System.Exception ex) {
@@ -276,7 +278,7 @@ public class Calculator : MonoBehaviour {
         }
         updateCalcGui(resultText);
         updateInputGui(currentInput);
-        updatePointsGui(pointsEarnedThisAttempt.ToString());
+        updatePointsGui();
         if (publishStats) {
             publishStatsThisSolution(currentInput, pointsEarnedThisAttempt);
         }
@@ -325,7 +327,9 @@ public class Calculator : MonoBehaviour {
         targetValue = getTarget(250, 1000);
         target.text = targetValue.ToString();
 
-        pointsEarnedToday = 0;
+        pointsEarned1 = 0;
+        pointsEarned2 = 0;
+        pointsEarned3 = 0;
         attempt = 0;
 
         input1.text = "";
@@ -655,22 +659,35 @@ public class Calculator : MonoBehaviour {
         }
     }
 
-    private void updatePointsGui(string val) {
+
+    private void updatePointsEarned(uint pointsEarned) {
         switch (attempt) {
             case 0:
-                points1.text = val;
+                pointsEarned1 = pointsEarned;
                 break;
             case 1:
-                points2.text = val;
+                pointsEarned2 = pointsEarned;
                 break;
             case 2:
-                points3.text = val;
+                pointsEarned3 = pointsEarned;
                 break;
             default:
                 Debug.Log("Attempt not supported3");
                 break;
         }
-        pointsTotal.text = pointsEarnedToday.ToString();
+    }
+
+    private uint pointsEarnedTotalToday() {
+        return pointsEarned1 + pointsEarned2 + pointsEarned3;
+    }
+
+
+    private void updatePointsGui() {
+        points1.text = pointsEarned1.ToString();
+        points2.text = pointsEarned2.ToString();
+        points3.text = pointsEarned3.ToString();
+        uint total = pointsEarnedTotalToday();
+        pointsTotal.text = total.ToString();
     }
 
     private void publishStatsThisSolution(string solution, uint points) {
@@ -759,12 +776,7 @@ public class Calculator : MonoBehaviour {
     }
 
     private void showAfterFirstCharacter() {
-        if (newPlayer) {
-            displayHelp("Press the = button to complete your solution");
-        }
-        else {
-            showBestScoreToday();
-        }
+        showBestScoreToday();
     }
 
     private void showSecondSoltionHelp() {
@@ -788,33 +800,34 @@ public class Calculator : MonoBehaviour {
     private void showEndResult() {
         string baseText = "";
 
-        if (pointsEarnedToday < 70) {
+        uint pointsEarnedTotal = pointsEarnedTotalToday();
+        if (pointsEarnedTotal < 70) {
             baseText = "Practice Makes Perfect.";
         }
-        else if (pointsEarnedToday < 120) {
+        else if (pointsEarnedTotal < 120) {
             baseText = "Good work!";
         }
-        else if (pointsEarnedToday < 140) {
+        else if (pointsEarnedTotal < 140) {
             baseText = "Well done!";
         }
-        else if (pointsEarnedToday < 150) {
+        else if (pointsEarnedTotal < 150) {
             baseText = "Very well done!";
         }
-        else if (pointsEarnedToday < 160) {
+        else if (pointsEarnedTotal < 160) {
             baseText = "Awesome day!";
         }
-        else if (pointsEarnedToday < 170) {
+        else if (pointsEarnedTotal < 170) {
             baseText = "So close...";
         }
-        else if (pointsEarnedToday < 210) {
+        else if (pointsEarnedTotal < 210) {
             baseText = "You are exceptional!";
         }
-        else if (pointsEarnedToday == 210) {
+        else if (pointsEarnedTotal == 210) {
             baseText = "Perfect Score Day!!!";
         }
         else {
             baseText = "Well done";
-            Debug.Log("ShowEndResult with: " + pointsEarnedToday);
+            Debug.Log("ShowEndResult with: " + pointsEarnedTotal);
         }
 
         string timeToNextDay = Timeline.TimeToNextDayStrShort();

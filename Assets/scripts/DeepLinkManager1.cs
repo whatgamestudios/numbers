@@ -3,20 +3,21 @@ using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
 
-public class DeepLinkManager : MonoBehaviour {
+public class DeepLinkManager1 : MonoBehaviour {
 
-    public static DeepLinkManager Instance { get; private set; }
+    public static DeepLinkManager1 Instance { get; private set; }
 
-    private void Awake() {
+//    private void Awake() {
+    public void Start() {
         if (Instance == null) {
             Instance = this;
             // Register the deep link handler.
-            Application.deepLinkActivated += onDeepLinkActivated;
+            Application.deepLinkActivated += onDeepLinkActivated1;
             Debug.Log("Deep link handler registered");
 
             if (!string.IsNullOrEmpty(Application.absoluteURL)) {
                 // Cold start and Application.absoluteURL not null so process Deep Link.
-                onDeepLinkActivated(Application.absoluteURL);
+                onDeepLinkActivated1(Application.absoluteURL);
             }
             DontDestroyOnLoad(gameObject);
         }
@@ -32,7 +33,7 @@ public class DeepLinkManager : MonoBehaviour {
      *
      * @param url The URL received from the deep link.
      */
-    private void onDeepLinkActivated(string url) {
+    private void onDeepLinkActivated1(string url) {
         Debug.Log("Deep link: " + url);
 
         if (url == LoginSceneButtonHandler.RedirectUri) {

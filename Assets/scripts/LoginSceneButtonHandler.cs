@@ -31,11 +31,10 @@ public class LoginSceneButtonHandler : MonoBehaviour {
 
         // If the player is already logged in, then skip the login screen
         if (PassportStore.IsLoggedIn()) {
-            // Try to log in using saved credentials
-            bool success = await passport.Login(useCachedSession: true);
-            if (!success) {
-                SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
-            }
+            loginUsingCachedCredentials();
+        }
+        else if (await Passport.Instance.HasCredentialsSaved()) {
+            loginUsingCachedCredentials();
         }
     }
 
@@ -76,5 +75,14 @@ public class LoginSceneButtonHandler : MonoBehaviour {
             //     PassportStore.SetLoggedIn(true);
             // }
 //        }
+    }
+
+    private async void loginUsingCachedCredentials() {
+        // Try to log in using saved credentials
+        bool success = await passport.Login(useCachedSession: true);
+        if (success) {
+            PassportStore.SetLoggedIn(true);
+            SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
+        }
     }
 }
