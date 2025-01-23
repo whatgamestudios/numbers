@@ -13,8 +13,19 @@ public class SceneSwitcher : MonoBehaviour {
     public Button buttonSettings;
     public Button buttonCredits;
     public Button buttonHelp;
-    public Button buttonBack;
 
+    public TextMeshProUGUI loggedIn;
+
+
+    public void Start() {
+        bool isLoggedIn = PassportStore.IsLoggedIn();
+        if (isLoggedIn) {
+            loggedIn.text = "Logged In";
+        }
+        else {
+            loggedIn.text = "Not Logged In";
+        }
+    }
 
     public void OnButtonClick(string buttonText) {
         if (buttonText == "Play") {
@@ -32,9 +43,6 @@ public class SceneSwitcher : MonoBehaviour {
         }
         else if (buttonText == "Help") {
             SceneManager.LoadScene("HelpScene", LoadSceneMode.Single);
-        }
-        else if (buttonText == "Menu") {
-            SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
         }
         else {
             Debug.Log("Unknown button");

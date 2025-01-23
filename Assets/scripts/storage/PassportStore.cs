@@ -9,8 +9,13 @@ public class PassportStore {
         return PlayerPrefs.GetInt(PASS_LOGGED_IN, 0) != 0;
     }
 
-    public static void SetLoggedIn() {
-        PlayerPrefs.SetInt(PASS_LOGGED_IN, 1);
+    public static void SetLoggedIn(bool isLoggedIn) {
+        if (isLoggedIn) {
+            PlayerPrefs.SetInt(PASS_LOGGED_IN, 1);
+        }
+        else {
+            PlayerPrefs.SetInt(PASS_LOGGED_IN, 0);
+        }
         PlayerPrefs.Save();
     }
 }

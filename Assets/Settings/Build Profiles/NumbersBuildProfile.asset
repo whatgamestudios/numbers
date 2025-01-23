@@ -43,7 +43,7 @@ MonoBehaviour:
     - line: '|   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b:
         0.1254902, a: 1}'
     - line: '|   m_ShowUnitySplashScreen: 1'
-    - line: '|   m_ShowUnitySplashLogo: 1'
+    - line: '|   m_ShowUnitySplashLogo: 0'
     - line: '|   m_SplashScreenOverlayOpacity: 1'
     - line: '|   m_SplashScreenAnimation: 1'
     - line: '|   m_SplashScreenLogoStyle: 1'
@@ -68,9 +68,6 @@ MonoBehaviour:
     - line: '|   - logo: {fileID: -4473138659719653861, guid: d5081b70e55aa44d48af286df4918fe3,
         type: 3}'
     - line: '|     duration: 2'
-    - line: '|   - logo: {fileID: 10404, guid: 0000000000000000f000000000000000,
-        type: 0}'
-    - line: '|     duration: 2'
     - line: '|   m_VirtualRealitySplashScreen: {fileID: 2800000, guid: d5081b70e55aa44d48af286df4918fe3,
         type: 3}'
     - line: '|   m_HolographicTrackingLossScreen: {instanceID: 0}'
@@ -93,8 +90,8 @@ MonoBehaviour:
     - line: '|   iosUseCustomAppBackgroundBehavior: 0'
     - line: '|   allowedAutorotateToPortrait: 1'
     - line: '|   allowedAutorotateToPortraitUpsideDown: 1'
-    - line: '|   allowedAutorotateToLandscapeRight: 1'
-    - line: '|   allowedAutorotateToLandscapeLeft: 1'
+    - line: '|   allowedAutorotateToLandscapeRight: 0'
+    - line: '|   allowedAutorotateToLandscapeLeft: 0'
     - line: '|   useOSAutorotation: 1'
     - line: '|   use32BitDisplayBuffer: 1'
     - line: '|   preserveFramebufferAlpha: 0'
@@ -264,7 +261,8 @@ MonoBehaviour:
     - line: '|   iOSLaunchScreenCustomStoryboardPath: '
     - line: '|   iOSLaunchScreeniPadCustomStoryboardPath: '
     - line: '|   iOSDeviceRequirements: []'
-    - line: '|   iOSURLSchemes: []'
+    - line: '|   iOSURLSchemes:'
+    - line: '|   - https'
     - line: '|   macOSURLSchemes: []'
     - line: '|   iOSBackgroundModes: 0'
     - line: '|   iOSMetalForceHardShadows: 0'

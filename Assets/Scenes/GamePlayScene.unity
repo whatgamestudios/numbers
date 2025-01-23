@@ -5788,8 +5788,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2063394975}
-        m_TargetAssemblyTypeName: SceneSwitcher, Assembly-CSharp
+      - m_Target: {fileID: 2063394977}
+        m_TargetAssemblyTypeName: BackButtonHandler, Assembly-CSharp
         m_MethodName: OnButtonClick
         m_Mode: 5
         m_Arguments:
@@ -10328,8 +10328,8 @@ GameObject:
   - component: {fileID: 2063394974}
   - component: {fileID: 2063394973}
   - component: {fileID: 2063394972}
-  - component: {fileID: 2063394975}
   - component: {fileID: 2063394976}
+  - component: {fileID: 2063394977}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -10459,24 +10459,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2063394970}
   m_CullTransparentMesh: 1
---- !u!114 &2063394975
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2063394970}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d44d1f68893d49d5af64e47e588647d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  buttonPlay: {fileID: 0}
-  buttonStats: {fileID: 0}
-  buttonSettings: {fileID: 0}
-  buttonCredits: {fileID: 0}
-  buttonHelp: {fileID: 0}
-  buttonBack: {fileID: 1080917852}
 --- !u!114 &2063394976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10490,6 +10472,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panel: {fileID: 2063394970}
+--- !u!114 &2063394977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2063394970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b80ae247f79d2467e87c55e65aa4cf7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonBack: {fileID: 1080917852}
 --- !u!1 &2077577273
 GameObject:
   m_ObjectHideFlags: 0
