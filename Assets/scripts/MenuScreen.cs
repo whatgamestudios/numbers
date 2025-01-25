@@ -3,11 +3,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
-
+using System.Collections;
+using System.Collections.Generic;
+using Immutable.Passport;
 
 namespace FourteenNumbers {
 
-    public class MenuSceneHandler : MonoBehaviour {
+    public class MenuScreen : MonoBehaviour {
 
         public Button buttonPlay;
         public Button buttonStats;
@@ -18,10 +20,22 @@ namespace FourteenNumbers {
         public TextMeshProUGUI loggedIn;
 
 
-        public void Start() {
+        public async void Start() {
             bool isLoggedIn = PassportStore.IsLoggedIn();
             if (isLoggedIn) {
-                loggedIn.text = "Logged In";
+                loggedIn.text = "Setting up wallet..";
+                // Set up provider
+                await Passport.Instance.ConnectEvm();
+                loggedIn.text = "Setting up wallet...";
+                // Set up wallet (includes creating a wallet for new players)
+                List<string> accounts = await Passport.Instance.ZkEvmRequestAccounts();
+                if (accounts.Count ==0) {
+                    loggedIn.text = "Logged In";
+                }
+                else {
+                    loggedIn.text = "Logged In as\n" + accounts[0];
+                    Debug.Log("Account count was: " + accounts.Count);
+                }
             }
             else {
                 loggedIn.text = "Not Logged In";
