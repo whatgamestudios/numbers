@@ -5,49 +5,52 @@ using System;
 using TMPro;
 
 
-public class ShowStats : MonoBehaviour {
-    public TextMeshProUGUI statsText;
+namespace FourteenNumbers {
 
-    public void Start() {
-        int firstPlayed;
-        int lastPlayed;
-        int timesPlayed;
-        int totalPoints;
-        int perfectScoreDays;
+    public class ShowStats : MonoBehaviour {
+        public TextMeshProUGUI statsText;
 
-        (firstPlayed, lastPlayed, timesPlayed, totalPoints, perfectScoreDays) = Stats.GetStats();
+        public void Start() {
+            int firstPlayed;
+            int lastPlayed;
+            int timesPlayed;
+            int totalPoints;
+            int perfectScoreDays;
 
-        string firstPlayedS;
-        string lastPlayedS;
+            (firstPlayed, lastPlayed, timesPlayed, totalPoints, perfectScoreDays) = Stats.GetStats();
 
-        if (firstPlayed == 0) {
-            firstPlayedS = "Never Played";
-            lastPlayedS = "Never Played";
+            string firstPlayedS;
+            string lastPlayedS;
+
+            if (firstPlayed == 0) {
+                firstPlayedS = "Never Played";
+                lastPlayedS = "Never Played";
+            }
+            else {
+                DateTime firstPlayedDate = Timeline.GetRelativeDate(firstPlayed);
+                firstPlayedS = firstPlayedDate.ToString("D");
+
+                DateTime lastPlayedDate = Timeline.GetRelativeDate(lastPlayed);
+                lastPlayedS = lastPlayedDate.ToString("D");
+            }
+
+            int ave = 0;
+            if (timesPlayed != 0) {
+                ave = totalPoints / timesPlayed;
+            }
+
+            string stats = 
+                "Points Average: " + ave + "\n" +
+                "Perfect Score Days: " + perfectScoreDays + "\n" +
+                "First Day Played: \n" +
+                " " + firstPlayedS + "\n" +
+                " Game Day: " + firstPlayed + "\n" +
+                "More Recent Day Played: \n" +
+                " " + lastPlayedS + "\n" +
+                " Game Day: " + lastPlayed + "\n" +
+                "Number of times played: " + timesPlayed;
+
+            statsText.text = stats;
         }
-        else {
-            DateTime firstPlayedDate = Timeline.GetRelativeDate(firstPlayed);
-            firstPlayedS = firstPlayedDate.ToString("D");
-
-            DateTime lastPlayedDate = Timeline.GetRelativeDate(lastPlayed);
-            lastPlayedS = lastPlayedDate.ToString("D");
-        }
-
-        int ave = 0;
-        if (timesPlayed != 0) {
-            ave = totalPoints / timesPlayed;
-        }
-
-        string stats = 
-            "Points Average: " + ave + "\n" +
-            "Perfect Score Days: " + perfectScoreDays + "\n" +
-            "First Day Played: \n" +
-            " " + firstPlayedS + "\n" +
-            " Game Day: " + firstPlayed + "\n" +
-            "More Recent Day Played: \n" +
-            " " + lastPlayedS + "\n" +
-            " Game Day: " + lastPlayed + "\n" +
-            "Number of times played: " + timesPlayed;
-
-        statsText.text = stats;
     }
 }

@@ -5,16 +5,18 @@ using UnityEngine.UI;
 using TMPro;
 
 
+namespace FourteenNumbers {
 
-public class BackButtonHandler : MonoBehaviour {
-    public Button buttonBack;
+    public class BackButtonHandler : MonoBehaviour {
+        public Button buttonBack;
 
-    public void OnButtonClick(string buttonText) {
-        if (buttonText == "Menu") {
-            SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
-        }
-        else {
-            Debug.Log("Unknown button");
+        public void OnButtonClick(string buttonText) {
+            if (buttonText == "Menu") {
+                SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
+            }
+            else {
+                Debug.Log("Unknown button");
+            }
         }
     }
 }

@@ -4,11 +4,12 @@ using UnityEngine.UI;
 using System.Collections;
 
 
+namespace FourteenNumbers {
+    public class SetPanelBackground : MonoBehaviour {
+        public GameObject panel;
 
-public class SetPanelBackground : MonoBehaviour {
-    public GameObject panel;
-
-    public void Start() {
-        ScreenBackground.SetPanelBackground(panel);
+        public void Start() {
+            ScreenBackground.SetPanelBackground(panel);
+        }
     }
 }
