@@ -4,21 +4,21 @@ using System.Collections.Generic;
 
 namespace FourteenNumbers {
 
-    public class DeepLinkManager1 : MonoBehaviour {
+    public class DeepLinkManager : MonoBehaviour {
 
-        public static DeepLinkManager1 Instance { get; private set; }
+        public static DeepLinkManager Instance { get; private set; }
 
     //    private void Awake() {
         public void Start() {
             if (Instance == null) {
                 Instance = this;
                 // Register the deep link handler.
-                Application.deepLinkActivated += onDeepLinkActivated1;
+                Application.deepLinkActivated += onDeepLinkActivated;
                 Debug.Log("Deep link handler registered");
 
                 if (!string.IsNullOrEmpty(Application.absoluteURL)) {
                     // Cold start and Application.absoluteURL not null so process Deep Link.
-                    onDeepLinkActivated1(Application.absoluteURL);
+                    onDeepLinkActivated(Application.absoluteURL);
                 }
                 DontDestroyOnLoad(gameObject);
             }
@@ -34,7 +34,7 @@ namespace FourteenNumbers {
         *
         * @param url The URL received from the deep link.
         */
-        private void onDeepLinkActivated1(string url) {
+        private void onDeepLinkActivated(string url) {
             Debug.Log("Deep link: " + url);
 
             if (url == WelcomeScreen.RedirectUri) {
