@@ -94,7 +94,7 @@ namespace FourteenNumbers {
         // Int representing which game day is being played.
         // Stored here to detect when the game was loaded into memory, switch focus away and then 
         // back to the game, but the game day had changed.
-        int gameDayInt;
+        uint gameDayInt;
 
         private const int TIME_PER_FLASH = 500;
         DateTime timeOfLastFlash = DateTime.Now;
@@ -107,14 +107,14 @@ namespace FourteenNumbers {
             Debug.Log("Game Scene Start");
             int daysPlayed = Stats.GetNumDaysPlayed();
             newPlayer = daysPlayed < 4;
-            gameDayInt = Timeline.DaysSinceEpochStart();
+            gameDayInt = Timeline.GameDay();
             startANewDay(gameDayInt);
         }
 
         public void OnApplicationFocus(bool hasFocus) {
             Debug.Log("OnApplicationFocus: " + hasFocus);
             if (hasFocus) {
-                int gameDayNow = Timeline.DaysSinceEpochStart();
+                uint gameDayNow = Timeline.GameDay();
                 Debug.Log("Game Day: Existing: " + gameDayInt + " Now: " + gameDayNow);
                 if (gameDayNow != gameDayInt) {
                     gameDayInt = gameDayNow;
@@ -320,7 +320,7 @@ namespace FourteenNumbers {
             }
         }
 
-        private void startANewDay(int todaysGameDay) {
+        private void startANewDay(uint todaysGameDay) {
             Debug.Log("Starting new game day: " + todaysGameDay);
 
             waitingForNextDay = false;
@@ -848,7 +848,7 @@ namespace FourteenNumbers {
         }
 
         private void showBestScoreToday() {
-            displayHelp("The best score so far today is TODO");
+            displayHelp("The best score so far today is " + BestSolutionToday.Instance.BestScore);
         }
 
 

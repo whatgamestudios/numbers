@@ -35,7 +35,7 @@ namespace FourteenNumbers {
 
 
         public static void SetSolution1(string solution, int points) {
-            int gameDayInt = Timeline.DaysSinceEpochStart();
+            int gameDayInt = (int) Timeline.GameDay();
 
             int firstPlayed = PlayerPrefs.GetInt(STATS_FIRST_PLAYED, NEVER_PLAYED);
             if (firstPlayed == NEVER_PLAYED) {

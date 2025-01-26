@@ -23,8 +23,8 @@ namespace FourteenNumbers {
         * @returns A seed value to be presented to calls to GetNextValue.
         */
         public static byte[] GenerateSeed(uint game, uint iteration) {
-            int daysSinceStart = Timeline.DaysSinceEpochStart();
-            byte[] d = getBytesBigEndian((uint)daysSinceStart);
+            uint daysSinceStart = Timeline.GameDay();
+            byte[] d = getBytesBigEndian(daysSinceStart);
             byte[] g = getBytesBigEndian(game);
             byte[] i = getBytesBigEndian(iteration);
 

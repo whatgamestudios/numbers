@@ -12,11 +12,11 @@ namespace FourteenNumbers {
         * Return the number of days since the start of game development. This is
         * to generate a new random seed for each day of game play.
         */
-        public static int DaysSinceEpochStart() {
+        public static uint GameDay() {
             DateTime now = getTimeNow();
             DateTime dawnOfTime = new DateTime(2024, 12, 1, 0, 0, 0);
             TimeSpan diff = now.Subtract(dawnOfTime);
-            return diff.Days;
+            return (uint)diff.Days;
         }
 
         public static DateTime GetRelativeDate(int gameDay) {
@@ -34,7 +34,7 @@ namespace FourteenNumbers {
         }
 
         public static string GameDayStr() {
-            int gameDay = DaysSinceEpochStart();
+            uint gameDay = GameDay();
             return gameDay.ToString();
         }
 
