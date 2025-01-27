@@ -17,6 +17,13 @@
       },
       "hash": "6fa9ce753bd713ca039679058dac7fb320cd4100"
     },
+    "com.nethereum.unity": {
+      "version": "4.28.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://package.openupm.com"
+    },
     "com.unity.2d.animation": {
       "version": "10.1.4",
       "depth": 1,
