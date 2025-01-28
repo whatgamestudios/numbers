@@ -12,12 +12,7 @@ import {FourteenNumbersSolutions} from "../src/FourteenNumbersSolutions.sol";
 contract NewSolution is Script {
     function run() public {
 
-        address proxyAddress = 0xe2E762770156FfE253C49Da6E008b4bECCCf2812;
-        //address implAddress = 0x2b9c63DF973ec282404d9F9fA7688Ee403b7E311;
-
-        ERC1967Proxy proxy = ERC1967Proxy(payable(address(proxyAddress)));
-        //FourteenNumbersSolutions impl1 = FourteenNumbersSolutions(implAddress);
-        FourteenNumbersSolutions impl = FourteenNumbersSolutions(address(proxy));
+        FourteenNumbersSolutions impl = FourteenNumbersSolutions(address(0xe2E762770156FfE253C49Da6E008b4bECCCf2812));
 
         uint32 gameDay = 56;
 
