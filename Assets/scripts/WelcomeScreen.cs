@@ -9,8 +9,10 @@ using Immutable.Passport;
 
 namespace FourteenNumbers {
     public class WelcomeScreen : MonoBehaviour {
-        public static string RedirectUri = "https://whatgamestudios.com/14numbers/app/callback";
-        public static string LogoutUri = "https://whatgamestudios.com/14numbers/app/logout";
+        public static string RedirectUri = "fourteennumbers://callback";
+        public static string LogoutUri = "fourteennumbers://logout";
+        // public static string RedirectUri = "https://whatgamestudios.com/14numbers/app/callback";
+        // public static string LogoutUri = "https://whatgamestudios.com/14numbers/app/logout";
 
         async void Start() {
             // Passport Client ID
@@ -36,6 +38,7 @@ namespace FourteenNumbers {
                 bool success = await passport.Login(useCachedSession: true);
                 PassportStore.SetLoggedIn(success);
                 if (success) {
+                    DeepLinkManager.Instance.LoginPath = DeepLinkManager.WELCOME;
                     SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
                 }
                 else {

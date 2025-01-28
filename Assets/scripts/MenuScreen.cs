@@ -33,7 +33,11 @@ namespace FourteenNumbers {
                     loggedIn.text = "Logged In";
                 }
                 else {
-                    loggedIn.text = "Logged In as\n" + accounts[0];
+                    //loggedIn.text = "Logged In as\n" + accounts[0];
+                    loggedIn.text = "Logged In (" + 
+                                    DeepLinkManager.Instance.LoginPath + 
+                                    ") as\n" + 
+                                    accounts[0];
                     Debug.Log("Account count was: " + accounts.Count);
                 }
             }

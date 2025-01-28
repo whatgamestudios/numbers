@@ -262,7 +262,7 @@ MonoBehaviour:
     - line: '|   iOSLaunchScreeniPadCustomStoryboardPath: '
     - line: '|   iOSDeviceRequirements: []'
     - line: '|   iOSURLSchemes:'
-    - line: '|   - https'
+    - line: '|   - fourteennumbers'
     - line: '|   macOSURLSchemes: []'
     - line: '|   iOSBackgroundModes: 0'
     - line: '|   iOSMetalForceHardShadows: 0'
