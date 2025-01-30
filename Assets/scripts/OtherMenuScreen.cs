@@ -25,8 +25,8 @@ namespace FourteenNumbers {
             else if (buttonText == "Socials") {
                 SceneManager.LoadScene("SocialsScene", LoadSceneMode.Single);
             }
-            else if (buttonText == "Backgrounds") {
-                SceneManager.LoadScene("BackgroundsScene", LoadSceneMode.Single);
+            else if (buttonText == "Settings") {
+                SceneManager.LoadScene("SettingsScene", LoadSceneMode.Single);
             }
             else if (buttonText == "Credits") {
                 SceneManager.LoadScene("CreditsScene", LoadSceneMode.Single);

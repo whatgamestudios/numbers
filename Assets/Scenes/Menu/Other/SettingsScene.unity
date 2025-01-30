@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 102286190}
   - component: {fileID: 102286189}
   m_Layer: 5
-  m_Name: CreditsTItle
+  m_Name: TItle
   m_TagString: ColMe
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -154,7 +154,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 2100}
-  m_SizeDelta: {x: 500, y: 150}
+  m_SizeDelta: {x: 600, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &102286189
 MonoBehaviour:
@@ -176,7 +176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Credits
+  m_text: Settings
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: e73a58f6e2794ae7b1b7e50b7fb811b0, type: 2}
@@ -634,12 +634,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '14Numbers has been brought to you by Whatgame Studios: Peter Robinson
-    and Penelope Robinson with help from Catherine Jones and Elizabeth Robinson.
+  m_text: 'This scene is not complete.
 
 
-    Whatgame
-    Studios is a trading name of Nelladragon Pty Ltd, an Australian registered company.'
+    Add radiio button to allow switching
+    between local time zone and GMT+14 Kiribati'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: a840f876288cf465fa01b0fd0dc11163, type: 2}
