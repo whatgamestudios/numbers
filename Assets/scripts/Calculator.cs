@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using System.Collections;
+using UnityEngine.SceneManagement;
+
 
 namespace FourteenNumbers {
 
@@ -176,6 +178,7 @@ namespace FourteenNumbers {
                         showThirdSolutionHelp();
                         break;
                     case 3:
+                        SceneManager.LoadScene("GameDoneScene", LoadSceneMode.Additive);
                         showEndResult();
                         waitingForNextDay = true;
                         break;
@@ -848,7 +851,10 @@ namespace FourteenNumbers {
         }
 
         private void showBestScoreToday() {
-            displayHelp("The best score so far today is " + BestSolutionToday.Instance.BestScore);
+            // Will equal null when debugging in IDE.
+            if (BestSolutionToday.Instance != null) {
+                displayHelp("The best score so far today is " + BestSolutionToday.Instance.BestScore);
+            }
         }
 
 
