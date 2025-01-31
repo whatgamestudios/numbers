@@ -40,7 +40,7 @@ namespace FourteenNumbers {
             }
         }
 
-        public void OnButtonClick(string buttonText) {
+        public async void OnButtonClick(string buttonText) {
             if (buttonText == "Publish") {
                 if (buttonPublishIsPublish) {
                     // publish
@@ -48,7 +48,8 @@ namespace FourteenNumbers {
                     publishButtonText.text = "Back";
                 }
                 else {
-                    SceneManager.LoadScene("GamePlayScene", LoadSceneMode.Single);
+                    // back
+                    await SceneManager.UnloadSceneAsync("GameDoneScene");
                 }
 
             }
