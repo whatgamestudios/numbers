@@ -44,6 +44,12 @@ namespace FourteenNumbers {
             if (buttonText == "Publish") {
                 if (buttonPublishIsPublish) {
                     // publish
+                    uint gameDay = (uint) Stats.GetLastGameDay();
+                    (string sol1, string sol2, string sol3) = Stats.GetSolutions();
+
+                    FourteenNumbersContract contract = new FourteenNumbersContract();
+                    contract.SubmitBestScore(gameDay, sol1, sol2, sol3);
+
                     buttonPublishIsPublish = false;
                     publishButtonText.text = "Back";
                 }
