@@ -55,6 +55,7 @@ namespace FourteenNumbers {
         public Button buttonLeft;
         public Button buttonRight;
 
+        public Button buttonShare;
 
         private string currentInput = "";
 
@@ -176,6 +177,7 @@ namespace FourteenNumbers {
                         showThirdSolutionHelp();
                         break;
                     case 3:
+                        buttonShare.gameObject.SetActive(true);
                         SceneManager.LoadScene("GameDoneScene", LoadSceneMode.Additive);
                         showEndResult();
                         waitingForNextDay = true;
@@ -310,6 +312,7 @@ namespace FourteenNumbers {
 
         private void startANewDay(uint todaysGameDay) {
             Debug.Log("Starting new game day: " + todaysGameDay);
+            buttonShare.gameObject.SetActive(false);
 
             waitingForNextDay = false;
 

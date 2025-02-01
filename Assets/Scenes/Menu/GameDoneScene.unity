@@ -176,7 +176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Share
+  m_text: Back
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -480,9 +480,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonPublish: {fileID: 195336552}
-  buttonShare: {fileID: 665032295}
+  buttonBack: {fileID: 665032295}
   info: {fileID: 1908378365}
-  publishButtonText: {fileID: 644642779}
 --- !u!1 &644642777
 GameObject:
   m_ObjectHideFlags: 0
@@ -632,7 +631,7 @@ GameObject:
   - component: {fileID: 665032296}
   - component: {fileID: 665032295}
   m_Layer: 5
-  m_Name: ShareButton
+  m_Name: BackButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -711,7 +710,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Share
+          m_StringArgument: Back
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &665032296
