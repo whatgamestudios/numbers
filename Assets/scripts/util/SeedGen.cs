@@ -22,9 +22,8 @@ namespace FourteenNumbers {
         * @param iteration The iteration of the game being played.
         * @returns A seed value to be presented to calls to GetNextValue.
         */
-        public static byte[] GenerateSeed(uint game, uint iteration) {
-            uint daysSinceStart = Timeline.GameDay();
-            byte[] d = getBytesBigEndian(daysSinceStart);
+        public static byte[] GenerateSeed(uint gameDay, uint game, uint iteration) {
+            byte[] d = getBytesBigEndian(gameDay);
             byte[] g = getBytesBigEndian(game);
             byte[] i = getBytesBigEndian(iteration);
 

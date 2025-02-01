@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 589a178ee0186444e8cc5dde80f527b4
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 4890085278179872738
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 127249
+  packageName: Native Share For Android And iOS
+  packageVersion: 2.3.5
+  assetPath: Assets/Plugins/SunShine Native Share/DemoScene_NativeShareSettings.lighting
+  uploadId: 668328
