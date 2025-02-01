@@ -27,11 +27,12 @@ namespace FourteenNumbers {
                 uint total = points1 + points2 + points3;
 
                 string msg = 
-                    "14Numbers - game day " + gameDay + "\n" +
+                    "14Numbers\n" + 
+                    "Game day " + gameDay + ", Target " + target + "\n" +
                     format(sol1, (uint) result1, points1) + "\n" +
                     format(sol2, (uint) result2, points2) + "\n" +
                     format(sol3, (uint) result3, points3) + "\n" +
-                    "                         " + total;
+                    "Total: " + total + " points";
                 Debug.Log("Share: \n" + msg);
                 SunShineNativeShare.instance.ShareText(msg, msg);
             }
@@ -61,24 +62,7 @@ namespace FourteenNumbers {
         }
 
         private string format(string sol, uint result, uint points) {
-            int lenSol = sol.Length;
-            string resStr = "" + result;
-            int lenRes = resStr.Length;
-            string pointsStr = "" + points;
-            int lenPoints = pointsStr.Length;
-
-            string output = sol;
-            for (uint i = 0; i < (20 - lenSol); i++) {
-                output = output + " ";
-            }
-            for (uint i = 0; i < (4 - lenRes); i++) {
-                output = output + " ";
-            }
-            output = output + resStr;
-            for (uint i = 0; i < (5 - lenPoints); i++) {
-                output = output + " ";
-            }
-            output = output + pointsStr;
+            string output = sol + " = " + result + " :  " + points + " points" ;
             return output;
         }
     }
