@@ -17,8 +17,6 @@ namespace FourteenNumbers {
         private const int MAX_BRACKETS = CalcProcessor.MAX_BRACKETS;
 
         private const int NUM_ATTEMPTS = 3;
-        private const int MAX_POINTS_PER_ATTEMPT = 50;
-        private const int BONUS_POINTS = 20;
 
         public TextMeshProUGUI target;
         public TextMeshProUGUI timeToNext;
@@ -57,6 +55,7 @@ namespace FourteenNumbers {
         public Button buttonLeft;
         public Button buttonRight;
 
+        public Button buttonShare;
 
         private string currentInput = "";
 
@@ -178,6 +177,7 @@ namespace FourteenNumbers {
                         showThirdSolutionHelp();
                         break;
                     case 3:
+                        buttonShare.gameObject.SetActive(true);
                         SceneManager.LoadScene("GameDoneScene", LoadSceneMode.Additive);
                         showEndResult();
                         waitingForNextDay = true;
@@ -256,20 +256,7 @@ namespace FourteenNumbers {
                     // double result = System.Convert.ToDouble(new System.Data.DataTable().Compute(currentInput, ""));
                     // int resultInt = Convert.ToInt32(result);
                     resultText =  "" + resultInt;
-
-                    int howFarOff = (int) (targetValue - resultInt);
-                    if (howFarOff < 0) {
-                        howFarOff = -howFarOff;
-                    }
-
-                    int points = MAX_POINTS_PER_ATTEMPT - howFarOff;
-                    if (points < 0) {
-                        points = 0;
-                    }
-                    if (howFarOff == 0) {
-                        points = MAX_POINTS_PER_ATTEMPT + BONUS_POINTS;
-                    }
-                    pointsEarnedThisAttempt = (uint) points;
+                    pointsEarnedThisAttempt = Points.CalcPoints((uint) resultInt, targetValue);
                     updatePointsEarned(pointsEarnedThisAttempt);
                 }
             }
@@ -325,10 +312,11 @@ namespace FourteenNumbers {
 
         private void startANewDay(uint todaysGameDay) {
             Debug.Log("Starting new game day: " + todaysGameDay);
+            buttonShare.gameObject.SetActive(false);
 
             waitingForNextDay = false;
 
-            targetValue = getTarget(250, 1000);
+            targetValue = TargetValue.GetTarget(todaysGameDay);
             target.text = targetValue.ToString();
 
             pointsEarned1 = 0;
@@ -710,19 +698,6 @@ namespace FourteenNumbers {
                     break;
             }
         }
-
-
-        private uint getTarget(uint low, uint high) {
-            byte[] seed = SeedGen.GenerateSeed(0, 0);
-            uint count = 0;
-            uint val = 0;
-            do {
-                val = SeedGen.GetNextValue(seed, count++, high);
-                Debug.Log("Seed value: count: " + count + ", val: " + val);
-            } while (val < low);
-            return val;
-        }
-
 
 
         /**

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: ab50eeabbc53a1949be5ab8641f6fa20
+timeCreated: 1519670895
+licenseType: Store
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 127249
+  packageName: Native Share For Android And iOS
+  packageVersion: 2.3.5
+  assetPath: Assets/Plugins/SunShine Native Share/DemoScene_NativeShare.unity
+  uploadId: 668328
