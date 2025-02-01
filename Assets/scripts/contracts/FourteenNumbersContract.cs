@@ -13,10 +13,13 @@ using Nethereum.Hex.HexTypes;
 using Nethereum.ABI.Encoders;
 using Nethereum.ABI;
 
+using Immutable.Passport;
+using Immutable.Passport.Model;
+
 
 namespace FourteenNumbers {
 
-    public class FourteenNumbersContract : MonoBehaviour {
+    public class FourteenNumbersContract {
         private FourteenNumbersSolutionsService service;
 
         private static string contractAddress = "0xe2E762770156FfE253C49Da6E008b4bECCCf2812";
@@ -47,32 +50,42 @@ namespace FourteenNumbers {
         public async void SubmitBestScore(uint gameDay, string sol1, string sol2, string sol3) {
             lastTransactionStatus = 0;         
 
-            // StoreResultsFunction func = new StoreResultsFunction() {
-            //     GameDay = gameDay,
-            //     Sol1 = new ABIValue("bytes", sol1),
-            //     Sol2 = sol2,
-            //     Sol3 = sol3,
-            //     Store = false,
-            // };
+            StoreResultsFunction func = new StoreResultsFunction() {
+                GameDay = gameDay,
+                Sol1 = Encoding.UTF8.GetBytes(sol1),
+                Sol2 = Encoding.UTF8.GetBytes(sol2),
+                Sol3 = Encoding.UTF8.GetBytes(sol3),
+                Store = false,
+            };
 
-            // byte[] abiEncoding = func.GetData();
+            byte[] abiEncoding = func.GetCallData();
+            Debug.Log("Publish: " + HexDump.Dump(abiEncoding));
 
-            // TransactionReceiptResponse response = 
-            //     await Passport.Instance.ZkEvmSendTransactionWithConfirmation(
+            // await Passport.Instance.ZkEvmSendTransaction(
             //         new TransactionRequest() {
             //             to = contractAddress,
-            //             data = abiEncoding,
+            //             data = "0x" + BitConverter.ToString(abiEncoding).Replace("-", "").ToLower(),
             //             value = "0"
             //         }
             //     );
-            // Debug.Log($"Transaction hash: {response.transactionHash}");
 
-            // if (response.status != "1") {
-            //     lastTransactionStatus = 1;
-            //     return;
-            // }
 
-            // lastTransactionStatus = 2;            
+            TransactionReceiptResponse response = 
+                await Passport.Instance.ZkEvmSendTransactionWithConfirmation(
+                    new TransactionRequest() {
+                        to = contractAddress,
+                        data = "0x" + BitConverter.ToString(abiEncoding).Replace("-", "").ToLower(),
+                        value = "0"
+                    }
+                );
+            Debug.Log($"Transaction hash: {response.transactionHash}");
+
+            if (response.status != "1") {
+                lastTransactionStatus = 1;
+                return;
+            }
+
+            lastTransactionStatus = 2;            
         }
 
     }
