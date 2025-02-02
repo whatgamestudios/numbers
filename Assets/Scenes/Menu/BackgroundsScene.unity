@@ -385,11 +385,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 830f295f9fad144ed82b6b1e6141c41a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panelOption1: {fileID: 0}
-  panelOption2: {fileID: 0}
   panelOption3: {fileID: 1006544629}
   panelOption4: {fileID: 766114826}
-  panelOption5: {fileID: 0}
   panelOption6: {fileID: 867711701}
   panel: {fileID: 289835290}
 --- !u!114 &289835297
@@ -784,7 +781,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 5165386444735513404, guid: def82b742ef11444ab788000cd12c807, type: 3}
+  m_Sprite: {fileID: 5165386444735513404, guid: fc4c619c3f52841649b019d4703803c7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1279,8 +1276,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 5165386444735513404, guid: fc4c619c3f52841649b019d4703803c7, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
