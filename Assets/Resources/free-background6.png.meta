@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: def82b742ef11444ab788000cd12c807
+guid: fc4c619c3f52841649b019d4703803c7
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -116,10 +116,10 @@ TextureImporter:
       name: free-background6_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1500
-        height: 1497
+        x: 248
+        y: 705
+        width: 484
+        height: 484
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

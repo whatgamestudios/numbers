@@ -11,7 +11,7 @@ namespace FourteenNumbers {
         public const string STORAGE_VERSION = "STORAGE_VERSION";
 
         public const int STORAGE_VERSION_0 = 0;
-        public const int STORAGE_VERSION_1 = 0;
+        public const int STORAGE_VERSION_1 = 1;
 
 
         /**
@@ -29,8 +29,14 @@ namespace FourteenNumbers {
             switch (currentStorageVersion) {
                 case STORAGE_VERSION_0:
                     // Upgrade from 0 to latest.
-                    Debug.Log("Upgrading storage from " + STORAGE_VERSION_0 + " to " + STORAGE_VERSION);
+                    Debug.Log("Upgrading storage from " + STORAGE_VERSION_0 + " to " + STORAGE_VERSION_1);
                     PlayerPrefs.SetInt(STORAGE_VERSION, STORAGE_VERSION_1);
+
+                    int back = ScreenBackground.GetBackground();
+                    if (back == 1 || back == 2 || back == 5) {
+                        ScreenBackground.SetBackground(3);
+                    }
+
                     PlayerPrefs.Save();
                     break;
                 default:
