@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      icon_clyde_blurple_RGB_0: -8217793615082288993
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

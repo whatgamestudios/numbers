@@ -322,7 +322,15 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      yt_logo_rgb_dark_0: 2235498521302209714
+      yt_logo_rgb_dark_1: -1661992508206080691
+      yt_logo_rgb_dark_2: 9080465863012785839
+      yt_logo_rgb_dark_3: -7364215786983079699
+      yt_logo_rgb_dark_4: 5975596585458252003
+      yt_logo_rgb_dark_5: -1771356362409737973
+      yt_logo_rgb_dark_6: 7480846154861127007
+      yt_logo_rgb_dark_7: 5653198291494513279
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

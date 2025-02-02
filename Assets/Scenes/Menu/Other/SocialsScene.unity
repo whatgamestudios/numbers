@@ -267,7 +267,7 @@ GameObject:
   - component: {fileID: 126213070}
   - component: {fileID: 126213069}
   m_Layer: 5
-  m_Name: Panel (2)
+  m_Name: YouTubePanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -343,7 +343,7 @@ GameObject:
   - component: {fileID: 223692958}
   - component: {fileID: 223692957}
   m_Layer: 5
-  m_Name: Panel (3)
+  m_Name: DiscordPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -420,6 +420,7 @@ GameObject:
   - component: {fileID: 289835293}
   - component: {fileID: 289835296}
   - component: {fileID: 289835297}
+  - component: {fileID: 289835298}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -516,6 +517,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonBack: {fileID: 1301609206}
+--- !u!114 &289835298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 289835290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61140d2e8e8a54025948ddba71c3bb4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &294060456
 GameObject:
   m_ObjectHideFlags: 0
@@ -813,7 +826,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 946337490}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 289835298}
+        m_TargetAssemblyTypeName: FourteenNumbers.SocialsScreen, Assembly-CSharp
+        m_MethodName: OnButtonClick
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: YouTube
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &946337490
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -933,7 +958,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 976111550}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 289835298}
+        m_TargetAssemblyTypeName: FourteenNumbers.SocialsScreen, Assembly-CSharp
+        m_MethodName: OnButtonClick
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Discord
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &976111550
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -984,7 +1021,7 @@ GameObject:
   - component: {fileID: 1088121259}
   - component: {fileID: 1088121258}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: InstagramPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1262,7 +1299,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1331578658}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 289835298}
+        m_TargetAssemblyTypeName: FourteenNumbers.SocialsScreen, Assembly-CSharp
+        m_MethodName: OnButtonClick
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Twitter
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1331578658
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1313,7 +1362,7 @@ GameObject:
   - component: {fileID: 1751699458}
   - component: {fileID: 1751699457}
   m_Layer: 5
-  m_Name: Panel (1)
+  m_Name: TwitterPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1594,7 +1643,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1866374582}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 289835298}
+        m_TargetAssemblyTypeName: FourteenNumbers.SocialsScreen, Assembly-CSharp
+        m_MethodName: OnButtonClick
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Instagram
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1866374582
 MonoBehaviour:
   m_ObjectHideFlags: 0
