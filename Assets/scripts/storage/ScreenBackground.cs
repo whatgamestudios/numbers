@@ -23,7 +23,7 @@ namespace FourteenNumbers {
         * @return the background option number to use.
         */
         public static int GetBackground() {
-            return PlayerPrefs.GetInt(BG_OPTION, 1);
+            return PlayerPrefs.GetInt(BG_OPTION, 3);
         }
 
 

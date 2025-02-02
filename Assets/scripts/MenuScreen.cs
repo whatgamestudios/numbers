@@ -14,6 +14,7 @@ namespace FourteenNumbers {
         public Button buttonPlay;
         public Button buttonStats;
         public Button buttonBackgrounds;
+        public Button buttonSolutions;
         public Button buttonHelp;
         public Button buttonOther;
 
@@ -55,6 +56,9 @@ namespace FourteenNumbers {
             }
             else if (buttonText == "Stats") {
                 SceneManager.LoadScene("StatsScene", LoadSceneMode.Single);
+            }
+            else if (buttonText == "Solutions") {
+                SceneManager.LoadScene("SolutionsScene", LoadSceneMode.Single);
             }
             else if (buttonText == "Backgrounds") {
                 SceneManager.LoadScene("BackgroundsScene", LoadSceneMode.Single);
