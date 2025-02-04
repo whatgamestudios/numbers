@@ -16,6 +16,8 @@ namespace FourteenNumbers {
 
         public const string STATS_POINTS_TODAY = "STATS_POINTS_TODAY";
 
+        public const string BEST_TODAY = "BEST_TODAY";
+
 
         public const int NEVER_PLAYED = -1;
 
@@ -119,7 +121,16 @@ namespace FourteenNumbers {
 
         public static int GetTotalPointsToday() {
             return PlayerPrefs.GetInt(STATS_POINTS_TODAY, 0);
+        }
 
+
+
+        public static void SetBestPointsToday(int points) {
+            PlayerPrefs.SetInt(BEST_TODAY, 0);
+        }
+
+        public static int GetBestPointsToday() {
+            return PlayerPrefs.GetInt(BEST_TODAY, 0);
         }
 
     }

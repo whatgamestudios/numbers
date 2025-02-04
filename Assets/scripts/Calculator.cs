@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 
 namespace FourteenNumbers {
 
-    public class Calculator : MonoBehaviour {
+    public class Calculator : BestSolutionToday {
         // Maximum number of numbers in a solution
         private const int MAX_NUMBERS = CalcProcessor.MAX_NUMBERS;
 
@@ -178,6 +178,7 @@ namespace FourteenNumbers {
                         break;
                     case 3:
                         buttonShare.gameObject.SetActive(true);
+                        StopTimer();
                         SceneManager.LoadScene("GameDoneScene", LoadSceneMode.Additive);
                         showEndResult();
                         waitingForNextDay = true;
@@ -313,6 +314,7 @@ namespace FourteenNumbers {
         private void startANewDay(uint todaysGameDay) {
             Debug.Log("Starting new game day: " + todaysGameDay);
             buttonShare.gameObject.SetActive(false);
+            StartTimer();
 
             waitingForNextDay = false;
 
@@ -827,9 +829,7 @@ namespace FourteenNumbers {
 
         private void showBestScoreToday() {
             // Will equal null when debugging in IDE.
-            if (BestSolutionToday.Instance != null) {
-                displayHelp("The best score so far today is " + BestSolutionToday.Instance.BestScore);
-            }
+            displayHelp("The best score so far today is " + BestScore);
         }
 
 

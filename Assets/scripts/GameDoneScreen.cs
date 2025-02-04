@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
+using System.Threading.Tasks;
 
 
 namespace FourteenNumbers {
@@ -12,13 +14,16 @@ namespace FourteenNumbers {
         public Button buttonBack;
 
         public TextMeshProUGUI info;
-
-        public void Start() {
+        public void Awake() {
+            buttonPublish.gameObject.SetActive(false);
+        }
+                    
+        public async Task Start() {
             uint pointsToday = (uint) Stats.GetTotalPointsToday();
-
-            uint bestPoints = 0;
-            if (BestSolutionToday.Instance != null) {
-                bestPoints = BestSolutionToday.Instance.BestScore;
+            uint gameDay = (uint) Stats.GetLastGameDay();
+            uint bestPoints = (uint) Stats.GetBestPointsToday();
+            if (bestPoints == 0) {
+                bestPoints = await (new FourteenNumbersContract()).GetBestScore(gameDay);
             }
 
             if (pointsToday > bestPoints) {
