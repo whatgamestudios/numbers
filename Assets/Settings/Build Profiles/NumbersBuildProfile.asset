@@ -736,7 +736,7 @@ MonoBehaviour:
     - line: '|     WebGL: 1'
     - line: '|     Windows Store Apps: 1'
     - line: '|     XboxOne: 1'
-    - line: '|     iPhone: 1'
+    - line: '|     iPhone: 4'
     - line: '|     tvOS: 1'
     - line: '|   incrementalIl2cppBuild: {}'
     - line: '|   suppressCommonWarnings: 1'

@@ -18,24 +18,41 @@ namespace FourteenNumbers {
             buttonPublish.gameObject.SetActive(false);
         }
                     
-        public async Task Start() {
-            uint pointsToday = (uint) Stats.GetTotalPointsToday();
-            uint gameDay = (uint) Stats.GetLastGameDay();
-            uint bestPoints = (uint) Stats.GetBestPointsToday();
-            if (bestPoints == 0) {
-                bestPoints = await (new FourteenNumbersContract()).GetBestScore(gameDay);
-            }
+        public async void Start() {
+            uint z = 1;
+            try {
+                uint pointsToday = (uint) Stats.GetTotalPointsToday();
+                z = 2;
+                uint gameDay = (uint) Stats.GetLastGameDay();
+                z = 3;
+                uint bestPoints = (uint) Stats.GetBestPointsToday();
+                z = 4;
+                if (bestPoints == 0) {
+                    z = 5;
+                    bestPoints = await (new FourteenNumbersContract()).GetBestScore(gameDay);
+                }
+                z = 6;
 
-            if (pointsToday > bestPoints) {
-                info.text = "You have the best solution today so far!\n" +
-                    "Best so far: " + bestPoints + "\n" +
-                    "Your points: " + pointsToday;
-                buttonPublish.gameObject.SetActive(true);
+                if (pointsToday > bestPoints) {
+                    z = 7;
+                    info.text = "You have the best solution today so far!\n" +
+                        "Best so far: " + bestPoints + "\n" +
+                        "Your points: " + pointsToday;
+                    z = 8;
+                    buttonPublish.gameObject.SetActive(true);
+                    z = 9;
+                }
+                else {
+                    z = 10;
+                    info.text = "Best so far today: " + bestPoints + "\n" +
+                        "Your points: " + pointsToday + "\n";
+                    z = 11;
+                    buttonPublish.gameObject.SetActive(false);
+                }
+                z = 12;
             }
-            else {
-                info.text = "Best so far today: " + bestPoints + "\n" +
-                    "Your points: " + pointsToday + "\n";
-                buttonPublish.gameObject.SetActive(false);
+            catch (System.Exception ex) {
+                info.text = "Exception(" + z + "): " + ex.Message;
             }
         }
 

@@ -34,7 +34,8 @@ namespace FourteenNumbers {
 
 
         public async Task<uint> GetBestScore(uint gameDay) {
-            SolutionsOutputDTO solution = await service.SolutionsQueryAsync(gameDay);
+            SolutionsOutputDTO solution;
+            solution = await service.SolutionsQueryAsync(gameDay);
             BigInteger bestScoreBigInt = solution.Points;
             if (bestScoreBigInt < 0 || bestScoreBigInt > uint.MaxValue) {
                 Debug.LogError($"Number {bestScoreBigInt} is outside uint range");
