@@ -41,6 +41,7 @@ namespace FourteenNumbers {
             uint gameDay = (uint) Timeline.GameDay();
             gameDayToday = gameDay;
             show(gameDay);
+            buttonUp.interactable = false;
         }
 
         public void OnButtonClick(string buttonText) {
