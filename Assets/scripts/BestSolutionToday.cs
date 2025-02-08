@@ -20,11 +20,27 @@ namespace FourteenNumbers {
         private Coroutine minuteRoutine;
         private bool isRunning = false;
 
+
+        public void OnEnable() {
+            StartTimer();
+        }
+
+        public void OnDisable() {
+            StopTimer();
+        }
+
         public void StartTimer() {
             if (!isRunning) {
                 Debug.Log("Best Solution Today monitor started");
                 minuteRoutine = StartCoroutine(MinuteRoutine());
                 isRunning = true;
+
+                // Cache the best points so that they are more quickly available.
+                uint statsGameDay = (uint) Stats.GetLastGameDay();
+                uint gameDay = (uint) Timeline.GameDay();
+                if (statsGameDay == gameDay) {
+                    BestScore = (uint) Stats.GetBestPointsToday();
+                }
             }
         }
 
@@ -49,6 +65,13 @@ namespace FourteenNumbers {
             Stats.SetBestPointsToday((int) BestScore);
             BestScoreFetched = DateTime.Now;
             Debug.Log("Best Solution Today: " + BestScore);
+
+            Stats.SetBestPointsToday((int) BestScore);
+
+            // The score isn't going to get any better. Save resources and don't keep checking.
+            if (BestScore == 210) {
+                StopTimer();
+            }
         }
     }
 }

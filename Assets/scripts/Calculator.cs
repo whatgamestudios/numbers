@@ -18,6 +18,14 @@ namespace FourteenNumbers {
 
         private const int NUM_ATTEMPTS = 3;
 
+
+        public enum PlayerState {
+            Init = 0,
+            Playing = 1,
+            Error = 2,
+            Done = 3
+        }
+
         public TextMeshProUGUI target;
         public TextMeshProUGUI timeToNext;
         public TextMeshProUGUI gameDay;
@@ -56,7 +64,10 @@ namespace FourteenNumbers {
         public Button buttonRight;
 
         public Button buttonShare;
+        public Button buttonPublish;
 
+        public GameObject panelShare;
+        public GameObject panelPublish;
         private string currentInput = "";
 
         private uint targetValue = 0;
@@ -91,6 +102,7 @@ namespace FourteenNumbers {
         uint attempt;
 
         bool waitingForNextDay = false;
+        string helpScreenMessage;
 
         // Int representing which game day is being played.
         // Stored here to detect when the game was loaded into memory, switch focus away and then 
@@ -104,10 +116,12 @@ namespace FourteenNumbers {
         // True if the player is new to the game.
         bool newPlayer;
 
+        PlayerState playerState;
+
         public void Start() {
             Debug.Log("Game Scene Start");
             int daysPlayed = Stats.GetNumDaysPlayed();
-            newPlayer = daysPlayed < 4;
+            newPlayer = daysPlayed < 2;
             gameDayInt = Timeline.GameDay();
             startANewDay(gameDayInt);
         }
@@ -126,7 +140,7 @@ namespace FourteenNumbers {
         }
 
         public void OnButtonClick(string buttonText) {
-            showAfterFirstCharacter();
+            playerState = PlayerState.Playing;
             OnButtonClickInternal(buttonText, true);
         }
 
@@ -171,16 +185,15 @@ namespace FourteenNumbers {
                 attempt++;
                 switch (attempt) {
                     case 1:
-                        showSecondSoltionHelp();
+                        playerState = PlayerState.Playing;
                         break;
                     case 2:
-                        showThirdSolutionHelp();
+                        playerState = PlayerState.Playing;
                         break;
                     case 3:
-                        buttonShare.gameObject.SetActive(true);
-                        StopTimer();
-                        SceneManager.LoadScene("GameDoneScene", LoadSceneMode.Additive);
-                        showEndResult();
+                        playerState = PlayerState.Done;
+                        panelShare.SetActive(true);
+                        setEndResult();
                         waitingForNextDay = true;
                         break;
                 }
@@ -276,11 +289,6 @@ namespace FourteenNumbers {
             }
         }   
 
-        public void OnCopyButtonPressed() {
-            GUIUtility.systemCopyBuffer = "Test123";
-        }
-
-
         public void Update() {
             gameDay.text = Timeline.GameDayStr();
             timeToNext.text = Timeline.TimeToNextDayStr();
@@ -306,15 +314,13 @@ namespace FourteenNumbers {
                 }
             }
 
-            if (waitingForNextDay) {
-                showEndResult();
-            }
+            showHelpMessage();
         }
 
         private void startANewDay(uint todaysGameDay) {
             Debug.Log("Starting new game day: " + todaysGameDay);
-            buttonShare.gameObject.SetActive(false);
-            StartTimer();
+            panelShare.SetActive(false);
+            panelPublish.SetActive(false);
 
             waitingForNextDay = false;
 
@@ -363,7 +369,7 @@ namespace FourteenNumbers {
             else {
                 // The game has not been played today yet.
                 Stats.StartNewGameDay();
-                showWelcomeMessage();
+                playerState = PlayerState.Init;
             }
         }
 
@@ -747,94 +753,73 @@ namespace FourteenNumbers {
 
 
 
-        private void showWelcomeMessage() {
-            if (newPlayer) {
-                displayHelp("Find three solutions for the target number");
+        private void showHelpMessage() {
+            string text = "";
+
+            if (newPlayer && playerState == PlayerState.Init) {
+                text = "Find three solutions for the target number\n";
+            }
+            else if (playerState == PlayerState.Error || playerState == PlayerState.Done) {
+                text = helpScreenMessage + "\n";
+            }
+
+            if (playerState == PlayerState.Done && pointsEarnedTotalToday() > BestScore) {
+                text = text + "New high score! Current best score is " + BestScore;
+                panelPublish.SetActive(true);
             }
             else {
-                displayHelp("Welcome back!");
+                text = text + "Best score so far today is " + BestScore;
+                panelPublish.SetActive(false);
             }
+
+            if (playerState == PlayerState.Done) {
+                text = text + "\nNext game in " + Timeline.TimeToNextDayStrShort();
+            }
+            helpTextMesh.text = text;
         }
 
-        private void showAfterFirstCharacter() {
-            showBestScoreToday();
-        }
-
-        private void showSecondSoltionHelp() {
-            if (newPlayer) {
-                displayHelp("Time to do Solution 2");
-            }
-            else {
-                showBestScoreToday();
-            }
-        }
-
-        private void showThirdSolutionHelp() {
-            if (newPlayer) {
-                displayHelp("Time to do Solution 3");
-            }
-            else {
-                showBestScoreToday();
-            }
-        }
-
-        private void showEndResult() {
-            string baseText = "";
-
+        private void setEndResult() {
             uint pointsEarnedTotal = pointsEarnedTotalToday();
             if (pointsEarnedTotal < 70) {
-                baseText = "Practice Makes Perfect.";
+                helpScreenMessage = "Practice Makes Perfect.";
             }
             else if (pointsEarnedTotal < 120) {
-                baseText = "Good work!";
+                helpScreenMessage = "Good work!";
             }
             else if (pointsEarnedTotal < 140) {
-                baseText = "Well done!";
+                helpScreenMessage = "Well done!";
             }
             else if (pointsEarnedTotal < 150) {
-                baseText = "Very well done!";
+                helpScreenMessage = "Very well done!";
             }
             else if (pointsEarnedTotal < 160) {
-                baseText = "Awesome day!";
+                helpScreenMessage = "Awesome day!";
             }
             else if (pointsEarnedTotal < 170) {
-                baseText = "So close...";
+                helpScreenMessage = "So close...";
             }
             else if (pointsEarnedTotal < 210) {
-                baseText = "You are exceptional!";
+                helpScreenMessage = "You are exceptional!";
             }
             else if (pointsEarnedTotal == 210) {
-                baseText = "Perfect Score Day!!!";
+                helpScreenMessage = "Perfect Score Day!!!";
             }
             else {
-                baseText = "Well done";
+                helpScreenMessage = "Well done";
                 Debug.Log("ShowEndResult with: " + pointsEarnedTotal);
             }
-
-            string timeToNextDay = Timeline.TimeToNextDayStrShort();
-            displayHelp(baseText + "\nNext game in " + timeToNextDay);
         }
 
         private void showDivideByZero() {
-            displayHelp("Divide by zero detected. Zero points awarded.");
+            helpScreenMessage = "Divide by zero detected. Zero points awarded.";
         }
 
         private void showDivisionWithRemainder() {
-            displayHelp("Division with remainder detected. Zero points awarded.");
+            helpScreenMessage = "Division with remainder detected. Zero points awarded.";
         }
 
         private void showLessThanZero() {
-            displayHelp("Subtraction resulted in negative number. Zero points awarded.");
-        }
-
-        private void showBestScoreToday() {
-            // Will equal null when debugging in IDE.
-            displayHelp("The best score so far today is " + BestScore);
-        }
-
-
-        private void displayHelp(string text) {
-            helpTextMesh.text = text;
+            helpScreenMessage = "Subtraction resulted in negative number. Zero points awarded.";
         }
     }
 }

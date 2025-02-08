@@ -20,12 +20,18 @@ using Immutable.Passport.Model;
 namespace FourteenNumbers {
 
     public class FourteenNumbersContract {
+        public enum TransactionStatus {
+            Init = 0,
+            Success = 1,
+            Failed = 2
+        }
+
         private FourteenNumbersSolutionsService service;
 
         private static string contractAddress = "0xe2E762770156FfE253C49Da6E008b4bECCCf2812";
 
 
-        public uint lastTransactionStatus = 0;
+        public static TransactionStatus LastTransactionStatus = TransactionStatus.Init;
 
         public FourteenNumbersContract() {
             var web3 = new Web3("https://rpc.immutable.com/");
@@ -49,7 +55,7 @@ namespace FourteenNumbers {
 
 
         public async void SubmitBestScore(uint gameDay, string sol1, string sol2, string sol3) {
-            lastTransactionStatus = 0;         
+            LastTransactionStatus = TransactionStatus.Init;         
 
             StoreResultsFunction func = new StoreResultsFunction() {
                 GameDay = gameDay,
@@ -62,15 +68,6 @@ namespace FourteenNumbers {
             byte[] abiEncoding = func.GetCallData();
             Debug.Log("Publish: " + HexDump.Dump(abiEncoding));
 
-            // await Passport.Instance.ZkEvmSendTransaction(
-            //         new TransactionRequest() {
-            //             to = contractAddress,
-            //             data = "0x" + BitConverter.ToString(abiEncoding).Replace("-", "").ToLower(),
-            //             value = "0"
-            //         }
-            //     );
-
-
             TransactionReceiptResponse response = 
                 await Passport.Instance.ZkEvmSendTransactionWithConfirmation(
                     new TransactionRequest() {
@@ -82,13 +79,12 @@ namespace FourteenNumbers {
             Debug.Log($"Transaction hash: {response.transactionHash}");
 
             if (response.status != "1") {
-                lastTransactionStatus = 1;
-                return;
+                LastTransactionStatus = TransactionStatus.Failed;
             }
-
-            lastTransactionStatus = 2;            
+            else {
+                LastTransactionStatus = TransactionStatus.Success;
+            }
         }
-
     }
 }
 
