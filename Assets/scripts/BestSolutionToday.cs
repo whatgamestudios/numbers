@@ -66,8 +66,6 @@ namespace FourteenNumbers {
             BestScoreFetched = DateTime.Now;
             Debug.Log("Best Solution Today: " + BestScore);
 
-            Stats.SetBestPointsToday((int) BestScore);
-
             // The score isn't going to get any better. Save resources and don't keep checking.
             if (BestScore == 210) {
                 StopTimer();

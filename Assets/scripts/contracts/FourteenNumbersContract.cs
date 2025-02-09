@@ -53,6 +53,11 @@ namespace FourteenNumbers {
             }
         }
 
+        public async Task<SolutionsOutputDTO> GetSolution(uint gameDay) {
+            return await service.SolutionsQueryAsync(gameDay);
+        }
+
+
 
         public async void SubmitBestScore(uint gameDay, string sol1, string sol2, string sol3) {
             LastTransactionStatus = TransactionStatus.Init;         
