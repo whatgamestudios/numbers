@@ -24,6 +24,13 @@ namespace FourteenNumbers {
             return dawnOfTime.AddDays((double) gameDay);
         }
 
+        public static string GetRelativeDateString(int gameDay) {
+            DateTime dawnOfTime = new DateTime(2024, 12, 1, 0, 0, 0);
+            DateTime relativeDate = dawnOfTime.AddDays((double) gameDay);
+            return relativeDate.ToString("dddd MMMM dd, yyyy");
+        }
+
+
         /**
         * Return the time until the next day of game play.
         */
