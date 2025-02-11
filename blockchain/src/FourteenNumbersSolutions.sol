@@ -37,7 +37,7 @@ contract FourteenNumbersSolutions is
     bytes32 public constant OWNER_ROLE = bytes32("OWNER_ROLE");
 
     /// @notice Version 0 version number
-    uint256 private constant _VERSION0 = 0;
+    uint256 internal constant _VERSION0 = 0;
 
 
     /// @notice version number of the storage variable layout.
@@ -69,7 +69,7 @@ contract FourteenNumbersSolutions is
      * @param _owner the address to grant `OWNER_ROLE` to.
      * @param _upgradeAdmin the address to grant `UPGRADE_ROLE` to.
      */
-    function initialize(address _roleAdmin, address _owner, address _upgradeAdmin) public initializer {
+    function initialize(address _roleAdmin, address _owner, address _upgradeAdmin) public virtual initializer {
         __UUPSUpgradeable_init();
         __AccessControl_init();
         _grantRole(DEFAULT_ADMIN_ROLE, _roleAdmin);
@@ -104,7 +104,7 @@ contract FourteenNumbersSolutions is
      * @param _store True if the game player stats should be updated.
      */
     function storeResults(
-        uint32 _gameDay, bytes calldata _sol1, bytes calldata _sol2, bytes calldata _sol3, bool _store) external {
+        uint32 _gameDay, bytes calldata _sol1, bytes calldata _sol2, bytes calldata _sol3, bool _store) external virtual {
 
         // Reverts if game day is in the future or in the past.
         checkGameDay(_gameDay);
@@ -160,7 +160,7 @@ contract FourteenNumbersSolutions is
      *
      * @param _gameDay The day since the game epoch start.
      */
-    function checkIn(uint32 _gameDay) external {
+    function checkIn(uint32 _gameDay) external virtual {
         // Reverts if game day is in the future or in the past.
         checkGameDay(_gameDay);
 
