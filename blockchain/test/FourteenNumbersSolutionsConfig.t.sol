@@ -10,14 +10,14 @@ import {FourteenNumbersSolutionsBaseTest} from "./FourteenNumbersSolutionsBase.t
 import {FourteenNumbersSolutions} from "../src/FourteenNumbersSolutions.sol";
 
 
-contract FourteenNumbersSolutionsV2 is FourteenNumbersSolutions {
+contract FourteenNumbersSolutionsV2a is FourteenNumbersSolutions {
     function upgradeStorage(bytes memory /* _data */) external override {
         version = 1;
     }
 }
 
 
-contract FourteenNumbersSolutionsConfigTest is FourteenNumbersSolutionsBaseTest {
+abstract contract FourteenNumbersSolutionsConfigTest is FourteenNumbersSolutionsBaseTest {
 
     function testGetOwner() public view {
         assertEq(fourteenNumbersSolutions.owner(), owner);
@@ -32,41 +32,8 @@ contract FourteenNumbersSolutionsConfigTest is FourteenNumbersSolutionsBaseTest 
         assertEq(fourteenNumbersSolutions.owner(), owner2);
     }
 
-
-    function testUpgradeToV1() public {
-        FourteenNumbersSolutionsV2 v2Impl = new FourteenNumbersSolutionsV2();
-        bytes memory initData = abi.encodeWithSelector(FourteenNumbersSolutions.upgradeStorage.selector, bytes(""));
-        vm.prank(upgradeAdmin);
-        fourteenNumbersSolutions.upgradeToAndCall(address(v2Impl), initData);
-
-        uint256 ver = fourteenNumbersSolutions.version();
-        assertEq(ver, 1, "Upgrade did not upgrade version");
-    }
-
-    function testUpgradeToV0() public {
-        FourteenNumbersSolutions v1Impl = new FourteenNumbersSolutions();
-        bytes memory initData = abi.encodeWithSelector(FourteenNumbersSolutions.upgradeStorage.selector, bytes(""));
-        vm.expectRevert(abi.encodeWithSelector(FourteenNumbersSolutions.CanNotUpgradeToLowerOrSameVersion.selector, 0));
-        vm.prank(upgradeAdmin);
-        fourteenNumbersSolutions.upgradeToAndCall(address(v1Impl), initData);
-    }
-
-    function testDowngradeV1ToV0() public {
-        // Upgrade from V0 to V1
-        FourteenNumbersSolutionsV2 v2Impl = new FourteenNumbersSolutionsV2();
-        bytes memory initData = abi.encodeWithSelector(FourteenNumbersSolutions.upgradeStorage.selector, bytes(""));
-        vm.prank(upgradeAdmin);
-        fourteenNumbersSolutions.upgradeToAndCall(address(v2Impl), initData);
-
-        // Attempt to downgrade from V1 to V0.
-        FourteenNumbersSolutions v1Impl = new FourteenNumbersSolutions();
-        vm.expectRevert(abi.encodeWithSelector(FourteenNumbersSolutions.CanNotUpgradeToLowerOrSameVersion.selector, 1));
-        vm.prank(upgradeAdmin);
-        fourteenNumbersSolutions.upgradeToAndCall(address(v1Impl), initData);
-    }
-
     function testUpgradeAuthFail() public {
-        FourteenNumbersSolutionsV2 v2Impl = new FourteenNumbersSolutionsV2();
+        FourteenNumbersSolutionsV2a v2Impl = new FourteenNumbersSolutionsV2a();
         bytes memory initData = abi.encodeWithSelector(FourteenNumbersSolutions.upgradeStorage.selector, bytes(""));
         // Error will be of the form: 
         // AccessControl: account 0x7fa9385be102ac3eac297483dd6233d62b3e1496 is missing role 0x555047524144455f524f4c450000000000000000000000000000000000000000

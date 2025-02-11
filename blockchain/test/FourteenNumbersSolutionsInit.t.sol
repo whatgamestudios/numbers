@@ -9,7 +9,7 @@ import "forge-std/Test.sol";
 import {FourteenNumbersSolutionsBaseTest} from "./FourteenNumbersSolutionsBase.t.sol";
 import {FourteenNumbersSolutions} from "../src/FourteenNumbersSolutions.sol";
 
-contract FourteenNumbersSolutionsInitTest is FourteenNumbersSolutionsBaseTest {
+abstract contract FourteenNumbersSolutionsInitTest is FourteenNumbersSolutionsBaseTest {
 
     function testInit() public view {
         assertEq(fourteenNumbersSolutions.owner(), owner);
@@ -29,9 +29,4 @@ contract FourteenNumbersSolutionsInitTest is FourteenNumbersSolutionsBaseTest {
         assertEq(points, 0);
         assertEq(player, address(0));
     }
-
-    function testVersionV0() public view {
-        assertEq(fourteenNumbersSolutions.version(), 0);
-    }
-
 }

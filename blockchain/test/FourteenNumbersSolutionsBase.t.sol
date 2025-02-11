@@ -24,21 +24,16 @@ abstract contract FourteenNumbersSolutionsBaseTest is Test {
     FourteenNumbersSolutions fourteenNumbersSolutions;
     ERC1967Proxy public proxy;
 
-    function setUp() public {
+    function setUp() public virtual {
         roleAdmin = makeAddr("RoleAdmin");
         upgradeAdmin = makeAddr("UpgradeAdmin");
         owner = makeAddr("Owner");
         player1 = makeAddr("Player1");
         player2 = makeAddr("Player2");
 
-        FourteenNumbersSolutions impl = new FourteenNumbersSolutions();
-        bytes memory initData = abi.encodeWithSelector(
-            FourteenNumbersSolutions.initialize.selector, roleAdmin, owner, upgradeAdmin);
-        proxy = new ERC1967Proxy(address(impl), initData);
-        fourteenNumbersSolutions = FourteenNumbersSolutions(address(proxy));
-
-        defaultAdminRole = fourteenNumbersSolutions.DEFAULT_ADMIN_ROLE();
-        upgradeRole = fourteenNumbersSolutions.UPGRADE_ROLE();
-        ownerRole = fourteenNumbersSolutions.OWNER_ROLE();
+        FourteenNumbersSolutions temp = new FourteenNumbersSolutions();
+        defaultAdminRole = temp.DEFAULT_ADMIN_ROLE();
+        upgradeRole = temp.UPGRADE_ROLE();
+        ownerRole = temp.OWNER_ROLE();
     }
 }
