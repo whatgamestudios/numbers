@@ -8,6 +8,8 @@ namespace FourteenNumbers {
     public class ScreenBackground {
         public const string BG_OPTION = "OPTION_BACKGROUND";
 
+        public const int BG_DEFAULT = 3;
+
 
         /**
         * Set the background used by all scenes.
@@ -23,7 +25,7 @@ namespace FourteenNumbers {
         * @return the background option number to use.
         */
         public static int GetBackground() {
-            return PlayerPrefs.GetInt(BG_OPTION, 3);
+            return PlayerPrefs.GetInt(BG_OPTION, BG_DEFAULT);
         }
 
 
@@ -37,7 +39,7 @@ namespace FourteenNumbers {
                 return;
             }
 
-            int option = PlayerPrefs.GetInt(BG_OPTION, 1);
+            int option = PlayerPrefs.GetInt(BG_OPTION, BG_DEFAULT);
             string resourceName;
             UnityEngine.Color faceColour;
             UnityEngine.Color outlineColour;
