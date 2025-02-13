@@ -313,6 +313,25 @@ namespace FourteenNumbers {
                     }
                 }
             }
+            else {
+                // Flash the colour of the publish panel.
+                // Note: the publish panel may not be active.
+                DateTime now = DateTime.Now;
+                if ((now - timeOfLastFlash).TotalMilliseconds > TIME_PER_FLASH) {
+                    timeOfLastFlash = now;
+
+                    Image img = panelPublish.GetComponent<Image>();
+                    if (cursorOn) {
+                        img.color = UnityEngine.Color.green;
+                        cursorOn = false;
+                    }
+                    else {
+                        img.color = UnityEngine.Color.red;
+                        cursorOn = true;
+                    }
+                }
+
+            }
 
             showHelpMessage();
         }
