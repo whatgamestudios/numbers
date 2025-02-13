@@ -763,13 +763,19 @@ namespace FourteenNumbers {
                 text = helpScreenMessage + "\n";
             }
 
-            if (playerState == PlayerState.Done && pointsEarnedTotalToday() > BestScore) {
-                text = text + "New high score! Current best score is " + BestScore;
-                panelPublish.SetActive(true);
+            if (LoadedBestScore) {
+                if (playerState == PlayerState.Done && 
+                    pointsEarnedTotalToday() > BestScore) {
+                    text = text + "New high score! Current best score is " + BestScore;
+                    panelPublish.SetActive(true);
+                }
+                else {
+                    text = text + "Best score so far today is " + BestScore;
+                    panelPublish.SetActive(false);
+                }
             }
             else {
-                text = text + "Best score so far today is " + BestScore;
-                panelPublish.SetActive(false);
+                text = text + "Loading best score so far today";
             }
 
             if (playerState == PlayerState.Done) {
