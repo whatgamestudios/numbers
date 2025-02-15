@@ -718,13 +718,13 @@ namespace FourteenNumbers {
         private void publishStatsThisSolution(string solution, uint points) {
             switch (attempt) {
                 case 0:
-                    Stats.SetSolution1(solution, (int)points);
+                    Stats.SetSolution1(gameDayInt, solution, (int)points);
                     break;
                 case 1:
-                    Stats.SetSolution2(solution, (int)points);
+                    Stats.SetSolution2(gameDayInt, solution, (int)points);
                     break;
                 case 2:
-                    Stats.SetSolution3(solution, (int)points);
+                    Stats.SetSolution3(gameDayInt, solution, (int)points);
                     break;
                 default:
                     Debug.Log("Attempt not supported4");

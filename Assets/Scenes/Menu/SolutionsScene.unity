@@ -1719,17 +1719,27 @@ MonoBehaviour:
   buttonUp: {fileID: 1704799378}
   buttonDown: {fileID: 1123746386}
   targetText: {fileID: 602882281}
-  input1Text: {fileID: 1015378452}
-  calculated1Text: {fileID: 2030819631}
-  points1Text: {fileID: 408642577}
-  input2Text: {fileID: 237839513}
-  calculated2Text: {fileID: 2044018476}
-  points2Text: {fileID: 1032627826}
-  input3Text: {fileID: 743129223}
-  calculated3Text: {fileID: 493338773}
-  points3Text: {fileID: 621714517}
-  pointsTotalText: {fileID: 1660792972}
+  bestInput1Text: {fileID: 1015378452}
+  bestCalculated1Text: {fileID: 2030819631}
+  bestPoints1Text: {fileID: 408642577}
+  bestInput2Text: {fileID: 237839513}
+  bestCalculated2Text: {fileID: 2044018476}
+  bestPoints2Text: {fileID: 1032627826}
+  bestInput3Text: {fileID: 743129223}
+  bestCalculated3Text: {fileID: 493338773}
+  bestPoints3Text: {fileID: 621714517}
+  bestPointsTotalText: {fileID: 1660792972}
   bestPlayerText: {fileID: 1729137466}
+  playerInput1Text: {fileID: 901455923}
+  playerCalculated1Text: {fileID: 241442013}
+  playerPoints1Text: {fileID: 2106297289}
+  playerInput2Text: {fileID: 1754415096}
+  playerCalculated2Text: {fileID: 1481279386}
+  playerPoints2Text: {fileID: 1643631413}
+  playerInput3Text: {fileID: 207143459}
+  playerCalculated3Text: {fileID: 1035428277}
+  playerPoints3Text: {fileID: 1589503198}
+  playerPointsTotalText: {fileID: 687705395}
 --- !u!1 &294060456
 GameObject:
   m_ObjectHideFlags: 0
