@@ -5,6 +5,7 @@ using System.Collections;
 namespace FourteenNumbers {
 
     public class Stats {
+        public const string STATS_SOLUTIONS = "STATS_SOLUTIONS_";
         public const string STATS_SOLUTION1 = "STATS_SOLUTION1";
         public const string STATS_SOLUTION2 = "STATS_SOLUTION2";
         public const string STATS_SOLUTION3 = "STATS_SOLUTION3";
@@ -36,17 +37,16 @@ namespace FourteenNumbers {
         }
 
 
-        public static void SetSolution1(string solution, int points) {
-            int gameDayInt = (int) Timeline.GameDay();
-
+        public static void SetSolution1(uint gameDay, string solution, int points) {
             int firstPlayed = PlayerPrefs.GetInt(STATS_FIRST_PLAYED, NEVER_PLAYED);
             if (firstPlayed == NEVER_PLAYED) {
-                PlayerPrefs.SetInt(STATS_FIRST_PLAYED, gameDayInt);
+                PlayerPrefs.SetInt(STATS_FIRST_PLAYED, (int) gameDay);
             }
 
-            PlayerPrefs.SetInt(STATS_LAST_PLAYED, gameDayInt);
+            PlayerPrefs.SetInt(STATS_LAST_PLAYED, (int) gameDay);
 
             PlayerPrefs.SetString(STATS_SOLUTION1, solution);
+            setCombinedSolution(gameDay);
 
             int timesPlayed = PlayerPrefs.GetInt(STATS_TIMES_PLAYED, 0);
             timesPlayed++;
@@ -61,8 +61,9 @@ namespace FourteenNumbers {
             PlayerPrefs.Save();
         }
 
-        public static void SetSolution2(string solution, int points) {
+        public static void SetSolution2(uint gameDay, string solution, int points) {
             PlayerPrefs.SetString(STATS_SOLUTION2, solution);
+            setCombinedSolution(gameDay);
 
             int totalPoints = PlayerPrefs.GetInt(STATS_TOTAL_POINTS, 0);
             totalPoints += points;
@@ -75,8 +76,9 @@ namespace FourteenNumbers {
             PlayerPrefs.Save();
         }
 
-        public static void SetSolution3(string solution, int points) {
+        public static void SetSolution3(uint gameDay, string solution, int points) {
             PlayerPrefs.SetString(STATS_SOLUTION3, solution);
+            setCombinedSolution(gameDay);
 
             int totalPoints = PlayerPrefs.GetInt(STATS_TOTAL_POINTS, 0);
             totalPoints += points;
@@ -119,19 +121,30 @@ namespace FourteenNumbers {
             return PlayerPrefs.GetInt(STATS_TIMES_PLAYED, 0);
         }
 
-        public static int GetTotalPointsToday() {
-            return PlayerPrefs.GetInt(STATS_POINTS_TODAY, 0);
-        }
+        // public static int GetTotalPointsToday() {
+        //     return PlayerPrefs.GetInt(STATS_POINTS_TODAY, 0);
+        // }
 
 
 
         public static void SetBestPointsToday(int points) {
-            PlayerPrefs.SetInt(BEST_TODAY, 0);
+            PlayerPrefs.SetInt(BEST_TODAY, points);
         }
 
         public static int GetBestPointsToday() {
             return PlayerPrefs.GetInt(BEST_TODAY, 0);
         }
 
+        private static void setCombinedSolution(uint gameDay) {
+            string key = STATS_SOLUTIONS + gameDay.ToString();
+            (string sol1, string sol2, string sol3) =  GetSolutions();
+            string combinedSolution = sol1 + "=" + sol2 + "=" + sol3;
+            PlayerPrefs.SetString(key, combinedSolution);
+        }
+
+        public static string GetCombinedSolution(uint gameDay) {
+            string key = STATS_SOLUTIONS + gameDay.ToString();
+            return PlayerPrefs.GetString(key, "==");
+        }
     }
 }

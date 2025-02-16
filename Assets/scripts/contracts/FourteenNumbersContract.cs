@@ -90,6 +90,25 @@ namespace FourteenNumbers {
                 LastTransactionStatus = TransactionStatus.Success;
             }
         }
+
+        public async void SubmitCheckIn(uint gameDay) {
+            var func = new CheckInFunction() {
+                GameDay = gameDay,
+            };
+
+            byte[] abiEncoding = func.GetCallData();
+            Debug.Log("CheckIn: " + HexDump.Dump(abiEncoding));
+
+            TransactionReceiptResponse response = 
+                await Passport.Instance.ZkEvmSendTransactionWithConfirmation(
+                    new TransactionRequest() {
+                        to = contractAddress,
+                        data = "0x" + BitConverter.ToString(abiEncoding).Replace("-", "").ToLower(),
+                        value = "0"
+                    }
+                );
+            Debug.Log($"Transaction status: {response.status}, hash: {response.transactionHash}");
+        }
     }
 }
 

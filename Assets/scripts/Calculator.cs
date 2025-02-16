@@ -22,7 +22,6 @@ namespace FourteenNumbers {
         public enum PlayerState {
             Init = 0,
             Playing = 1,
-            Error = 2,
             Done = 3
         }
 
@@ -101,7 +100,6 @@ namespace FourteenNumbers {
 
         uint attempt;
 
-        bool waitingForNextDay = false;
         string helpScreenMessage;
 
         // Int representing which game day is being played.
@@ -181,24 +179,25 @@ namespace FourteenNumbers {
                 }
             }
             else if (buttonText == "=") {
-                calculateResult(updateStats);
+                bool success = calculateResult(updateStats);
+                if (success) {
                 attempt++;
-                switch (attempt) {
-                    case 1:
-                        playerState = PlayerState.Playing;
-                        break;
-                    case 2:
-                        playerState = PlayerState.Playing;
-                        break;
-                    case 3:
-                        playerState = PlayerState.Done;
-                        panelShare.SetActive(true);
-                        setEndResult();
-                        waitingForNextDay = true;
-                        break;
-                }
-                if (attempt < NUM_ATTEMPTS) {
-                    clearCurrentAttempt();
+                    switch (attempt) {
+                        case 1:
+                            playerState = PlayerState.Playing;
+                            break;
+                        case 2:
+                            playerState = PlayerState.Playing;
+                            break;
+                        case 3:
+                            playerState = PlayerState.Done;
+                            panelShare.SetActive(true);
+                            setEndResult();
+                            break;
+                    }
+                    if (attempt < NUM_ATTEMPTS) {
+                        clearCurrentAttempt();
+                    }
                 }
                 return;
             }
@@ -220,7 +219,14 @@ namespace FourteenNumbers {
             updateInputGui(currentInput);
         }
 
-        private void calculateResult(bool publishStats) {
+        /**
+         * Calculate the result of the current solution.
+         * If the solution results in an error, then reject the calculation.
+         *
+         * @param publishStats True if the statistics for this run should be published.
+         * @retunr true If no error was encountered while calculating.
+         */
+        private bool calculateResult(bool publishStats) {
             // If the last character will make the equation invalid, remove it.
             if (currentInput.EndsWith("+") || currentInput.EndsWith("-") || 
                 currentInput.EndsWith("*") || currentInput.EndsWith("/")) {
@@ -253,33 +259,34 @@ namespace FourteenNumbers {
                     pointsEarnedThisAttempt = 0;
                     switch (err) {
                         case CalcProcessor.ERR_DIVIDE_BY_ZERO:
-                            showDivideByZero();
+                            MessagePass.SetErrorMsg("Divide by zero detected.");
                             break;
                         case CalcProcessor.ERR_NOT_DIVISIBLE:
-                            showDivisionWithRemainder();
+                            MessagePass.SetErrorMsg("Division with remainder detected.");
                             break;
                         case CalcProcessor.ERR_LESS_THAN_ZERO:
-                            showLessThanZero();
+                            MessagePass.SetErrorMsg("Subtraction resulted in negative number.");
                             break;
                         default:
-                            Debug.Log("CalcProcessor error: " + err);
+                            MessagePass.SetErrorMsg("CalcProcessor error: " + err);
                             break;
                     }
+                    SceneManager.LoadScene("ErrorScene", LoadSceneMode.Additive);
+                    return false;
                 }
                 else {
                     // double result = System.Convert.ToDouble(new System.Data.DataTable().Compute(currentInput, ""));
                     // int resultInt = Convert.ToInt32(result);
-                    resultText =  "" + resultInt;
+                    resultText =  resultInt.ToString();
                     pointsEarnedThisAttempt = Points.CalcPoints((uint) resultInt, targetValue);
                     updatePointsEarned(pointsEarnedThisAttempt);
                 }
             }
             catch (System.Exception ex) {
-                resultText = "Err";
-                resultText = ex.Message;
-                Debug.Log("Ex Message: " + ex.Message);
-                //Debug.Log("Ex Stack: " + ex.StackTrace);
-                pointsEarnedThisAttempt = 0;
+                MessagePass.SetErrorMsg("Err: " + ex.Message);
+                Debug.Log("Err: " + ex.Message);
+                SceneManager.LoadScene("ErrorScene", LoadSceneMode.Additive);
+                return false;
             }
             updateCalcGui(resultText);
             updateInputGui(currentInput);
@@ -287,6 +294,7 @@ namespace FourteenNumbers {
             if (publishStats) {
                 publishStatsThisSolution(currentInput, pointsEarnedThisAttempt);
             }
+            return true;
         }   
 
         public void Update() {
@@ -313,6 +321,25 @@ namespace FourteenNumbers {
                     }
                 }
             }
+            else {
+                // Flash the colour of the publish panel.
+                // Note: the publish panel may not be active.
+                DateTime now = DateTime.Now;
+                if ((now - timeOfLastFlash).TotalMilliseconds > TIME_PER_FLASH) {
+                    timeOfLastFlash = now;
+
+                    Image img = panelPublish.GetComponent<Image>();
+                    if (cursorOn) {
+                        img.color = UnityEngine.Color.green;
+                        cursorOn = false;
+                    }
+                    else {
+                        img.color = UnityEngine.Color.red;
+                        cursorOn = true;
+                    }
+                }
+
+            }
 
             showHelpMessage();
         }
@@ -321,8 +348,6 @@ namespace FourteenNumbers {
             Debug.Log("Starting new game day: " + todaysGameDay);
             panelShare.SetActive(false);
             panelPublish.SetActive(false);
-
-            waitingForNextDay = false;
 
             targetValue = TargetValue.GetTarget(todaysGameDay);
             target.text = targetValue.ToString();
@@ -693,13 +718,13 @@ namespace FourteenNumbers {
         private void publishStatsThisSolution(string solution, uint points) {
             switch (attempt) {
                 case 0:
-                    Stats.SetSolution1(solution, (int)points);
+                    Stats.SetSolution1(gameDayInt, solution, (int)points);
                     break;
                 case 1:
-                    Stats.SetSolution2(solution, (int)points);
+                    Stats.SetSolution2(gameDayInt, solution, (int)points);
                     break;
                 case 2:
-                    Stats.SetSolution3(solution, (int)points);
+                    Stats.SetSolution3(gameDayInt, solution, (int)points);
                     break;
                 default:
                     Debug.Log("Attempt not supported4");
@@ -759,17 +784,23 @@ namespace FourteenNumbers {
             if (newPlayer && playerState == PlayerState.Init) {
                 text = "Find three solutions for the target number\n";
             }
-            else if (playerState == PlayerState.Error || playerState == PlayerState.Done) {
+            else if (playerState == PlayerState.Done) {
                 text = helpScreenMessage + "\n";
             }
 
-            if (playerState == PlayerState.Done && pointsEarnedTotalToday() > BestScore) {
-                text = text + "New high score! Current best score is " + BestScore;
-                panelPublish.SetActive(true);
+            if (LoadedBestScore) {
+                if (playerState == PlayerState.Done && 
+                    pointsEarnedTotalToday() > BestScore) {
+                    text = text + "New high score! Current best score is " + BestScore;
+                    panelPublish.SetActive(true);
+                }
+                else {
+                    text = text + "Best score so far today is " + BestScore;
+                    panelPublish.SetActive(false);
+                }
             }
             else {
-                text = text + "Best score so far today is " + BestScore;
-                panelPublish.SetActive(false);
+                text = text + "Loading best score so far today";
             }
 
             if (playerState == PlayerState.Done) {
@@ -808,18 +839,6 @@ namespace FourteenNumbers {
                 helpScreenMessage = "Well done";
                 Debug.Log("ShowEndResult with: " + pointsEarnedTotal);
             }
-        }
-
-        private void showDivideByZero() {
-            helpScreenMessage = "Divide by zero detected. Zero points awarded.";
-        }
-
-        private void showDivisionWithRemainder() {
-            helpScreenMessage = "Division with remainder detected. Zero points awarded.";
-        }
-
-        private void showLessThanZero() {
-            helpScreenMessage = "Subtraction resulted in negative number. Zero points awarded.";
         }
     }
 }

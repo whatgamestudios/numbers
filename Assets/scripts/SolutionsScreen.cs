@@ -21,17 +21,30 @@ namespace FourteenNumbers {
         // Output
         public TextMeshProUGUI targetText;
 
-        public TextMeshProUGUI input1Text;
-        public TextMeshProUGUI calculated1Text;
-        public TextMeshProUGUI points1Text;
-        public TextMeshProUGUI input2Text;
-        public TextMeshProUGUI calculated2Text;
-        public TextMeshProUGUI points2Text;
-        public TextMeshProUGUI input3Text;
-        public TextMeshProUGUI calculated3Text;
-        public TextMeshProUGUI points3Text;
-        public TextMeshProUGUI pointsTotalText;
+        public TextMeshProUGUI bestInput1Text;
+        public TextMeshProUGUI bestCalculated1Text;
+        public TextMeshProUGUI bestPoints1Text;
+        public TextMeshProUGUI bestInput2Text;
+        public TextMeshProUGUI bestCalculated2Text;
+        public TextMeshProUGUI bestPoints2Text;
+        public TextMeshProUGUI bestInput3Text;
+        public TextMeshProUGUI bestCalculated3Text;
+        public TextMeshProUGUI bestPoints3Text;
+        public TextMeshProUGUI bestPointsTotalText;
         public TextMeshProUGUI bestPlayerText;
+
+
+        public TextMeshProUGUI playerInput1Text;
+        public TextMeshProUGUI playerCalculated1Text;
+        public TextMeshProUGUI playerPoints1Text;
+        public TextMeshProUGUI playerInput2Text;
+        public TextMeshProUGUI playerCalculated2Text;
+        public TextMeshProUGUI playerPoints2Text;
+        public TextMeshProUGUI playerInput3Text;
+        public TextMeshProUGUI playerCalculated3Text;
+        public TextMeshProUGUI playerPoints3Text;
+        public TextMeshProUGUI playerPointsTotalText;
+
 
 
         private uint gameDayToday = 0;
@@ -84,6 +97,7 @@ namespace FourteenNumbers {
 
             uint targetValue = TargetValue.GetTarget(gameDay);
             targetText.text = targetValue.ToString();
+            DisplayMyResult(gameDay);
 
             StartCoroutine(GetResultRoutine());
 
@@ -105,7 +119,7 @@ namespace FourteenNumbers {
 
             string player = result.Player;
             bestPlayerText.text = player.Substring(0,6) + "...." + player.Substring(player.Length - 4, 4);
-            pointsTotalText.text = result.Points.ToString();
+            bestPointsTotalText.text = result.Points.ToString();
 
             byte[] combinedSolutionBytes = result.CombinedSolution;
             var combinedSolution = System.Text.Encoding.Default.GetString(combinedSolutionBytes);
@@ -122,14 +136,14 @@ namespace FourteenNumbers {
             }
 
             if (gameDayDisplaying == gameDayToday) {
-                input1Text.text = replace(sol1);
-                input2Text.text = replace(sol2);
-                input3Text.text = replace(sol3);
+                bestInput1Text.text = replace(sol1);
+                bestInput2Text.text = replace(sol2);
+                bestInput3Text.text = replace(sol3);
             }
             else {
-                input1Text.text = sol1;
-                input2Text.text = sol2;
-                input3Text.text = sol3;
+                bestInput1Text.text = sol1;
+                bestInput2Text.text = sol2;
+                bestInput3Text.text = sol3;
             }
 
             uint points1 = 0;
@@ -160,15 +174,72 @@ namespace FourteenNumbers {
                     points3 = Points.CalcPoints((uint) res3, targetValue);
                 }
             }
-            calculated1Text.text = res1.ToString();
-            calculated2Text.text = res2.ToString();
-            calculated3Text.text = res3.ToString();
+            bestCalculated1Text.text = res1.ToString();
+            bestCalculated2Text.text = res2.ToString();
+            bestCalculated3Text.text = res3.ToString();
 
-            points1Text.text = points1.ToString();
-            points2Text.text = points2.ToString();
-            points3Text.text = points3.ToString();
+            bestPoints1Text.text = points1.ToString();
+            bestPoints2Text.text = points2.ToString();
+            bestPoints3Text.text = points3.ToString();
         }
 
+        void DisplayMyResult(uint gameDay) {
+
+            var combinedSolution = Stats.GetCombinedSolution(gameDay);
+            string sol1 = "";
+            string sol2 = "";
+            string sol3 = "";
+            if (combinedSolution.Length != 0) {
+                int indexOfEquals = combinedSolution.IndexOf('=');
+                sol1 = combinedSolution.Substring(0, indexOfEquals);
+                combinedSolution = combinedSolution.Substring(indexOfEquals+1);
+                indexOfEquals = combinedSolution.IndexOf('=');
+                sol2 = combinedSolution.Substring(0, indexOfEquals);
+                sol3 = combinedSolution.Substring(indexOfEquals+1);
+            }
+
+            playerInput1Text.text = sol1;
+            playerInput2Text.text = sol2;
+            playerInput3Text.text = sol3;
+
+            uint points1 = 0;
+            uint points2 = 0;
+            uint points3 = 0;
+            CalcProcessor processor = new CalcProcessor();
+            uint targetValue = TargetValue.GetTarget(gameDay);
+            int errorCode;
+            int res1 = 0;
+            int res2 = 0;
+            int res3 = 0;
+            if (sol1.Length != 0) {
+                (res1, errorCode) = processor.Calc(sol1);
+                if (errorCode == CalcProcessor.ERR_NO_ERROR) {
+                    points1 = Points.CalcPoints((uint) res1, targetValue);
+                }
+
+            }
+            if (sol2.Length != 0) {
+                (res2, errorCode) = processor.Calc(sol2);
+                if (errorCode == CalcProcessor.ERR_NO_ERROR) {
+                    points2 = Points.CalcPoints((uint) res2, targetValue);
+                }
+            }
+            if (sol3.Length != 0) {
+                (res3, errorCode) = processor.Calc(sol3);
+                if (errorCode == CalcProcessor.ERR_NO_ERROR) {
+                    points3 = Points.CalcPoints((uint) res3, targetValue);
+                }
+            }
+            playerCalculated1Text.text = res1.ToString();
+            playerCalculated2Text.text = res2.ToString();
+            playerCalculated3Text.text = res3.ToString();
+
+            playerPoints1Text.text = points1.ToString();
+            playerPoints2Text.text = points2.ToString();
+            playerPoints3Text.text = points3.ToString();
+
+            playerPointsTotalText.text = (points1 + points2 + points3).ToString();
+        }
 
 
         private string replace(string solution) {
