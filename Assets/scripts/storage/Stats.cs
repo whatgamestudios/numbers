@@ -19,6 +19,29 @@ namespace FourteenNumbers {
 
         public const string BEST_TODAY = "BEST_TODAY";
 
+        public const string STATS_SILVER_STREAK_LENGTH = "STATS_SSTREAK_LEN";
+        public const string STATS_SILVER_STREAK_LONGEST_LENGTH = "STATS_SSTREAK_LONGEST_LEN";
+        public const string STATS_SILVER_STREAK_LAST_DAY = "STATS_SSTREAK_LAST_DAY";
+        public const uint STATS_SILVER_STREAK_THRESHOLD = 70;
+        public const uint STATS_SILVER_STREAK_DAYS = 7;
+
+        public const string STATS_GOLD_STREAK_LENGTH = "STATS_GSTREAK_LEN";
+        public const string STATS_GOLD_STREAK_LONGEST_LENGTH = "STATS_GSTREAK_LONGEST_LEN";
+        public const string STATS_GOLD_STREAK_LAST_DAY = "STATS_GSTREAK_LAST_DAY";
+        public const uint STATS_GOLD_STREAK_THRESHOLD = 140;
+        public const uint STATS_GOLD_STREAK_DAYS = 14;
+
+        public const string STATS_DIAMOND_STREAK_LENGTH = "STATS_DSTREAK_LEN";
+        public const string STATS_DIAMOND_STREAK_LONGEST_LENGTH = "STATS_DSTREAK_LONGEST_LEN";
+        public const string STATS_DIAMOND_STREAK_LAST_DAY = "STATS_DSTREAK_LAST_DAY";
+        public const uint STATS_DIAMOND_STREAK_THRESHOLD = 160;
+        public const uint STATS_DIAMOND_STREAK_DAYS = 21;
+
+        public const string STATS_BDIAMOND_STREAK_LENGTH = "STATS_BDSTREAK_LEN";
+        public const string STATS_BDIAMOND_STREAK_LONGEST_LENGTH = "STATS_BDSTREAK_LONGEST_LEN";
+        public const string STATS_BDIAMOND_STREAK_LAST_DAY = "STATS_BDSTREAK_LAST_DAY";
+        public const uint STATS_BDIAMOND_STREAK_THRESHOLD = 180;
+        public const uint STATS_BDIAMOND_STREAK_DAYS = 28;
 
         public const int NEVER_PLAYED = -1;
 
@@ -58,6 +81,7 @@ namespace FourteenNumbers {
 
             PlayerPrefs.SetInt(STATS_POINTS_TODAY, points);
 
+            updateStreaks(gameDay, points);
             PlayerPrefs.Save();
         }
 
@@ -72,7 +96,7 @@ namespace FourteenNumbers {
             int totalPointsToday = PlayerPrefs.GetInt(STATS_POINTS_TODAY, 0);
             totalPointsToday += points;
             PlayerPrefs.SetInt(STATS_POINTS_TODAY, totalPointsToday);
-
+            updateStreaks(gameDay, totalPointsToday);
             PlayerPrefs.Save();
         }
 
@@ -87,6 +111,7 @@ namespace FourteenNumbers {
             int totalPointsToday = PlayerPrefs.GetInt(STATS_POINTS_TODAY, 0);
             totalPointsToday += points;
             PlayerPrefs.SetInt(STATS_POINTS_TODAY, totalPointsToday);
+            updateStreaks(gameDay, totalPointsToday);
 
             if (totalPointsToday == 210) {
                 int perfectScoreDays = PlayerPrefs.GetInt(STATS_PERFECT_SCORE_DAYS, 0);
@@ -145,6 +170,62 @@ namespace FourteenNumbers {
         public static string GetCombinedSolution(uint gameDay) {
             string key = STATS_SOLUTIONS + gameDay.ToString();
             return PlayerPrefs.GetString(key, "==");
+        }
+
+        private static void updateStreaks(uint gameDay, int pointsToday) {
+            updateStreak(gameDay, pointsToday, 
+                STATS_SILVER_STREAK_THRESHOLD, STATS_SILVER_STREAK_LAST_DAY, 
+                STATS_SILVER_STREAK_LENGTH, STATS_SILVER_STREAK_LONGEST_LENGTH);
+            updateStreak(gameDay, pointsToday, 
+                STATS_GOLD_STREAK_THRESHOLD, STATS_GOLD_STREAK_LAST_DAY, 
+                STATS_GOLD_STREAK_LENGTH, STATS_GOLD_STREAK_LONGEST_LENGTH);
+            updateStreak(gameDay, pointsToday, 
+                STATS_DIAMOND_STREAK_THRESHOLD, STATS_DIAMOND_STREAK_LAST_DAY, 
+                STATS_DIAMOND_STREAK_LENGTH, STATS_DIAMOND_STREAK_LONGEST_LENGTH);
+            updateStreak(gameDay, pointsToday, 
+                STATS_BDIAMOND_STREAK_THRESHOLD, STATS_BDIAMOND_STREAK_LAST_DAY, 
+                STATS_BDIAMOND_STREAK_LENGTH, STATS_BDIAMOND_STREAK_LONGEST_LENGTH);
+        }
+        private static void updateStreak(uint gameDay, int pointsToday, 
+            uint threshold, string lastDayKey, string lenKey, string longestLenKey) {
+            if (pointsToday >= (int) threshold) {
+                int lastDay = PlayerPrefs.GetInt(lastDayKey, 0);
+                if (lastDay != gameDay) {
+                    // Need to update stats for today
+                    PlayerPrefs.SetInt(lastDayKey, (int) gameDay);
+                    int streakLen;
+                    if (lastDay == gameDay - 1) {
+                        // Extension of streak
+                        streakLen = PlayerPrefs.GetInt(lenKey, 0);
+                        streakLen++;
+                    }
+                    else {
+                        // Start of new streak
+                        streakLen = 1;
+                    }
+                    PlayerPrefs.SetInt(lenKey, streakLen);
+                    int longestStreakLen = PlayerPrefs.GetInt(longestLenKey, 0);
+                    if (streakLen > longestStreakLen) {
+                        PlayerPrefs.SetInt(longestLenKey, streakLen);
+                    }
+                }
+            }
+        }
+
+        public static (int, int, int, int) GetStreaksLengths() {
+            int silverLen = PlayerPrefs.GetInt(STATS_SILVER_STREAK_LENGTH, 0);
+            int goldLen = PlayerPrefs.GetInt(STATS_GOLD_STREAK_LENGTH, 0);
+            int diamondLen = PlayerPrefs.GetInt(STATS_DIAMOND_STREAK_LENGTH, 0);
+            int bdiamondLen = PlayerPrefs.GetInt(STATS_BDIAMOND_STREAK_LENGTH, 0);
+            return (silverLen, goldLen, diamondLen, bdiamondLen);
+        }
+
+        public static (int, int, int, int) GetLongestStreaksLengths() {
+            int silverLen = PlayerPrefs.GetInt(STATS_SILVER_STREAK_LONGEST_LENGTH, 0);
+            int goldLen = PlayerPrefs.GetInt(STATS_GOLD_STREAK_LONGEST_LENGTH, 0);
+            int diamondLen = PlayerPrefs.GetInt(STATS_DIAMOND_STREAK_LONGEST_LENGTH, 0);
+            int bdiamondLen = PlayerPrefs.GetInt(STATS_BDIAMOND_STREAK_LONGEST_LENGTH, 0);
+            return (silverLen, goldLen, diamondLen, bdiamondLen);
         }
     }
 }
