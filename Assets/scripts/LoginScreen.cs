@@ -10,11 +10,7 @@ using Immutable.Passport;
 
 namespace FourteenNumbers {
 
-    public class LoginSceneButtonHandler : MonoBehaviour {
-
-        public Button buttonLogin;
-        public Button buttonSkip;
-
+    public class LoginScreen : MonoBehaviour {
         private Coroutine loginCheckRoutine;
         private bool isRunning = false;
 
@@ -71,6 +67,7 @@ namespace FourteenNumbers {
             Debug.Log("CheckLogin: Loggedin: " + loggedIn);
             if (loggedIn) {
                 PassportStore.SetLoggedIn(true);
+                PassportStore.SetLoggedInChecked();
                 DeepLinkManager.Instance.LoginPath = DeepLinkManager.LOGIN_THREAD;
                 SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
                 stopCoroutine();

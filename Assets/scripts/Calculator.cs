@@ -5,7 +5,7 @@ using TMPro;
 using System;
 using System.Collections;
 using UnityEngine.SceneManagement;
-
+using Immutable.Passport;
 
 namespace FourteenNumbers {
 
@@ -124,9 +124,29 @@ namespace FourteenNumbers {
             startANewDay(gameDayInt);
         }
 
-        public void OnApplicationFocus(bool hasFocus) {
+        public async void OnApplicationFocus(bool hasFocus) {
             Debug.Log("OnApplicationFocus: " + hasFocus);
             if (hasFocus) {
+                // Check login
+                bool isLoggedIn = PassportStore.IsLoggedIn();
+                bool recentlyCheckedLogin = PassportStore.WasLoggedInRecently();
+                Debug.Log("isloggedIn: " + isLoggedIn + ", recentlyCheckedLogin: " + recentlyCheckedLogin);
+                if (isLoggedIn && !recentlyCheckedLogin) {
+                    if (await Passport.Instance.HasCredentialsSaved()) {
+                        // Try to log in using saved credentials
+                        bool success = await Passport.Instance.Login(useCachedSession: true);
+                        if (success) {
+                            PassportStore.SetLoggedInChecked();
+                        }
+                        else {
+                            SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
+                        }
+                    }
+                    else {
+                        SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
+                    }
+                }
+
                 uint gameDayNow = Timeline.GameDay();
                 Debug.Log("Game Day: Existing: " + gameDayInt + " Now: " + gameDayNow);
                 if (gameDayNow != gameDayInt) {
@@ -781,31 +801,41 @@ namespace FourteenNumbers {
         private void showHelpMessage() {
             string text = "";
 
-            if (newPlayer && playerState == PlayerState.Init) {
-                text = "Find three solutions for the target number\n";
-            }
-            else if (playerState == PlayerState.Done) {
+            uint pointsToday = (uint) pointsEarnedTotalToday();
+            if (playerState == PlayerState.Done) {
                 text = helpScreenMessage + "\n";
-            }
-
-            if (LoadedBestScore) {
-                if (playerState == PlayerState.Done && 
-                    pointsEarnedTotalToday() > BestScore) {
-                    text = text + "New high score! Current best score is " + BestScore;
-                    panelPublish.SetActive(true);
+                if (LoadedBestScore) {
+                    if (pointsToday > BestScore) {
+                        text = text + "New high score! Current best score is " + BestScore + "\n";
+                        panelPublish.SetActive(true);
+                    }
+                    else {
+                        text = text + "Best score so far today is " + BestScore + "\n";
+                        panelPublish.SetActive(false);
+                    }
                 }
-                else {
-                    text = text + "Best score so far today is " + BestScore;
-                    panelPublish.SetActive(false);
-                }
+                text = text + "Next game in " + Timeline.TimeToNextDayStrShort();
             }
             else {
-                text = text + "Loading best score so far today";
+                text = "Find three solutions for the target number\n";
+                if (pointsToday < Stats.STATS_SILVER_STREAK_THRESHOLD) {
+                    uint diff = Stats.STATS_SILVER_STREAK_THRESHOLD - pointsToday;
+                    text = text + diff + " points to extend silver streak";
+                }
+                else if (pointsToday < Stats.STATS_GOLD_STREAK_THRESHOLD) {
+                    uint diff = Stats.STATS_GOLD_STREAK_THRESHOLD - pointsToday;
+                    text = text + diff + " points to extend gold streak";
+                }
+                else if (pointsToday < Stats.STATS_DIAMOND_STREAK_THRESHOLD) {
+                    uint diff = Stats.STATS_DIAMOND_STREAK_THRESHOLD - pointsToday;
+                    text = text + diff + " points to extend diamond streak";
+                }
+                else if (pointsToday < Stats.STATS_BDIAMOND_STREAK_THRESHOLD) {
+                    uint diff = Stats.STATS_BDIAMOND_STREAK_THRESHOLD - pointsToday;
+                    text = text + diff + " points to extend blue diamond streak";
+                }
             }
 
-            if (playerState == PlayerState.Done) {
-                text = text + "\nNext game in " + Timeline.TimeToNextDayStrShort();
-            }
             helpTextMesh.text = text;
         }
 

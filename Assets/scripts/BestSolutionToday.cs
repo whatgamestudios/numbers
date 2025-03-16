@@ -15,16 +15,14 @@ namespace FourteenNumbers {
 
         public bool LoadedBestScore { get; private set; }
 
-        // When the best score was fetched
-        public DateTime BestScoreFetched { get; private set; }
-
         private FourteenNumbersContract fourteenNumbersContracts = new FourteenNumbersContract();
-        private Coroutine minuteRoutine;
+        private Coroutine loadRoutine;
         private bool isRunning = false;
 
 
         public void OnStart() {
             LoadedBestScore = false;
+            BestScore = 0;
         }
 
         public void OnEnable() {
@@ -37,10 +35,6 @@ namespace FourteenNumbers {
 
         public void StartTimer() {
             if (!isRunning) {
-                Debug.Log("Best Solution Today monitor started");
-                minuteRoutine = StartCoroutine(MinuteRoutine());
-                isRunning = true;
-
                 // Cache the best points so that they are more quickly available.
                 uint statsGameDay = (uint) Stats.GetLastGameDay();
                 uint gameDay = (uint) Timeline.GameDay();
@@ -48,23 +42,31 @@ namespace FourteenNumbers {
                     BestScore = (uint) Stats.GetBestPointsToday();
                     if (BestScore == 210) {
                         LoadedBestScore = true;
+                        Debug.Log("Best Solution Today loaded from cache");
                     }
+                }
+
+                if (!LoadedBestScore) {
+                    Debug.Log("Best Solution Today monitor started");
+                    loadRoutine = StartCoroutine(LoadRoutine());
+                    isRunning = true;
                 }
             }
         }
 
         public void StopTimer() {
-            if (isRunning && minuteRoutine != null) {
+            if (isRunning && loadRoutine != null) {
                 Debug.Log("Best Solution Today monitor stopped");
-                StopCoroutine(minuteRoutine);
+                StopCoroutine(loadRoutine);
                 isRunning = false;
             }
         }
 
-        IEnumerator MinuteRoutine() {
+        IEnumerator LoadRoutine() {
             while (true) {
                 FetchBestScore();
-                yield return new WaitForSeconds(5f);
+                StopTimer();
+                yield return new WaitForSeconds(60f);
             }
         }
 
@@ -73,13 +75,7 @@ namespace FourteenNumbers {
             BestScore = await fourteenNumbersContracts.GetBestScore(gameDay);
             LoadedBestScore = true;
             Stats.SetBestPointsToday((int) BestScore);
-            BestScoreFetched = DateTime.Now;
             Debug.Log("Best Solution Today: " + BestScore);
-
-            // The score isn't going to get any better. Save resources and don't keep checking.
-            if (BestScore == 210) {
-                StopTimer();
-            }
         }
     }
 }

@@ -8,9 +8,12 @@ using TMPro;
 namespace FourteenNumbers {
 
     public class PublishManager : MonoBehaviour {
+        public GameObject panelPublish;
 
         public void OnButtonClick(string buttonText) {
             if (buttonText == "Publish") {
+                panelPublish.SetActive(false);
+
                 uint gameDay = (uint) Stats.GetLastGameDay();
                 (string sol1, string sol2, string sol3) = Stats.GetSolutions();
 

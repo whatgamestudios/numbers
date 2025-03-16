@@ -3,12 +3,30 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using TMPro;
-
+using UnityEngine.SceneManagement;
 
 namespace FourteenNumbers {
 
     public class ShowStats : MonoBehaviour {
-        public TextMeshProUGUI statsText;
+        public TextMeshProUGUI pointsAveText;
+        public TextMeshProUGUI perfectScoreDaysText;
+        public TextMeshProUGUI daysPlayedText;
+        public TextMeshProUGUI firstDayPlayedText;
+        public TextMeshProUGUI firstDatePlayedText;
+        public TextMeshProUGUI lastDayPlayedText;
+        public TextMeshProUGUI lastDatePlayedText;
+
+        public TextMeshProUGUI silverText;
+        public TextMeshProUGUI silverLongestText;
+        public TextMeshProUGUI goldText;
+        public TextMeshProUGUI goldLongestText;
+        public TextMeshProUGUI diamondText;
+        public TextMeshProUGUI diamondLongestText;
+        public TextMeshProUGUI blueDiamondText;
+        public TextMeshProUGUI blueDiamondLongestText;
+
+        private string help = "" +
+            "Streaks are sequential days played.";
 
         public void Start() {
             int firstPlayed;
@@ -39,18 +57,41 @@ namespace FourteenNumbers {
                 ave = totalPoints / timesPlayed;
             }
 
-            string stats = 
-                "Points Average: " + ave + "\n" +
-                "Perfect Score Days: " + perfectScoreDays + "\n" +
-                "First Day Played: \n" +
-                " " + firstPlayedS + "\n" +
-                " Game Day: " + firstPlayed + "\n" +
-                "More Recent Day Played: \n" +
-                " " + lastPlayedS + "\n" +
-                " Game Day: " + lastPlayed + "\n" +
-                "Number of times played: " + timesPlayed;
+            pointsAveText.text = ave.ToString();
+            perfectScoreDaysText.text = perfectScoreDays.ToString();
+            daysPlayedText.text = timesPlayed.ToString();
+            firstDayPlayedText.text = firstPlayed.ToString();
+            firstDatePlayedText.text = firstPlayedS;
+            lastDayPlayedText.text = lastPlayed.ToString();
+            lastDatePlayedText.text = lastPlayedS;
 
-            statsText.text = stats;
+
+            int silverLen;
+            int goldLen;
+            int diamondLen;
+            int bdiamondLen;
+            (silverLen, goldLen, diamondLen, bdiamondLen) = Stats.GetStreaksLengths();
+            silverText.text = silverLen.ToString();
+            goldText.text = goldLen.ToString();
+            diamondText.text = diamondLen.ToString();
+            blueDiamondText.text = bdiamondLen.ToString();
+
+            (silverLen, goldLen, diamondLen, bdiamondLen) = Stats.GetLongestStreaksLengths();
+            silverLongestText.text = silverLen.ToString();
+            goldLongestText.text = goldLen.ToString();
+            diamondLongestText.text = diamondLen.ToString();
+            blueDiamondLongestText.text = bdiamondLen.ToString();
         }
+
+        public void OnButtonClick(string buttonText) {
+            if (buttonText == "Help") {
+                MessagePass.SetMsg(help);
+                SceneManager.LoadScene("HelpContextScene", LoadSceneMode.Additive);
+            }
+            else {
+                Debug.Log("Unknown button");
+            }
+        }
+
     }
 }

@@ -1,10 +1,14 @@
 // Copyright (c) Whatgame Studios 2024 - 2025
 using UnityEngine;
+using System;
 
 namespace FourteenNumbers {
     public class PassportStore {
         public const string PASS_LOGGED_IN = "PASS_LOGGED_IN";
+        public const string PASS_WHEN_LOGGED_IN = "PASS_WHEN_LOGGED_IN";
 
+        // Classify "recently" as five minutes.
+        public const int RECENTLY_MS = 1000 * 60 * 5;
 
         public static bool IsLoggedIn() {
             return PlayerPrefs.GetInt(PASS_LOGGED_IN, 0) != 0;
@@ -18,6 +22,17 @@ namespace FourteenNumbers {
                 PlayerPrefs.SetInt(PASS_LOGGED_IN, 0);
             }
             PlayerPrefs.Save();
+        }
+
+        public static bool WasLoggedInRecently() {
+            string whenLoggedInStr = PlayerPrefs.GetString(PASS_WHEN_LOGGED_IN, "0");
+            long whenLoggedIn = Int64.Parse(whenLoggedInStr);
+            double elapsed = (DateTime.Now - new DateTime(whenLoggedIn)).TotalMilliseconds;
+            return ((int) elapsed < RECENTLY_MS);
+        }
+
+        public static void SetLoggedInChecked() {
+            PlayerPrefs.SetString(PASS_WHEN_LOGGED_IN, (DateTime.Now.Ticks).ToString());
         }
     }
 }
