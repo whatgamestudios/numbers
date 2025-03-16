@@ -15,9 +15,6 @@ namespace FourteenNumbers {
 
         public bool LoadedBestScore { get; private set; }
 
-        // When the best score was fetched
-        public DateTime BestScoreFetched { get; private set; }
-
         private FourteenNumbersContract fourteenNumbersContracts = new FourteenNumbersContract();
         private Coroutine loadRoutine;
         private bool isRunning = false;
@@ -25,6 +22,7 @@ namespace FourteenNumbers {
 
         public void OnStart() {
             LoadedBestScore = false;
+            BestScore = 0;
         }
 
         public void OnEnable() {
@@ -77,7 +75,6 @@ namespace FourteenNumbers {
             BestScore = await fourteenNumbersContracts.GetBestScore(gameDay);
             LoadedBestScore = true;
             Stats.SetBestPointsToday((int) BestScore);
-            BestScoreFetched = DateTime.Now;
             Debug.Log("Best Solution Today: " + BestScore);
         }
     }
