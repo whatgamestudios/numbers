@@ -38,6 +38,7 @@ namespace FourteenNumbers {
                 bool success = await passport.Login(useCachedSession: true);
                 PassportStore.SetLoggedIn(success);
                 if (success) {
+                    PassportStore.SetLoggedInChecked();
                     DeepLinkManager.Instance.LoginPath = DeepLinkManager.WELCOME;
                     SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
                 }

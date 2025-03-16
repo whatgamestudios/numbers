@@ -5,7 +5,7 @@ using TMPro;
 using System;
 using System.Collections;
 using UnityEngine.SceneManagement;
-
+using Immutable.Passport;
 
 namespace FourteenNumbers {
 
@@ -124,9 +124,29 @@ namespace FourteenNumbers {
             startANewDay(gameDayInt);
         }
 
-        public void OnApplicationFocus(bool hasFocus) {
+        public async void OnApplicationFocus(bool hasFocus) {
             Debug.Log("OnApplicationFocus: " + hasFocus);
             if (hasFocus) {
+                // Check login
+                bool isLoggedIn = PassportStore.IsLoggedIn();
+                bool recentlyCheckedLogin = PassportStore.WasLoggedInRecently();
+                Debug.Log("isloggedIn: " + isLoggedIn + ", recentlyCheckedLogin: " + recentlyCheckedLogin);
+                if (isLoggedIn && !recentlyCheckedLogin) {
+                    if (await Passport.Instance.HasCredentialsSaved()) {
+                        // Try to log in using saved credentials
+                        bool success = await Passport.Instance.Login(useCachedSession: true);
+                        if (success) {
+                            PassportStore.SetLoggedInChecked();
+                        }
+                        else {
+                            SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
+                        }
+                    }
+                    else {
+                        SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
+                    }
+                }
+
                 uint gameDayNow = Timeline.GameDay();
                 Debug.Log("Game Day: Existing: " + gameDayInt + " Now: " + gameDayNow);
                 if (gameDayNow != gameDayInt) {
