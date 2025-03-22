@@ -51,7 +51,6 @@ namespace FourteenNumbers {
 
         IEnumerator LoadRoutine() {
             FetchBestScore();
-            BestScoreLoaded();
             yield return new WaitForSeconds(0f);
         }
 
@@ -61,6 +60,7 @@ namespace FourteenNumbers {
             LoadedBestScore = true;
             Stats.SetBestPointsToday((int) BestScore);
             Debug.Log("Best Solution Today: " + BestScore);
+            BestScoreLoaded();
         }
 
         public virtual void BestScoreLoaded() {

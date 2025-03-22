@@ -895,7 +895,7 @@ namespace FourteenNumbers {
             if (playerState == PlayerState.Done && PassportStore.IsLoggedIn() &&
                 LoadedBestScore && pointsToday > BestScore) {
                 panelPublish.SetActive(true);
-            }
+           }
         }
     }
 }
