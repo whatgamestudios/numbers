@@ -198,9 +198,9 @@ namespace FourteenNumbers {
                 sol3 = combinedSolution.Substring(indexOfEquals+1);
             }
 
-            playerInput1Text.text = sol1;
-            playerInput2Text.text = sol2;
-            playerInput3Text.text = sol3;
+            playerInput1Text.text = replace(sol1, true);
+            playerInput2Text.text = replace(sol2, true);
+            playerInput3Text.text = replace(sol3, true);
 
             uint points1 = 0;
             uint points2 = 0;
@@ -242,23 +242,26 @@ namespace FourteenNumbers {
         }
 
 
-        private string replace(string solution) {
-            string output = solution.Replace("100", "?");
-            output = output.Replace("75", "?");
-            output = output.Replace("50", "?");
-            output = output.Replace("25", "?");
-            output = output.Replace("10", "?");
-            output = output.Replace('9', '?');
-            output = output.Replace('8', '?');
-            output = output.Replace('7', '?');
-            output = output.Replace('6', '?');
-            output = output.Replace('5', '?');
-            output = output.Replace('4', '?');
-            output = output.Replace('3', '?');
-            output = output.Replace('2', '?');
-            output = output.Replace('1', '?');
-            output = output.Replace('×', '*');
-            output = output.Replace('÷', '/');
+        private string replace(string solution, bool symbolsOnly = false) {
+            string output = solution;
+            if (!symbolsOnly) {
+                output = output.Replace("100", "?");
+                output = output.Replace("75", "?");
+                output = output.Replace("50", "?");
+                output = output.Replace("25", "?");
+                output = output.Replace("10", "?");
+                output = output.Replace('9', '?');
+                output = output.Replace('8', '?');
+                output = output.Replace('7', '?');
+                output = output.Replace('6', '?');
+                output = output.Replace('5', '?');
+                output = output.Replace('4', '?');
+                output = output.Replace('3', '?');
+                output = output.Replace('2', '?');
+                output = output.Replace('1', '?');
+            }
+            output = output.Replace('*', '×');
+            output = output.Replace('/', '÷');
             return output;
         }
 
