@@ -111,7 +111,7 @@ namespace FourteenNumbers {
             int totalPointsToday = PlayerPrefs.GetInt(STATS_POINTS_TODAY, 0);
             totalPointsToday += points;
             PlayerPrefs.SetInt(STATS_POINTS_TODAY, totalPointsToday);
-            updateStreaks(gameDay, totalPointsToday);
+            updateStreaks(gameDay, totalPointsToday, true);
 
             if (totalPointsToday == 210) {
                 int perfectScoreDays = PlayerPrefs.GetInt(STATS_PERFECT_SCORE_DAYS, 0);
@@ -172,21 +172,21 @@ namespace FourteenNumbers {
             return PlayerPrefs.GetString(key, "==");
         }
 
-        private static void updateStreaks(uint gameDay, int pointsToday) {
-            updateStreak(gameDay, pointsToday, 
+        private static void updateStreaks(uint gameDay, int pointsToday, bool finalSolutionForToday = false) {
+            updateStreak(gameDay, pointsToday, finalSolutionForToday, 
                 STATS_SILVER_STREAK_THRESHOLD, STATS_SILVER_STREAK_LAST_DAY, 
                 STATS_SILVER_STREAK_LENGTH, STATS_SILVER_STREAK_LONGEST_LENGTH);
-            updateStreak(gameDay, pointsToday, 
+            updateStreak(gameDay, pointsToday, finalSolutionForToday, 
                 STATS_GOLD_STREAK_THRESHOLD, STATS_GOLD_STREAK_LAST_DAY, 
                 STATS_GOLD_STREAK_LENGTH, STATS_GOLD_STREAK_LONGEST_LENGTH);
-            updateStreak(gameDay, pointsToday, 
+            updateStreak(gameDay, pointsToday, finalSolutionForToday, 
                 STATS_DIAMOND_STREAK_THRESHOLD, STATS_DIAMOND_STREAK_LAST_DAY, 
                 STATS_DIAMOND_STREAK_LENGTH, STATS_DIAMOND_STREAK_LONGEST_LENGTH);
-            updateStreak(gameDay, pointsToday, 
+            updateStreak(gameDay, pointsToday, finalSolutionForToday, 
                 STATS_BDIAMOND_STREAK_THRESHOLD, STATS_BDIAMOND_STREAK_LAST_DAY, 
                 STATS_BDIAMOND_STREAK_LENGTH, STATS_BDIAMOND_STREAK_LONGEST_LENGTH);
         }
-        private static void updateStreak(uint gameDay, int pointsToday, 
+        private static void updateStreak(uint gameDay, int pointsToday, bool finalSolutionForToday,
             uint threshold, string lastDayKey, string lenKey, string longestLenKey) {
             if (pointsToday >= (int) threshold) {
                 int lastDay = PlayerPrefs.GetInt(lastDayKey, 0);
@@ -208,6 +208,15 @@ namespace FourteenNumbers {
                     if (streakLen > longestStreakLen) {
                         PlayerPrefs.SetInt(longestLenKey, streakLen);
                     }
+                }
+            }
+            else {
+                // Less than threshold
+                if (finalSolutionForToday) {
+                    // If this is the third solution for today, and the points scored is
+                    // less than the threshold for this type of streak, then any existing 
+                    // streak is ended, and the streak length is now 0.
+                    PlayerPrefs.SetInt(lenKey, 0);
                 }
             }
         }
