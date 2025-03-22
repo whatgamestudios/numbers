@@ -116,6 +116,8 @@ namespace FourteenNumbers {
 
         PlayerState playerState;
 
+        string help = "Use each number once to find three equations for the target number";
+
         public void Start() {
             Debug.Log("Game Scene Start");
             int daysPlayed = Stats.GetNumDaysPlayed();
@@ -169,7 +171,11 @@ namespace FourteenNumbers {
         }
 
         public void OnButtonClickInternal(string buttonText, bool updateStats) {
-            if (buttonText == "C") {
+            if (buttonText == "Help") {
+                MessagePass.SetMsg(help);
+                SceneManager.LoadScene("HelpContextScene", LoadSceneMode.Additive);
+            }
+            else if (buttonText == "C") {
                 clearUsedButtons(true);
                 clearCurrentAttempt();
             }
