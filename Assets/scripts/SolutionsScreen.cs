@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FourteenNumbers {
 
-    public class SolutionsScreen : BestSolutionToday {
+    public class SolutionsScreen : MonoBehaviour {
         // Control
         public TextMeshProUGUI gameDayText;
         public TextMeshProUGUI gameDateText;
@@ -83,13 +83,6 @@ namespace FourteenNumbers {
 
 
         public void show(uint gameDay) {
-            // if (gameDay == gameDayToday) {
-            //     startTimer();
-            // }
-            // else {
-                StopTimer();
-            // }
-
             gameDayDisplaying = gameDay;
             gameDayText.text = "" + gameDay;
 
@@ -100,12 +93,6 @@ namespace FourteenNumbers {
             DisplayMyResult(gameDay);
 
             StartCoroutine(GetResultRoutine());
-
-            // FourteenNumbersContract fourteenNumbersContracts = new FourteenNumbersContract();
-            // SolutionsOutputDTO result = await fourteenNumbersContracts.GetSolution(gameDay);
-            // bestPlayerText.text = result.Player;
-            // pointsTotalText.text = result.Points.ToString();
-            //CombinedSolution
         }
 
 

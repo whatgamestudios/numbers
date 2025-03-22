@@ -17,7 +17,6 @@ namespace FourteenNumbers {
 
         private FourteenNumbersContract fourteenNumbersContracts = new FourteenNumbersContract();
         private Coroutine loadRoutine;
-        private bool isRunning = false;
 
 
         public void OnStart() {
@@ -26,48 +25,34 @@ namespace FourteenNumbers {
         }
 
         public void OnEnable() {
-            StartTimer();
+            StartLoader();
         }
 
         public void OnDisable() {
-            StopTimer();
         }
 
-        public void StartTimer() {
-            if (!isRunning) {
-                // Cache the best points so that they are more quickly available.
-                uint statsGameDay = (uint) Stats.GetLastGameDay();
-                uint gameDay = (uint) Timeline.GameDay();
-                if (statsGameDay == gameDay) {
-                    BestScore = (uint) Stats.GetBestPointsToday();
-                    if (BestScore == 210) {
-                        LoadedBestScore = true;
-                        Debug.Log("Best Solution Today loaded from cache");
-                    }
-                }
-
-                if (!LoadedBestScore) {
-                    Debug.Log("Best Solution Today monitor started");
-                    loadRoutine = StartCoroutine(LoadRoutine());
-                    isRunning = true;
+        public void StartLoader() {
+            // Cache the best points so that they are more quickly available.
+            uint statsGameDay = (uint) Stats.GetLastGameDay();
+            uint gameDay = (uint) Timeline.GameDay();
+            if (statsGameDay == gameDay) {
+                BestScore = (uint) Stats.GetBestPointsToday();
+                if (BestScore == 210) {
+                    LoadedBestScore = true;
+                    Debug.Log("Best Solution Today loaded from cache");
                 }
             }
-        }
 
-        public void StopTimer() {
-            if (isRunning && loadRoutine != null) {
-                Debug.Log("Best Solution Today monitor stopped");
-                StopCoroutine(loadRoutine);
-                isRunning = false;
+            if (!LoadedBestScore) {
+                Debug.Log("Loading Best Solution Today");
+                loadRoutine = StartCoroutine(LoadRoutine());
             }
         }
 
         IEnumerator LoadRoutine() {
-            while (true) {
-                FetchBestScore();
-                StopTimer();
-                yield return new WaitForSeconds(60f);
-            }
+            FetchBestScore();
+            BestScoreLoaded();
+            yield return new WaitForSeconds(0f);
         }
 
         private async void FetchBestScore() {
@@ -76,6 +61,10 @@ namespace FourteenNumbers {
             LoadedBestScore = true;
             Stats.SetBestPointsToday((int) BestScore);
             Debug.Log("Best Solution Today: " + BestScore);
+        }
+
+        public virtual void BestScoreLoaded() {
+
         }
     }
 }

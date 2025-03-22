@@ -224,6 +224,7 @@ namespace FourteenNumbers {
                         case 3:
                             playerState = PlayerState.Done;
                             panelShare.SetActive(true);
+                            activatePublishButton();
                             setEndResult();
                             break;
                     }
@@ -326,13 +327,6 @@ namespace FourteenNumbers {
             if (publishStats) {
                 publishStatsThisSolution(currentInput, pointsEarnedThisAttempt);
             }
-
-            uint pointsToday = (uint) pointsEarnedTotalToday();
-            if (playerState == PlayerState.Done && PassportStore.IsLoggedIn() &&
-                LoadedBestScore && pointsToday > BestScore) {
-                panelPublish.SetActive(true);
-            }
-
             return true;
         }   
 
@@ -885,6 +879,22 @@ namespace FourteenNumbers {
             else {
                 helpScreenMessage = "Well done";
                 Debug.Log("ShowEndResult with: " + pointsEarnedTotal);
+            }
+        }
+
+
+        // Called from the best score loader once the score has been loaded.
+        public override void BestScoreLoaded() {
+            activatePublishButton();
+        }
+
+        // Called from the best score loader once the score has been loaded, or 
+        // from the on click handler once the third equals sign has been pressed.
+        private void activatePublishButton() {
+            uint pointsToday = (uint) pointsEarnedTotalToday();
+            if (playerState == PlayerState.Done && PassportStore.IsLoggedIn() &&
+                LoadedBestScore && pointsToday > BestScore) {
+                panelPublish.SetActive(true);
             }
         }
     }
