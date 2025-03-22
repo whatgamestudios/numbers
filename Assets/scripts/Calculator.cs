@@ -314,6 +314,12 @@ namespace FourteenNumbers {
             if (publishStats) {
                 publishStatsThisSolution(currentInput, pointsEarnedThisAttempt);
             }
+
+            uint pointsToday = (uint) pointsEarnedTotalToday();
+            if (playerState == PlayerState.Done && LoadedBestScore && pointsToday > BestScore) {
+                panelPublish.SetActive(true);
+            }
+
             return true;
         }   
 
@@ -806,12 +812,10 @@ namespace FourteenNumbers {
                 text = helpScreenMessage + "\n";
                 if (LoadedBestScore) {
                     if (pointsToday > BestScore) {
-                        text = text + "New high score! Current best score is " + BestScore + "\n";
-                        panelPublish.SetActive(true);
+                        text = text + "New high score!\n";
                     }
                     else {
                         text = text + "Best score so far today is " + BestScore + "\n";
-                        panelPublish.SetActive(false);
                     }
                 }
                 text = text + "Next game in " + Timeline.TimeToNextDayStrShort();
