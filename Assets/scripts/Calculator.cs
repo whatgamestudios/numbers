@@ -131,20 +131,26 @@ namespace FourteenNumbers {
                 bool isLoggedIn = PassportStore.IsLoggedIn();
                 bool recentlyCheckedLogin = PassportStore.WasLoggedInRecently();
                 Debug.Log("isloggedIn: " + isLoggedIn + ", recentlyCheckedLogin: " + recentlyCheckedLogin);
-                if (isLoggedIn && !recentlyCheckedLogin) {
-                    if (await Passport.Instance.HasCredentialsSaved()) {
-                        // Try to log in using saved credentials
-                        bool success = await Passport.Instance.Login(useCachedSession: true);
-                        if (success) {
-                            PassportStore.SetLoggedInChecked();
+                if (isLoggedIn) {
+                    if (!recentlyCheckedLogin) {
+                        if (await Passport.Instance.HasCredentialsSaved()) {
+                            // Try to log in using saved credentials
+                            bool success = await Passport.Instance.Login(useCachedSession: true);
+                            if (success) {
+                                PassportStore.SetLoggedInChecked();
+                            }
+                            else {
+                                SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
+                            }
                         }
                         else {
                             SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
                         }
                     }
-                    else {
-                        SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
-                    }
+                    // Set up provider
+                    await Passport.Instance.ConnectEvm();
+                    // Set up wallet (includes creating a wallet for new players)
+                    /*List<string> accounts = */await Passport.Instance.ZkEvmRequestAccounts();
                 }
 
                 uint gameDayNow = Timeline.GameDay();
@@ -316,7 +322,8 @@ namespace FourteenNumbers {
             }
 
             uint pointsToday = (uint) pointsEarnedTotalToday();
-            if (playerState == PlayerState.Done && LoadedBestScore && pointsToday > BestScore) {
+            if (playerState == PlayerState.Done && PassportStore.IsLoggedIn() &&
+                LoadedBestScore && pointsToday > BestScore) {
                 panelPublish.SetActive(true);
             }
 
