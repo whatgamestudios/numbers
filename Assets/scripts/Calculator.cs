@@ -116,6 +116,8 @@ namespace FourteenNumbers {
 
         PlayerState playerState;
 
+        string help = "Use each number once to find three equations for the target number";
+
         public void Start() {
             Debug.Log("Game Scene Start");
             int daysPlayed = Stats.GetNumDaysPlayed();
@@ -131,20 +133,26 @@ namespace FourteenNumbers {
                 bool isLoggedIn = PassportStore.IsLoggedIn();
                 bool recentlyCheckedLogin = PassportStore.WasLoggedInRecently();
                 Debug.Log("isloggedIn: " + isLoggedIn + ", recentlyCheckedLogin: " + recentlyCheckedLogin);
-                if (isLoggedIn && !recentlyCheckedLogin) {
-                    if (await Passport.Instance.HasCredentialsSaved()) {
-                        // Try to log in using saved credentials
-                        bool success = await Passport.Instance.Login(useCachedSession: true);
-                        if (success) {
-                            PassportStore.SetLoggedInChecked();
+                if (isLoggedIn) {
+                    if (!recentlyCheckedLogin) {
+                        if (await Passport.Instance.HasCredentialsSaved()) {
+                            // Try to log in using saved credentials
+                            bool success = await Passport.Instance.Login(useCachedSession: true);
+                            if (success) {
+                                PassportStore.SetLoggedInChecked();
+                            }
+                            else {
+                                SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
+                            }
                         }
                         else {
                             SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
                         }
                     }
-                    else {
-                        SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
-                    }
+                    // Set up provider
+                    await Passport.Instance.ConnectEvm();
+                    // Set up wallet (includes creating a wallet for new players)
+                    /*List<string> accounts = */await Passport.Instance.ZkEvmRequestAccounts();
                 }
 
                 uint gameDayNow = Timeline.GameDay();
@@ -163,7 +171,11 @@ namespace FourteenNumbers {
         }
 
         public void OnButtonClickInternal(string buttonText, bool updateStats) {
-            if (buttonText == "C") {
+            if (buttonText == "Help") {
+                MessagePass.SetMsg(help);
+                SceneManager.LoadScene("HelpContextScene", LoadSceneMode.Additive);
+            }
+            else if (buttonText == "C") {
                 clearUsedButtons(true);
                 clearCurrentAttempt();
             }
@@ -212,6 +224,7 @@ namespace FourteenNumbers {
                         case 3:
                             playerState = PlayerState.Done;
                             panelShare.SetActive(true);
+                            activatePublishButton();
                             setEndResult();
                             break;
                     }
@@ -806,12 +819,10 @@ namespace FourteenNumbers {
                 text = helpScreenMessage + "\n";
                 if (LoadedBestScore) {
                     if (pointsToday > BestScore) {
-                        text = text + "New high score! Current best score is " + BestScore + "\n";
-                        panelPublish.SetActive(true);
+                        text = text + "New high score!\n";
                     }
                     else {
                         text = text + "Best score so far today is " + BestScore + "\n";
-                        panelPublish.SetActive(false);
                     }
                 }
                 text = text + "Next game in " + Timeline.TimeToNextDayStrShort();
@@ -869,6 +880,22 @@ namespace FourteenNumbers {
                 helpScreenMessage = "Well done";
                 Debug.Log("ShowEndResult with: " + pointsEarnedTotal);
             }
+        }
+
+
+        // Called from the best score loader once the score has been loaded.
+        public override void BestScoreLoaded() {
+            activatePublishButton();
+        }
+
+        // Called from the best score loader once the score has been loaded, or 
+        // from the on click handler once the third equals sign has been pressed.
+        private void activatePublishButton() {
+            uint pointsToday = (uint) pointsEarnedTotalToday();
+            if (playerState == PlayerState.Done && PassportStore.IsLoggedIn() &&
+                LoadedBestScore && pointsToday > BestScore) {
+                panelPublish.SetActive(true);
+           }
         }
     }
 }

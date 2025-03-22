@@ -73,21 +73,27 @@ namespace FourteenNumbers {
             byte[] abiEncoding = func.GetCallData();
             Debug.Log("Publish: " + HexDump.Dump(abiEncoding));
 
-            TransactionReceiptResponse response = 
-                await Passport.Instance.ZkEvmSendTransactionWithConfirmation(
-                    new TransactionRequest() {
-                        to = contractAddress,
-                        data = "0x" + BitConverter.ToString(abiEncoding).Replace("-", "").ToLower(),
-                        value = "0"
-                    }
-                );
-            Debug.Log($"Transaction hash: {response.transactionHash}");
+            try {
+                TransactionReceiptResponse response = 
+                    await Passport.Instance.ZkEvmSendTransactionWithConfirmation(
+                        new TransactionRequest() {
+                            to = contractAddress,
+                            data = "0x" + BitConverter.ToString(abiEncoding).Replace("-", "").ToLower(),
+                            value = "0"
+                        }
+                    );
+                Debug.Log($"Transaction hash: {response.transactionHash}");
 
-            if (response.status != "1") {
-                LastTransactionStatus = TransactionStatus.Failed;
+                if (response.status != "1") {
+                    LastTransactionStatus = TransactionStatus.Failed;
+                }
+                else {
+                    LastTransactionStatus = TransactionStatus.Success;
+                }
             }
-            else {
-                LastTransactionStatus = TransactionStatus.Success;
+            catch (System.Exception ex) {
+                LastTransactionStatus = TransactionStatus.Failed;
+                Debug.Log("Err: " + ex.Message);
             }
         }
 

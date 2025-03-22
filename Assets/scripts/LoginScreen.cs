@@ -14,6 +14,8 @@ namespace FourteenNumbers {
         private Coroutine loginCheckRoutine;
         private bool isRunning = false;
 
+        private string help = "Login to qualify for rewards and enable best score publishing";
+
         public void Start() {
             startCoroutine();
         }
@@ -23,7 +25,11 @@ namespace FourteenNumbers {
         }
 
         public async void OnButtonClick(string buttonText) {
-            if (buttonText == "Login") {
+            if (buttonText == "Help") {
+                MessagePass.SetMsg(help);
+                SceneManager.LoadScene("HelpContextScene", LoadSceneMode.Additive);
+            }
+            else if (buttonText == "Login") {
                 Debug.Log("LoginPKCE start");
 #if (UNITY_ANDROID && !UNITY_EDITOR_WIN) || (UNITY_IPHONE && !UNITY_EDITOR_WIN) || UNITY_STANDALONE_OSX
                 await Passport.Instance.LoginPKCE();
