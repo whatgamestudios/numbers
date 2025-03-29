@@ -23,34 +23,10 @@ namespace FourteenNumbers {
         }
 
         public void OnButtonClick(string buttonText) {
-            // if (buttonText == "1") {
-            //     ScreenBackground.SetBackground(1);
-            //     setSelected(1);
-            // }
-            // else if (buttonText == "2") {
-            //     ScreenBackground.SetBackground(2);
-            //     setSelected(2);
-            // }
-            if (buttonText == "free1") {
-                ScreenBackground.SetBackground(1);
-                setSelected(1);
-            }
-            else if (buttonText == "free2") {
-                ScreenBackground.SetBackground(2);
-                setSelected(2);
-            }
-            // else if (buttonText == "5") {
-            //     ScreenBackground.SetBackground(5);
-            //     setSelected(5);
-            // }
-            else if (buttonText == "free3") {
-                ScreenBackground.SetBackground(3);
-                setSelected(3);
-            }
-            else {
-                Debug.Log("Unknown button");
-            }
-            ScreenBackground.SetPanelBackground(panel);
+            int option = BackgroundsMetadata.ButtonTextToOption(buttonText);
+            ScreenBackground.SetBackground(option);
+            setSelected(option);
+            ScreenBackgroundSetter.SetPanelBackground(panel);
         }
 
         private void setSelected(int selected) {
