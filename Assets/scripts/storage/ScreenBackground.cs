@@ -8,7 +8,7 @@ namespace FourteenNumbers {
     public class ScreenBackground {
         public const string BG_OPTION = "OPTION_BACKGROUND";
 
-        public const int BG_DEFAULT = 3;
+        public const int BG_DEFAULT = 1;
 
 
         /**
@@ -47,8 +47,9 @@ namespace FourteenNumbers {
 
             // Set the background image.
             Texture2D tex = Resources.Load<Texture2D>(resourceName);
-            // Debug.Log("tex null: " + (tex == null));
-            // Debug.Log("tex: " + tex.ToString());
+            if (tex == null) {
+                Debug.Log("Resource not found: " + resourceName);
+            }
             Rect size = new Rect(0.0f, 0.0f, tex.width, tex.height);
             Vector2 pivot = new Vector2(0.0f, 0.0f);
             Sprite s = Sprite.Create(tex, size, pivot);
@@ -67,18 +68,14 @@ namespace FourteenNumbers {
 
         private static (string, UnityEngine.Color, UnityEngine.Color) getInfo(int option) {
             switch (option) {
+                case 1:
+                    return ("scenes/free/free-type1-coffee", UnityEngine.Color.white, UnityEngine.Color.black);
                 case 2:
-                    return ("free-background2", UnityEngine.Color.black, UnityEngine.Color.white);
+                    return ("scenes/free/free-type2-dogs", UnityEngine.Color.white, UnityEngine.Color.black);
                 case 3:
-                    return ("free-background3", UnityEngine.Color.white, UnityEngine.Color.black);
-                case 4:
-                    return ("free-background4", UnityEngine.Color.black, UnityEngine.Color.white);
-                case 5:
-                    return ("free-background5", UnityEngine.Color.black, UnityEngine.Color.white);
-                case 6:
-                    return ("free-background6", UnityEngine.Color.white, UnityEngine.Color.black);
+                    return ("scenes/free/free-type3-koi", UnityEngine.Color.white, UnityEngine.Color.black);
                 default:
-                    return ("free-background1", UnityEngine.Color.black, UnityEngine.Color.white);
+                    return ("scenes/free/free-type1-coffee", UnityEngine.Color.black, UnityEngine.Color.white);
             }
 
         }

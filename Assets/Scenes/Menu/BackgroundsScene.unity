@@ -355,7 +355,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 4766891260965647410, guid: d40edce80727144cd845edc115dbc53c, type: 3}
+  m_Sprite: {fileID: 9081452867872440421, guid: 3fef7a11f25e8481ca8c77bc33cf2781, type: 3}
   m_Type: 2
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -385,9 +385,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 830f295f9fad144ed82b6b1e6141c41a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panelOption3: {fileID: 1006544629}
-  panelOption4: {fileID: 766114826}
-  panelOption6: {fileID: 867711701}
+  panelOption1: {fileID: 1006544629}
+  panelOption2: {fileID: 766114826}
+  panelOption3: {fileID: 867711701}
   panel: {fileID: 289835290}
 --- !u!114 &289835297
 MonoBehaviour:
@@ -758,7 +758,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 6
+          m_StringArgument: free3
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &566025438
@@ -781,7 +781,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 5165386444735513404, guid: fc4c619c3f52841649b019d4703803c7, type: 3}
+  m_Sprite: {fileID: -8189669902379490314, guid: f411dded222784027982d96d842a5cb2, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -886,7 +886,7 @@ GameObject:
   - component: {fileID: 766114829}
   - component: {fileID: 766114828}
   m_Layer: 5
-  m_Name: Option4Surround
+  m_Name: Option2Surround
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1099,7 +1099,7 @@ GameObject:
   - component: {fileID: 835141828}
   - component: {fileID: 835141827}
   m_Layer: 5
-  m_Name: Option1Button
+  m_Name: Option2Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1177,7 +1177,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 4
+          m_StringArgument: free2
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &835141828
@@ -1200,7 +1200,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6060148975335195486, guid: 35041a89372c5490dad9b86bb3299319, type: 3}
+  m_Sprite: {fileID: 665619168863647677, guid: 53f52212e488b4a3f8a0aefb012e7075, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1230,7 +1230,7 @@ GameObject:
   - component: {fileID: 867711704}
   - component: {fileID: 867711703}
   m_Layer: 5
-  m_Name: Option6Surround
+  m_Name: Option3Surround
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1307,7 +1307,7 @@ GameObject:
   - component: {fileID: 878989333}
   - component: {fileID: 878989332}
   m_Layer: 5
-  m_Name: Option3Button
+  m_Name: Option1Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1385,7 +1385,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 3
+          m_StringArgument: free1
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &878989333
@@ -1408,7 +1408,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 4766891260965647410, guid: d40edce80727144cd845edc115dbc53c, type: 3}
+  m_Sprite: {fileID: 9081452867872440421, guid: 3fef7a11f25e8481ca8c77bc33cf2781, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1546,7 +1546,7 @@ GameObject:
   - component: {fileID: 1006544632}
   - component: {fileID: 1006544631}
   m_Layer: 5
-  m_Name: Option3Surround
+  m_Name: Option1Surround
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2208,7 +2208,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 683857165}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.39999998
+  m_Size: 0.4
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
