@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 074571fd8e82d4d2bb517095c9a5beae
+guid: 6618af0b129734fe6bdc097b1dc18c41
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3044540951491034326
-    second: gen1-type6-chineselandscape_0
+      213: 3279955548752723785
+    second: gen2-type6-chineselandscape_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: gen1-type6-chineselandscape_0
+      name: gen2-type6-chineselandscape_0
       rect:
         serializedVersion: 2
         x: 0
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a234f32a22e9fb5d0800000000000000
-      internalID: -3044540951491034326
+      spriteID: 94f3a72913eb48d20800000000000000
+      internalID: 3279955548752723785
       vertices: []
       indices: 
       edges: []

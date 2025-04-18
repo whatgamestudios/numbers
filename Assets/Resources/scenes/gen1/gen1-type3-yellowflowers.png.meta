@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: e8004445723374621bc7d9ec639cd8e1
+guid: 2b937d159da5f425c89200e76cdd61bd
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1854536422939271182
-    second: gen1-type4-honeycomb_0
+      213: 2653477637105981733
+    second: gen1-type3-yellowflowers_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: gen1-type4-honeycomb_0
+      name: gen1-type3-yellowflowers_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1500
-        height: 1497
+        width: 1000
+        height: 1000
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e00a1580d03acb910800000000000000
-      internalID: 1854536422939271182
+      spriteID: 529152b2adb03d420800000000000000
+      internalID: 2653477637105981733
       vertices: []
       indices: 
       edges: []

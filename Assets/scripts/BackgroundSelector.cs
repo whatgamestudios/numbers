@@ -96,8 +96,8 @@ namespace FourteenNumbers {
         }
 
         private void drawOwnedPanel() {
-            int[] owned1 = new int[9] { 101, 102, 103, 104, 105, 106, 107, 108, 109 };
-//            int[] owned1 = new int[4] { 101, 102, 103, 104};
+//            int[] owned1 = new int[9] { 101, 102, 103, 104, 105, 106, 107, 108, 109 };
+            int[] owned1 = new int[4] { 100, 101, 102, 103};
             ScreenBackground.SetOwned(owned1);
 
             // Get the owned backgrounds

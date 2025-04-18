@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 1930fbf21737040d2b945a7c02652c26
+guid: 1861a5528381948f6ba99d29bb6487b5
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2021206188552004901
-    second: gen1-type7-goldenfan_0
+      213: 5224322016364159072
+    second: gen2-type8-witch_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: gen1-type7-goldenfan_0
+      name: gen2-type8-witch_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 1500
-        height: 1500
+        height: 751
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 525a676d154cc0c10800000000000000
-      internalID: 2021206188552004901
+      spriteID: 06063a9b135808840800000000000000
+      internalID: 5224322016364159072
       vertices: []
       indices: 
       edges: []
