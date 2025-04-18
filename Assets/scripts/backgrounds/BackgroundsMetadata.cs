@@ -14,7 +14,7 @@ namespace FourteenNumbers {
             return option % 100;
         }
 
-        public static (string, UnityEngine.Color, UnityEngine.Color) GetInfo(int option) {
+        public static (string, UnityEngine.Color, UnityEngine.Color, string) GetInfo(int option) {
             int generation = OptionToGeneration(option);
             int type = OptionToType(option);
 
@@ -25,59 +25,75 @@ namespace FourteenNumbers {
                     return getGen1Info(type);
                 default:
                     Debug.Log("Unknown generation: " + generation);
-                    return (null, UnityEngine.Color.white, UnityEngine.Color.black);
+                    return (null, UnityEngine.Color.white, UnityEngine.Color.black, "");
             }
         }
 
 
-        public static (string, UnityEngine.Color, UnityEngine.Color) getFreeInfo(int type) {
+        public static (string, UnityEngine.Color, UnityEngine.Color, string) getFreeInfo(int type) {
             switch (type) {
                 case 1:
-                    return ("scenes/free/free-type1-coffee", UnityEngine.Color.white, UnityEngine.Color.black);
+                    return ("scenes/free/free-type1-coffee", UnityEngine.Color.white, UnityEngine.Color.black, null);
                 case 2:
-                    return ("scenes/free/free-type2-dogs", UnityEngine.Color.white, UnityEngine.Color.black);
+                    return ("scenes/free/free-type2-dogs", UnityEngine.Color.white, UnityEngine.Color.black, null);
                 case 3:
-                    return ("scenes/free/free-type3-koi", UnityEngine.Color.white, UnityEngine.Color.black);
+                    return ("scenes/free/free-type3-koi", UnityEngine.Color.white, UnityEngine.Color.black, null);
                 default:
                     Debug.Log("Unknown free type: " + type);
-                    return (null, UnityEngine.Color.white, UnityEngine.Color.black);
+                    return (null, UnityEngine.Color.white, UnityEngine.Color.black, null);
             }
         }
 
-        public static (string, UnityEngine.Color, UnityEngine.Color) getGen1Info(int type) {
+        public static (string, UnityEngine.Color, UnityEngine.Color, string) getGen1Info(int type) {
+            string description;
             switch (type) {
                 case 0:
-                    return ("scenes/gen1/gen1-type0-goldenfans", UnityEngine.Color.white, UnityEngine.Color.black);
+                    description = "Golden Fans\n" + 
+                        "Serier: Gen1\n" +
+                        "Rarity: Mythical\n" + 
+                        "Max Supply: 10\n" + 
+                        "Artist: Natata";
+                    return ("scenes/gen1/gen1-type0-goldenfans", UnityEngine.Color.white, UnityEngine.Color.black, description);
                 case 1:
-                    return ("scenes/gen1/gen1-type1-brightcats", UnityEngine.Color.white, UnityEngine.Color.black);
+                    description = "Golden Fans\n" + 
+                        "Serier: Gen1\n" +
+                        "Rarity: Mythical\n" + 
+                        "Artist: Natata";
+                    return ("scenes/gen1/gen1-type1-brightcats", UnityEngine.Color.white, UnityEngine.Color.black, description);
                 case 2:
-                    return ("scenes/gen1/gen1-type2-mixedflowers", UnityEngine.Color.black, UnityEngine.Color.black);
+                    description = "Golden Fans\n" + 
+                        "Serier: Gen1\n" +
+                        "Artist: Natata";
+                    return ("scenes/gen1/gen1-type2-mixedflowers", UnityEngine.Color.black, UnityEngine.Color.black, description);
                 case 3:
-                    return ("scenes/gen1/gen1-type3-yellowflowers", UnityEngine.Color.black, UnityEngine.Color.black);
+                    description = "Golden Fans\n" + 
+                        "Artist: Natata";
+                    return ("scenes/gen1/gen1-type3-yellowflowers", UnityEngine.Color.black, UnityEngine.Color.black, description);
                 default:
                     Debug.Log("Unknown free type: " + type);
-                    return (null, UnityEngine.Color.white, UnityEngine.Color.black);
+                    return (null, UnityEngine.Color.white, UnityEngine.Color.black, "");
             }
         }
-        public static (string, UnityEngine.Color, UnityEngine.Color) getGen2MaybeInfo(int type) {
+        public static (string, UnityEngine.Color, UnityEngine.Color, string) getGen2MaybeInfo(int type) {
+            string description = "";
             switch (type) {
                 case 1:
                 case 2:
                 case 3:
-                    return ("scenes/gen1/gen1-type3-wetdogs", UnityEngine.Color.black, UnityEngine.Color.black);
+                    return ("scenes/gen1/gen1-type3-wetdogs", UnityEngine.Color.black, UnityEngine.Color.black, description);
                 case 4:
-                    return ("scenes/gen1/gen1-type4-honeycomb", UnityEngine.Color.black, UnityEngine.Color.red);
+                    return ("scenes/gen1/gen1-type4-honeycomb", UnityEngine.Color.black, UnityEngine.Color.red, description);
                 case 5:
                 case 6:
-                    return ("scenes/gen1/gen1-type6-chineselandscape", UnityEngine.Color.black, UnityEngine.Color.black);
+                    return ("scenes/gen1/gen1-type6-chineselandscape", UnityEngine.Color.black, UnityEngine.Color.black, description);
                 case 7:
                 case 8:
-                    return ("scenes/gen1/gen1-type8-witch", UnityEngine.Color.white, UnityEngine.Color.black);
+                    return ("scenes/gen1/gen1-type8-witch", UnityEngine.Color.white, UnityEngine.Color.black, description);
                 case 9:
-                    return ("scenes/gen1/gen1-type9-blackcat", UnityEngine.Color.white, UnityEngine.Color.black);
+                    return ("scenes/gen1/gen1-type9-blackcat", UnityEngine.Color.white, UnityEngine.Color.black, description);
                 default:
                     Debug.Log("Unknown free type: " + type);
-                    return (null, UnityEngine.Color.white, UnityEngine.Color.black);
+                    return (null, UnityEngine.Color.white, UnityEngine.Color.black, description);
             }
         }
 

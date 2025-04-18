@@ -169,7 +169,8 @@ namespace FourteenNumbers {
                 string resourceName;
                 UnityEngine.Color faceColour;
                 UnityEngine.Color outlineColour;
-                (resourceName, faceColour, outlineColour) = BackgroundsMetadata.GetInfo(owned[i]);
+                string description;
+                (resourceName, faceColour, outlineColour, description) = BackgroundsMetadata.GetInfo(owned[i]);
                 if (resourceName == null) {
                     Debug.Log("No resource found for NFT id: " + owned[i]);
                     continue;
@@ -202,7 +203,7 @@ namespace FourteenNumbers {
                 
                 // Add Text component
                 TextMeshProUGUI textMesh = textContainer.AddComponent<TextMeshProUGUI>();
-                textMesh.text = resourceName;
+                textMesh.text = description;
                 textMesh.fontSize = 36;
                 textMesh.alignment = TextAlignmentOptions.Left;
                 textMesh.color = Color.white;

@@ -20,7 +20,8 @@ namespace FourteenNumbers {
             string resourceName;
             UnityEngine.Color faceColour;
             UnityEngine.Color outlineColour;
-            (resourceName, faceColour, outlineColour) = BackgroundsMetadata.GetInfo(option);
+            string description;
+            (resourceName, faceColour, outlineColour, description) = BackgroundsMetadata.GetInfo(option);
 
             // Set the background image.
             Texture2D tex = Resources.Load<Texture2D>(resourceName);
