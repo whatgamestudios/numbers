@@ -74,7 +74,7 @@ namespace FourteenNumbers {
                         img3.color = UnityEngine.Color.red;
                         break;
                 }
-            } else if (selected >= 101 && selected <= 109) {
+            } else if (selected >= 100 && selected <= 104) {
                 // Find the owned NFT panel with this ID
                 if (panelOwnedNfts != null) {
                     foreach (GameObject panel in panelOwnedNfts) {
@@ -91,7 +91,7 @@ namespace FourteenNumbers {
                     }
                 }
             } else {
-                Debug.Log("Unknown option: " + selected);
+                Debug.Log("Background Selector: Unknown option: " + selected);
             }
         }
 
