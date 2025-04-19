@@ -166,19 +166,15 @@ namespace FourteenNumbers {
                 // Add Image component to button
                 Image buttonImage = button.AddComponent<Image>();
 
-                string resourceName;
-                UnityEngine.Color faceColour;
-                UnityEngine.Color outlineColour;
-                string description;
-                (resourceName, faceColour, outlineColour, description) = BackgroundsMetadata.GetInfo(owned[i]);
-                if (resourceName == null) {
+                SceneInfo sceneInfo = BackgroundsMetadata.GetInfo(owned[i]);
+                if (sceneInfo.resource == null) {
                     Debug.Log("No resource found for NFT id: " + owned[i]);
                     continue;
                 }
 
-                Texture2D tex = Resources.Load<Texture2D>(resourceName);
+                Texture2D tex = Resources.Load<Texture2D>(sceneInfo.resource);
                 if (tex == null) {
-                    Debug.Log("Resource not found: " + resourceName);
+                    Debug.Log("Resource not found: " + sceneInfo.resource);
                 }
                 Rect size = new Rect(0.0f, 0.0f, tex.width, tex.height);
                 Vector2 pivot = new Vector2(0.0f, 0.0f);
@@ -203,7 +199,7 @@ namespace FourteenNumbers {
                 
                 // Add Text component
                 TextMeshProUGUI textMesh = textContainer.AddComponent<TextMeshProUGUI>();
-                textMesh.text = description;
+                textMesh.text = sceneInfo.name;
                 textMesh.fontSize = 36;
                 textMesh.alignment = TextAlignmentOptions.Left;
                 textMesh.color = Color.white;

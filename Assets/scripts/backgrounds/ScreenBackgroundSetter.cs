@@ -17,16 +17,12 @@ namespace FourteenNumbers {
             }
 
             int option = ScreenBackground.GetBackground();
-            string resourceName;
-            UnityEngine.Color faceColour;
-            UnityEngine.Color outlineColour;
-            string description;
-            (resourceName, faceColour, outlineColour, description) = BackgroundsMetadata.GetInfo(option);
+            SceneInfo sceneInfo = BackgroundsMetadata.GetInfo(option);
 
             // Set the background image.
-            Texture2D tex = Resources.Load<Texture2D>(resourceName);
+            Texture2D tex = Resources.Load<Texture2D>(sceneInfo.resource);
             if (tex == null) {
-                Debug.Log("Resource not found: " + resourceName);
+                Debug.Log("Resource not found: " + sceneInfo.resource);
             }
             Rect size = new Rect(0.0f, 0.0f, tex.width, tex.height);
             Vector2 pivot = new Vector2(0.0f, 0.0f);
@@ -37,8 +33,8 @@ namespace FourteenNumbers {
             GameObject[] textMeshes = GameObject.FindGameObjectsWithTag("ColMe");
             foreach (GameObject textMeshObj in textMeshes) {
                 TextMeshProUGUI textMeshProGUI = textMeshObj.GetComponent<TextMeshProUGUI>();
-                textMeshProGUI.color = faceColour;    
-                textMeshProGUI.outlineColor = outlineColour;
+                textMeshProGUI.color = sceneInfo.faceColour;    
+                textMeshProGUI.outlineColor = sceneInfo.outlineColour;
             }
         }
     }
