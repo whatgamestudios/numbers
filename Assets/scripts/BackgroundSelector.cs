@@ -216,68 +216,84 @@ namespace FourteenNumbers {
                 textContainerRect.offsetMin = new Vector2(220, 0); // Start after button
                 textContainerRect.offsetMax = new Vector2(-20, 0); // Padding on right
 
-                // Add VerticalLayoutGroup to text container
-                VerticalLayoutGroup verticalLayout = textContainer.AddComponent<VerticalLayoutGroup>();
-                verticalLayout.spacing = 10;
-                verticalLayout.padding = new RectOffset(10, 10, 10, 10);
-                verticalLayout.childAlignment = TextAnchor.UpperLeft;
-                verticalLayout.childForceExpandWidth = true;
-                verticalLayout.childForceExpandHeight = false;
-
-                // Create three rows
-                for (int row = 0; row < 3; row++) {
-                    GameObject rowContainer = new GameObject($"Row_{row}");
-                    rowContainer.transform.SetParent(textContainer.transform, false);
-
-                    // Add RectTransform to row
-                    RectTransform rowRect = rowContainer.AddComponent<RectTransform>();
-                    rowRect.sizeDelta = new Vector2(0, 50); // Fixed height for each row
-
-                    // Add HorizontalLayoutGroup to row
-                    HorizontalLayoutGroup horizontalLayout = rowContainer.AddComponent<HorizontalLayoutGroup>();
-                    horizontalLayout.spacing = 10;
-                    horizontalLayout.padding = new RectOffset(0, 0, 0, 0);
-                    horizontalLayout.childAlignment = TextAnchor.MiddleLeft;
-                    horizontalLayout.childForceExpandWidth = row == 0; // Only expand width for first row
-                    horizontalLayout.childForceExpandHeight = true;
-
-                    // Create two columns in each row
-                    for (int col = 0; col < 2; col++) {
-                        GameObject textBox = new GameObject($"TextBox_{row}_{col}");
-                        textBox.transform.SetParent(rowContainer.transform, false);
-
-                        // Add RectTransform to text box
-                        RectTransform textBoxRect = textBox.AddComponent<RectTransform>();
-                        if (row > 0) { // Fixed width for bottom two rows
-                            textBoxRect.sizeDelta = new Vector2(200, 0); // Fixed width of 200 pixels
-                        } else {
-                            textBoxRect.sizeDelta = new Vector2(0, 0); // Flexible width for first row
-                        }
-
-                        // Add TextMeshProUGUI component
-                        TextMeshProUGUI textMesh = textBox.AddComponent<TextMeshProUGUI>();
-                        textMesh.fontSize = 40;
-                        textMesh.alignment = TextAlignmentOptions.Left;
-                        textMesh.color = Color.white;
-                        textMesh.textWrappingMode = TextWrappingModes.Normal;
-
-                        // Set different text for each box based on row and column
-                        switch (row) {
-                            case 0:
-                                textMesh.text = col == 0 ? sceneInfo.name : "";
-                                break;
-                            case 1:
-                                textMesh.text = col == 0 ? sceneInfo.series : sceneInfo.rarity;
-                                break;
-                            case 2:
-                                textMesh.text = col == 0 ? $"Supply: {sceneInfo.maxSupply}" : $"Artist: {sceneInfo.artist}";
-                                if (col == 0) {
-                                    textMesh.fontSize = 30;
-                                }
-                                break;
-                        }
-                    }
+                // Add TextMeshProUGUI component
+                TextMeshProUGUI textMesh = textContainer.AddComponent<TextMeshProUGUI>();
+                textMesh.fontSize = 40;
+                textMesh.alignment = TextAlignmentOptions.Left;
+                textMesh.color = Color.white;
+                textMesh.textWrappingMode = TextWrappingModes.Normal;
+                string text = sceneInfo.name + "\n" +
+                                sceneInfo.series + " " + sceneInfo.rarity + "\n" +
+                                sceneInfo.artist;
+                if (sceneInfo.artist == "Unknown") {
+                    text = text + " Artist";
                 }
+                textMesh.text = sceneInfo.name + "\n" +
+                                sceneInfo.series + " " + sceneInfo.rarity + "\n" +
+                                sceneInfo.artist;
+
+                // Add VerticalLayoutGroup to text container
+                // VerticalLayoutGroup verticalLayout = textContainer.AddComponent<VerticalLayoutGroup>();
+                // verticalLayout.spacing = 10;
+                // verticalLayout.padding = new RectOffset(10, 10, 10, 10);
+                // verticalLayout.childAlignment = TextAnchor.UpperLeft;
+                // verticalLayout.childForceExpandWidth = true;
+                // verticalLayout.childForceExpandHeight = false;
+
+                // // Create three rows
+                // for (int row = 0; row < 3; row++) {
+                //     GameObject rowContainer = new GameObject($"Row_{row}");
+                //     rowContainer.transform.SetParent(textContainer.transform, false);
+
+                //     // Add RectTransform to row
+                //     RectTransform rowRect = rowContainer.AddComponent<RectTransform>();
+                //     rowRect.sizeDelta = new Vector2(0, 50); // Fixed height for each row
+
+                //     // Add HorizontalLayoutGroup to row
+                //     HorizontalLayoutGroup horizontalLayout = rowContainer.AddComponent<HorizontalLayoutGroup>();
+                //     horizontalLayout.spacing = 10;
+                //     horizontalLayout.padding = new RectOffset(0, 0, 0, 0);
+                //     horizontalLayout.childAlignment = TextAnchor.MiddleLeft;
+                //     horizontalLayout.childForceExpandWidth = row == 0; // Only expand width for first row
+                //     horizontalLayout.childForceExpandHeight = true;
+
+                //     // Create two columns in each row
+                //     for (int col = 0; col < 2; col++) {
+                //         GameObject textBox = new GameObject($"TextBox_{row}_{col}");
+                //         textBox.transform.SetParent(rowContainer.transform, false);
+
+                //         // Add RectTransform to text box
+                //         RectTransform textBoxRect = textBox.AddComponent<RectTransform>();
+                //         if (row > 0) { // Fixed width for bottom two rows
+                //             textBoxRect.sizeDelta = new Vector2(200, 0); // Fixed width of 200 pixels
+                //         } else {
+                //             textBoxRect.sizeDelta = new Vector2(0, 0); // Flexible width for first row
+                //         }
+
+                //         // Add TextMeshProUGUI component
+                //         TextMeshProUGUI textMesh = textBox.AddComponent<TextMeshProUGUI>();
+                //         textMesh.fontSize = 40;
+                //         textMesh.alignment = TextAlignmentOptions.Left;
+                //         textMesh.color = Color.white;
+                //         textMesh.textWrappingMode = TextWrappingModes.Normal;
+
+                //         // Set different text for each box based on row and column
+                //         switch (row) {
+                //             case 0:
+                //                 textMesh.text = col == 0 ? sceneInfo.name : "";
+                //                 break;
+                //             case 1:
+                //                 textMesh.text = col == 0 ? sceneInfo.series : sceneInfo.rarity;
+                //                 break;
+                //             case 2:
+                //                 textMesh.text = col == 0 ? $"Supply: {sceneInfo.maxSupply}" : $"Artist: {sceneInfo.artist}";
+                //                 if (col == 0) {
+                //                     textMesh.fontSize = 30;
+                //                 }
+                //                 break;
+                //         }
+                //     }
+                //}
                 
                 // Store panel reference
                 panelOwnedNfts[i] = buttonContainer;
