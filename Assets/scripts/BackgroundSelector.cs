@@ -19,9 +19,6 @@ namespace FourteenNumbers {
         private ScrollRect scrollRect;
 
         public void Start() {
-            int selected = ScreenBackground.GetBackground();
-            setSelected(selected);
-
             // Get the ScrollRect component
             scrollRect = panelOwned.GetComponentInParent<ScrollRect>();
             if (scrollRect == null) {
@@ -30,6 +27,9 @@ namespace FourteenNumbers {
             }
 
             drawOwnedPanel();
+
+            int selected = ScreenBackground.GetBackground();
+            setSelected(selected);
         }
 
         public void OnButtonClick(string buttonText) {
@@ -40,6 +40,8 @@ namespace FourteenNumbers {
         }
 
         private void setSelected(int selected) {
+            Debug.Log("Background Selector: select: " + selected);
+
             // Handle free panels
             Image img1 = panelFreeType1.GetComponent<Image>();
             Image img2 = panelFreeType2.GetComponent<Image>();
@@ -74,19 +76,34 @@ namespace FourteenNumbers {
                         img3.color = UnityEngine.Color.red;
                         break;
                 }
-            } else if (selected >= 100 && selected <= 104) {
+            } else if (selected >= 100 && selected <= 103) {
                 // Find the owned NFT panel with this ID
                 if (panelOwnedNfts != null) {
                     foreach (GameObject panel in panelOwnedNfts) {
                         if (panel != null) {
                             Button button = panel.GetComponentInChildren<Button>();
-                            if (button != null && button.name == $"gen1_{selected}") {
+                            if (button != null && button.name == $"button_Gen1_{selected}") {
                                 Image panelImage = panel.GetComponent<Image>();
                                 if (panelImage != null) {
                                     panelImage.color = UnityEngine.Color.red;
                                 }
+                                else {
+                                    Debug.Log("Background Selector: Panel image is null");
+                                }
                                 break;
                             }
+                            else {
+                                if (button == null) {
+                                    Debug.Log("Background Selector: Button is null");
+                                }
+                                else {
+                                    // This is expected - no need to log
+                                    // Debug.Log("Background Selector: Incorrect button name: " + button.name);
+                                }
+                            }
+                        }
+                        else {
+                            Debug.Log("Background Selector: Panel is null");
                         }
                     }
                 }
@@ -125,52 +142,53 @@ namespace FourteenNumbers {
             
             // Create panels for each owned background
             for (int i = 0; i < owned.Length; i++) {
-                // Create outer container panel
-                GameObject outerContainer = new GameObject($"OuterContainer_{i}");
-                outerContainer.transform.SetParent(panelOwned.transform, false);
-
-                // Add RectTransform to outer container
-                RectTransform outerRect = outerContainer.AddComponent<RectTransform>();
-                outerRect.anchorMin = new Vector2(0.5f, 1f);
-                outerRect.anchorMax = new Vector2(0.5f, 1f);
-                outerRect.anchoredPosition = new Vector2(0, -247 - (i * 220));
-                outerRect.sizeDelta = new Vector2(800, 210); // Full width of parent
- 
-                // Add Image component for background
-                Image outerImage = outerContainer.AddComponent<Image>();
-                outerImage.color = Color.black;
-                outerImage.sprite = Resources.Load<Sprite>("UI/Sprites/UI_Background");
-
-                // Create button container (left side)
-                GameObject buttonContainer = new GameObject($"ButtonContainer_{i}");
-                buttonContainer.transform.SetParent(outerContainer.transform, false);
-
-                // Add RectTransform to button container
-                RectTransform buttonContainerRect = buttonContainer.AddComponent<RectTransform>();
-                buttonContainerRect.anchorMin = new Vector2(0, 0.5f);
-                buttonContainerRect.anchorMax = new Vector2(0, 0.5f);
-                buttonContainerRect.anchoredPosition = new Vector2(105, 0); // Half of button width
-                buttonContainerRect.sizeDelta = new Vector2(210, 210);
-
-                // Create button
-                GameObject button = new GameObject($"OwnedButton_{i}");
-                button.transform.SetParent(buttonContainer.transform, false);
-                
-                // Add RectTransform to button
-                RectTransform buttonRect = button.AddComponent<RectTransform>();
-                buttonRect.anchorMin = new Vector2(0.5f, 0.5f);
-                buttonRect.anchorMax = new Vector2(0.5f, 0.5f);
-                buttonRect.anchoredPosition = Vector2.zero;
-                buttonRect.sizeDelta = new Vector2(190, 190);
-                
-                // Add Image component to button
-                Image buttonImage = button.AddComponent<Image>();
-
                 SceneInfo sceneInfo = BackgroundsMetadata.GetInfo(owned[i]);
                 if (sceneInfo.resource == null) {
                     Debug.Log("No resource found for NFT id: " + owned[i]);
                     continue;
                 }
+                string buttonId = "button_" + sceneInfo.series + "_" + owned[i];
+
+                // Create outer container panel
+                GameObject buttonContainer = new GameObject(buttonId);
+                buttonContainer.transform.SetParent(panelOwned.transform, false);
+
+                // Add RectTransform to outer container
+                RectTransform buttonRect = buttonContainer.AddComponent<RectTransform>();
+                buttonRect.anchorMin = new Vector2(0.5f, 1f);
+                buttonRect.anchorMax = new Vector2(0.5f, 1f);
+                buttonRect.anchoredPosition = new Vector2(0, -247 - (i * 220));
+                buttonRect.sizeDelta = new Vector2(750, 210); // Width of parent less a bit
+ 
+                // Add Image component for background
+                Image buttonImage = buttonContainer.AddComponent<Image>();
+                buttonImage.color = Color.black;
+                buttonImage.sprite = Resources.Load<Sprite>("UI/Sprites/UI_Background");
+
+                // Create button container (left side)
+                GameObject imageContainer = new GameObject($"imageContainer_{i}");
+                imageContainer.transform.SetParent(buttonContainer.transform, false);
+
+                // Add RectTransform to button container
+                RectTransform imageContainerRect = imageContainer.AddComponent<RectTransform>();
+                imageContainerRect.anchorMin = new Vector2(0, 0.5f);
+                imageContainerRect.anchorMax = new Vector2(0, 0.5f);
+                imageContainerRect.anchoredPosition = new Vector2(105, 0); // Half of button width
+                imageContainerRect.sizeDelta = new Vector2(210, 210);
+
+                // Create button
+                GameObject button = new GameObject($"OwnedButton_{i}");
+                button.transform.SetParent(imageContainer.transform, false);
+                
+                // Add RectTransform to button
+                RectTransform imageRect = button.AddComponent<RectTransform>();
+                imageRect.anchorMin = new Vector2(0.5f, 0.5f);
+                imageRect.anchorMax = new Vector2(0.5f, 0.5f);
+                imageRect.anchoredPosition = Vector2.zero;
+                imageRect.sizeDelta = new Vector2(190, 190);
+                
+                // Add Image component to button
+                Image imageImage = button.AddComponent<Image>();
 
                 Texture2D tex = Resources.Load<Texture2D>(sceneInfo.resource);
                 if (tex == null) {
@@ -179,16 +197,18 @@ namespace FourteenNumbers {
                 Rect size = new Rect(0.0f, 0.0f, tex.width, tex.height);
                 Vector2 pivot = new Vector2(0.0f, 0.0f);
                 Sprite s = Sprite.Create(tex, size, pivot);
-                buttonImage.sprite = s;
+                imageImage.sprite = s;
                 
                 // Add Button component
-                Button buttonComponent = button.AddComponent<Button>();
+//                Button buttonComponent = button.AddComponent<Button>();
+                Button buttonComponent = buttonContainer.AddComponent<Button>();
+                
                 button.name = $"gen1_{owned[i]}"; // Set the button name to match the format
                 buttonComponent.onClick.AddListener(() => OnButtonClick(button.name));
                 
                 // Create text container (right side)
                 GameObject textContainer = new GameObject($"TextContainer_{i}");
-                textContainer.transform.SetParent(outerContainer.transform, false);
+                textContainer.transform.SetParent(buttonContainer.transform, false);
 
                 // Add RectTransform to text container
                 RectTransform textContainerRect = textContainer.AddComponent<RectTransform>();
@@ -206,7 +226,7 @@ namespace FourteenNumbers {
                 textMesh.textWrappingMode = TextWrappingModes.Normal;
                 
                 // Store panel reference
-                panelOwnedNfts[i] = outerContainer;
+                panelOwnedNfts[i] = buttonContainer;
             }
         }
     }
