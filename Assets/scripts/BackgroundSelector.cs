@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 namespace FourteenNumbers {
 
@@ -34,9 +35,15 @@ namespace FourteenNumbers {
 
         public void OnButtonClick(string buttonText) {
             int option = BackgroundsMetadata.ButtonTextToOption(buttonText);
-            ScreenBackground.SetBackground(option);
-            setSelected(option);
-            ScreenBackgroundSetter.SetPanelBackground(panelScreenBackground);
+            int alreadySelectedOption = ScreenBackground.GetBackground();
+            if (option == alreadySelectedOption) {
+                SceneManager.LoadScene("SceneDetailScene", LoadSceneMode.Additive);
+            }
+            else {
+                ScreenBackground.SetBackground(option);
+                setSelected(option);
+                ScreenBackgroundSetter.SetPanelBackground(panelScreenBackground);
+            }
         }
 
         private void setSelected(int selected) {
@@ -113,7 +120,6 @@ namespace FourteenNumbers {
         }
 
         private void drawOwnedPanel() {
-//            int[] owned1 = new int[9] { 101, 102, 103, 104, 105, 106, 107, 108, 109 };
             int[] owned1 = new int[4] { 100, 101, 102, 103};
             ScreenBackground.SetOwned(owned1);
 
@@ -228,9 +234,7 @@ namespace FourteenNumbers {
                 if (sceneInfo.artist == "Unknown") {
                     text = text + " Artist";
                 }
-                textMesh.text = sceneInfo.name + "\n" +
-                                sceneInfo.series + " " + sceneInfo.rarity + "\n" +
-                                sceneInfo.artist;
+                textMesh.text = text;
 
                 // Add VerticalLayoutGroup to text container
                 // VerticalLayoutGroup verticalLayout = textContainer.AddComponent<VerticalLayoutGroup>();

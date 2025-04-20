@@ -25,23 +25,38 @@ namespace FourteenNumbers {
                     return getGen1Info(type);
                 default:
                     Debug.Log("Unknown generation: " + generation);
-                    return new SceneInfo("scenes/free/free-type1-coffee", UnityEngine.Color.white, UnityEngine.Color.black);
+                    return getDefaultInfo();
             }
         }
 
 
+        private static SceneInfo getDefaultInfo() {
+            SceneInfo info = new SceneInfo("scenes/free/free-type1-coffee", UnityEngine.Color.white, UnityEngine.Color.black);
+            info.SetMetadata("Coffee Beans", "Free", "Common", 0, "Frendy Adew");
+            return info;
+        }
+
+
         public static SceneInfo getFreeInfo(int type) {
+            SceneInfo info;
             switch (type) {
                 case 1:
-                    return new SceneInfo("scenes/free/free-type1-coffee", UnityEngine.Color.white, UnityEngine.Color.black);
+                    info = getDefaultInfo();
+                    break;
                 case 2:
-                    return new SceneInfo("scenes/free/free-type2-dogs", UnityEngine.Color.white, UnityEngine.Color.black);
+                    info = new SceneInfo("scenes/free/free-type2-dogs", UnityEngine.Color.white, UnityEngine.Color.black);
+                    info.SetMetadata("Happy Dogs", "Free", "Common", 0, "Anna Allakuz");
+                    break;
                 case 3:
-                    return new SceneInfo("scenes/free/free-type3-koi", UnityEngine.Color.white, UnityEngine.Color.black);
+                    info = new SceneInfo("scenes/free/free-type3-koi", UnityEngine.Color.white, UnityEngine.Color.black);
+                    info.SetMetadata("Koi", "Free", "Common", 0, "Olga Graholskaya");
+                    break;
                 default:
                     Debug.Log("BackgroundMetadata: Unknown free type: " + type);
-                    return new SceneInfo("scenes/free/free-type1-coffee", UnityEngine.Color.white, UnityEngine.Color.black);
+                    info = getDefaultInfo();
+                    break;
             }
+            return info;
         }
 
         public static SceneInfo getGen1Info(int type) {
@@ -50,45 +65,50 @@ namespace FourteenNumbers {
                 case 0:
                     info = new SceneInfo("scenes/gen1/gen1-type0-goldenfans", UnityEngine.Color.white, UnityEngine.Color.black);
                     info.SetMetadata("Golden Fans", "Gen1", "Mythical", 10, "Natata");
-                    return info;
+                    break;
                 case 1:
                     info = new SceneInfo("scenes/gen1/gen1-type1-brightcats", UnityEngine.Color.white, UnityEngine.Color.black);
                     info.SetMetadata("Bright Cats", "Gen1", "Legendary", 25, "Burbura");
-                    return info;
+                    break;
                 case 2:
                     info = new SceneInfo("scenes/gen1/gen1-type2-mixedflowers", UnityEngine.Color.black, UnityEngine.Color.black);
                     info.SetMetadata("Fantasy Flowers", "Gen1", "Epic", 100, "Elen Lane");
-                    return info;
+                    break;
                 case 3:
                     info = new SceneInfo("scenes/gen1/gen1-type3-yellowflowers", UnityEngine.Color.black, UnityEngine.Color.black);
                     info.SetMetadata("Yellow Flowers", "Gen1", "Common", 1000, "Unknown");
-                    return info;
+                    break;
                 default:
                     Debug.Log("Unknown gen1 type: " + type);
-                    return new SceneInfo("scenes/free/free-type1-coffee", UnityEngine.Color.white, UnityEngine.Color.black);
+                    info = getDefaultInfo();
+                    break;
             }
+            return info;
         }
-        public static SceneInfo getGen2MaybeInfo(int type) {
-            switch (type) {
-                case 1:
-                case 2:
-                case 3:
-                    return new SceneInfo("scenes/gen2/gen2-type3-wetdogs", UnityEngine.Color.black, UnityEngine.Color.black);
-                case 4:
-                    return new SceneInfo("scenes/gen2/gen2-type4-honeycomb", UnityEngine.Color.black, UnityEngine.Color.red);
-                case 5:
-                case 6:
-                    return new SceneInfo("scenes/gen2/gen2-type6-chineselandscape", UnityEngine.Color.black, UnityEngine.Color.black);
-                case 7:
-                case 8:
-                    return new SceneInfo("scenes/gen2/gen2-type8-witch", UnityEngine.Color.white, UnityEngine.Color.black);
-                case 9:
-                    return new SceneInfo("scenes/gen2/gen2-type9-blackcat", UnityEngine.Color.white, UnityEngine.Color.black);
-                default:
-                    Debug.Log("Unknown gen2 type: " + type);
-                    return new SceneInfo("scenes/free/free-type1-coffee", UnityEngine.Color.white, UnityEngine.Color.black);
-            }
-        }
+        // public static SceneInfo getGen2MaybeInfo(int type) {
+        //     SceneInfo info;
+        //     switch (type) {
+        //         case 1:
+        //         case 2:
+        //         case 3:
+        //             return new SceneInfo("scenes/gen2/gen2-type3-wetdogs", UnityEngine.Color.black, UnityEngine.Color.black);
+        //         case 4:
+        //             return new SceneInfo("scenes/gen2/gen2-type4-honeycomb", UnityEngine.Color.black, UnityEngine.Color.red);
+        //         case 5:
+        //         case 6:
+        //             return new SceneInfo("scenes/gen2/gen2-type6-chineselandscape", UnityEngine.Color.black, UnityEngine.Color.black);
+        //         case 7:
+        //         case 8:
+        //             return new SceneInfo("scenes/gen2/gen2-type8-witch", UnityEngine.Color.white, UnityEngine.Color.black);
+        //         case 9:
+        //             return new SceneInfo("scenes/gen2/gen2-type9-blackcat", UnityEngine.Color.white, UnityEngine.Color.black);
+        //         default:
+        //             Debug.Log("Unknown gen2 type: " + type);
+        //             info = getDefaultInfo();
+        //             break;
+        //     }
+        //     return info;
+        // }
 
         public static int ButtonTextToOption(string buttonText) {
             if (buttonText == "free1") {
