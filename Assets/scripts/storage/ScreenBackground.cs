@@ -3,13 +3,19 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using TMPro;
+using System;
 
 namespace FourteenNumbers {
     public class ScreenBackground {
         public const string BG_OPTION = "OPTION_BACKGROUND";
 
-        public const int BG_DEFAULT = 3;
+        public const int BG_DEFAULT = 1;
 
+        public const string BG_OWNED = "BACKGROUND_OWNED";
+        public const string BG_LAST_CHECKED = "BACKGROUND_LAST_CHECKED";
+
+        // Interval between rechecking whether NFTs are owned, in hours.
+        private const int RECHECK_INTERVAL = 24;
 
         /**
         * Set the background used by all scenes.
@@ -28,59 +34,46 @@ namespace FourteenNumbers {
             return PlayerPrefs.GetInt(BG_OPTION, BG_DEFAULT);
         }
 
+        /**
+         * Save the list of owned backgrounds.
+         *
+         * @param owned Array of owned background ids.
+         */
+        public static void SetOwned(int[] owned) {
+            string ownedString = string.Join(",", owned);
+            PlayerPrefs.SetString(BG_OWNED, ownedString);
+            PlayerPrefs.Save();
+        }
 
         /**
-        * Pass in the scene's main panel and set the background image.
-        */
-        public static void SetPanelBackground(GameObject panel) {
-            Image img = panel.GetComponent<Image>();
-            if (img == null) {
-                Debug.Log("No raw image");
-                return;
+         * Get the list of owned backgrounds.
+         * 
+         * @return array of owned background ids.
+         */
+        public static int[] GetOwned() {
+            string ownedString = PlayerPrefs.GetString(BG_OWNED, "");
+            if (string.IsNullOrEmpty(ownedString)) {
+                return new int[0];
             }
-
-            int option = PlayerPrefs.GetInt(BG_OPTION, BG_DEFAULT);
-            string resourceName;
-            UnityEngine.Color faceColour;
-            UnityEngine.Color outlineColour;
-            (resourceName, faceColour, outlineColour) = getInfo(option);
-
-            // Set the background image.
-            Texture2D tex = Resources.Load<Texture2D>(resourceName);
-            // Debug.Log("tex null: " + (tex == null));
-            // Debug.Log("tex: " + tex.ToString());
-            Rect size = new Rect(0.0f, 0.0f, tex.width, tex.height);
-            Vector2 pivot = new Vector2(0.0f, 0.0f);
-            Sprite s = Sprite.Create(tex, size, pivot);
-            img.sprite = s;
-
-            // Find all tagged objects and set their colour to the contract colour.
-            GameObject[] textMeshes = GameObject.FindGameObjectsWithTag("ColMe");
-            foreach (GameObject textMeshObj in textMeshes) {
-                TextMeshProUGUI textMeshProGUI = textMeshObj.GetComponent<TextMeshProUGUI>();
-                textMeshProGUI.color = faceColour;    
-                textMeshProGUI.outlineColor = outlineColour;
-            }
+            return Array.ConvertAll(ownedString.Split(','), int.Parse);
         }
 
 
+        /**
+         * Determine whether the NFTs owned by the player has been checked recently.
+         * 
+         * @return true if the NFTs owned by the player should be checked.
+         */
+        public static bool DoINeedToCheckOwnedNfts() {
+            DateTime now = DateTime.Now;
+            int currentTimeInHours = ((now.Year * 12 + now.Month) * 31 + now.Day) * 24 + now.Hour;
 
-        private static (string, UnityEngine.Color, UnityEngine.Color) getInfo(int option) {
-            switch (option) {
-                case 2:
-                    return ("free-background2", UnityEngine.Color.black, UnityEngine.Color.white);
-                case 3:
-                    return ("free-background3", UnityEngine.Color.white, UnityEngine.Color.black);
-                case 4:
-                    return ("free-background4", UnityEngine.Color.black, UnityEngine.Color.white);
-                case 5:
-                    return ("free-background5", UnityEngine.Color.black, UnityEngine.Color.white);
-                case 6:
-                    return ("free-background6", UnityEngine.Color.white, UnityEngine.Color.black);
-                default:
-                    return ("free-background1", UnityEngine.Color.black, UnityEngine.Color.white);
+            int lastChecked = PlayerPrefs.GetInt(BG_LAST_CHECKED, 0);
+            if (currentTimeInHours > lastChecked + RECHECK_INTERVAL) {
+                PlayerPrefs.SetInt(BG_LAST_CHECKED, currentTimeInHours);
+                return true;
             }
-
+            return false;
         }
     }
 }

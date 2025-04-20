@@ -9,7 +9,7 @@ namespace FourteenNumbers {
         public GameObject panel;
 
         public void Start() {
-            ScreenBackground.SetPanelBackground(panel);
+            ScreenBackgroundSetter.SetPanelBackground(panel);
         }
     }
 }

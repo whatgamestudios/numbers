@@ -15,6 +15,9 @@ namespace FourteenNumbers {
 
         public void Start() {
             string msg = MessagePass.GetMsg();
+            if (msg == null) {
+                msg = "";
+            }
             helpText.text = msg;
         }
 
