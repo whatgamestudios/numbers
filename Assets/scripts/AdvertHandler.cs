@@ -19,27 +19,28 @@ namespace FourteenNumbers {
 
         private uint state = 0;
 
-        private string text1 = "Login to";
-        private string text2 = "earn";
-        private string text3 = "scenes";
+        private string text1 = "Login\n ";
+        private string text2 = "to earn\n ";
+        private string text3 = "Gen1\nScenes";
 
         public void Start() {
-            int selected = ScreenBackground.GetBackground();
-            SceneInfo sceneInfo = BackgroundsMetadata.GetInfo(selected);
-            textFaceColour = sceneInfo.faceColour;
+            // int selected = ScreenBackground.GetBackground();
+            // SceneInfo sceneInfo = BackgroundsMetadata.GetInfo(selected);
+            // textFaceColour = sceneInfo.faceColour;
+            textFaceColour = UnityEngine.Color.black;
 
 
             changeTime = DateTime.Now;
             
             // Create and setup the "Hello There" text
-            GameObject textObj = new GameObject("qw");
+            GameObject textObj = new GameObject("test");
             textObj.transform.SetParent(advertPanel.transform, false);
             
             RectTransform textRect = textObj.AddComponent<RectTransform>();
             textRect.anchorMin = new Vector2(0.5f, 0.5f);
             textRect.anchorMax = new Vector2(0.5f, 0.5f);
             textRect.anchoredPosition = Vector2.zero;
-            textRect.sizeDelta = new Vector2(400, 100);
+            textRect.sizeDelta = new Vector2(700, 400);
             
             infoText = textObj.AddComponent<TextMeshProUGUI>();
             infoText.fontSize = 150;

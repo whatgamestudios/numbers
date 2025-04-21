@@ -13,7 +13,10 @@ namespace FourteenNumbers {
 
     public class CheckIn : MonoBehaviour {
 
-        public void Start() {
+        public async Task Start() {
+            await PassportLogin.Init();
+            await PassportLogin.Login();
+
             uint gameDay = Timeline.GameDay();
             if (CheckInStore.DoINeedToCheckIn(gameDay)) {
                 FourteenNumbersContract contract = new FourteenNumbersContract();

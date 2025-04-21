@@ -6,6 +6,7 @@ using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 using Immutable.Passport;
+using System.Threading.Tasks;
 
 
 namespace FourteenNumbers {
@@ -16,7 +17,8 @@ namespace FourteenNumbers {
 
         private string help = "Login to qualify for rewards and enable best score publishing";
 
-        public void Start() {
+        public async Task Start() {
+            await PassportLogin.Init();
             startCoroutine();
         }
 

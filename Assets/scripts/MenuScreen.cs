@@ -23,38 +23,17 @@ namespace FourteenNumbers {
 
 
         public async void Start() {
-            // Check login
-            bool isLoggedIn = PassportStore.IsLoggedIn();
-            bool recentlyCheckedLogin = PassportStore.WasLoggedInRecently();
-            Debug.Log("isloggedIn: " + isLoggedIn + ", recentlyCheckedLogin: " + recentlyCheckedLogin);
-            if (isLoggedIn) {
-                if (!recentlyCheckedLogin) {
-                    if (await Passport.Instance.HasCredentialsSaved()) {
-                        // Try to log in using saved credentials
-                        bool success = await Passport.Instance.Login(useCachedSession: true);
-                        if (success) {
-                            PassportStore.SetLoggedInChecked();
-                        }
-                        else {
-                            SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
-                        }
-                    }
-                    else {
-                        SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
-                    }
-                }
+            await PassportLogin.Init();
+            await PassportLogin.Login();
 
-                loggedIn.text = "Setting up wallet..";
-                // Set up provider
-                await Passport.Instance.ConnectEvm();
-                loggedIn.text = "Setting up wallet...";
+            bool isLoggedIn = PassportStore.IsLoggedIn();
+            if (isLoggedIn) {
                 // Set up wallet (includes creating a wallet for new players)
                 List<string> accounts = await Passport.Instance.ZkEvmRequestAccounts();
                 if (accounts.Count ==0) {
                     loggedIn.text = "Logged In";
                 }
                 else {
-                    //loggedIn.text = "Logged In as\n" + accounts[0];
                     loggedIn.text = "Logged In (" + 
                                     DeepLinkManager.Instance.LoginPath + 
                                     ") as\n" + 
