@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using Immutable.Passport;
+using System.Threading.Tasks;
 
 namespace FourteenNumbers {
 
@@ -118,43 +119,21 @@ namespace FourteenNumbers {
 
         string help = "Use each number once to find three equations for the target number";
 
-        public void Start() {
+        public async Task Start() {
             Debug.Log("Game Scene Start");
             int daysPlayed = Stats.GetNumDaysPlayed();
             newPlayer = daysPlayed < 2;
             gameDayInt = Timeline.GameDay();
+
+            await PassportLogin.Init();
+
             startANewDay(gameDayInt);
         }
 
-        public async void OnApplicationFocus(bool hasFocus) {
+        public async Task OnApplicationFocus(bool hasFocus) {
             Debug.Log("OnApplicationFocus: " + hasFocus);
             if (hasFocus) {
-                // Check login
-                bool isLoggedIn = PassportStore.IsLoggedIn();
-                bool recentlyCheckedLogin = PassportStore.WasLoggedInRecently();
-                Debug.Log("isloggedIn: " + isLoggedIn + ", recentlyCheckedLogin: " + recentlyCheckedLogin);
-                if (isLoggedIn) {
-                    if (!recentlyCheckedLogin) {
-                        if (await Passport.Instance.HasCredentialsSaved()) {
-                            // Try to log in using saved credentials
-                            bool success = await Passport.Instance.Login(useCachedSession: true);
-                            if (success) {
-                                PassportStore.SetLoggedInChecked();
-                            }
-                            else {
-                                SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
-                            }
-                        }
-                        else {
-                            SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
-                        }
-                    }
-                    // Set up provider
-                    await Passport.Instance.ConnectEvm();
-                    // Set up wallet (includes creating a wallet for new players)
-                    /*List<string> accounts = */await Passport.Instance.ZkEvmRequestAccounts();
-                }
-
+                await PassportLogin.Login();
                 uint gameDayNow = Timeline.GameDay();
                 Debug.Log("Game Day: Existing: " + gameDayInt + " Now: " + gameDayNow);
                 if (gameDayNow != gameDayInt) {

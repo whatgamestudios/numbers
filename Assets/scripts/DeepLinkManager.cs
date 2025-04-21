@@ -43,13 +43,13 @@ namespace FourteenNumbers {
         private void onDeepLinkActivated(string url) {
             Debug.Log("Deep link: " + url);
 
-            if (url == WelcomeScreen.RedirectUri) {
+            if (url == PassportLogin.RedirectUri) {
                 PassportStore.SetLoggedIn(true);
                 Debug.Log("Deep link is login");
                 LoginPath = DEEP_LINK;
                 SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
             }
-            else if (url == WelcomeScreen.LogoutUri) {
+            else if (url == PassportLogin.LogoutUri) {
                 PassportStore.SetLoggedIn(false);
                 Debug.Log("Deep link is logout");
                 SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
