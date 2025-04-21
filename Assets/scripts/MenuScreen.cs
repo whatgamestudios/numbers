@@ -23,11 +23,13 @@ namespace FourteenNumbers {
 
 
         public async void Start() {
-            await PassportLogin.Init();
-            await PassportLogin.Login();
+            loggedIn.text = "Loading";
 
             bool isLoggedIn = PassportStore.IsLoggedIn();
             if (isLoggedIn) {
+                await PassportLogin.Init();
+                await PassportLogin.Login();
+
                 // Set up wallet (includes creating a wallet for new players)
                 List<string> accounts = await Passport.Instance.ZkEvmRequestAccounts();
                 if (accounts.Count ==0) {

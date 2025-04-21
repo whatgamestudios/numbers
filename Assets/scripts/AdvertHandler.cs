@@ -21,9 +21,9 @@ namespace FourteenNumbers {
         private uint lastImageState = 0;
         private float animationProgress = 0f;
 
-        private const string text1 = "Sign In\n ";
-        private const string text2 = "to earn\n ";
-        private const string text3 = "Owned\nScenes";
+        private const string text1 = "Sign In\n \n ";
+        private const string text2 = "to earn\n \n ";
+        private const string text3 = "Tradable\nScenes \n ";
 
         public void Start() {
             // int selected = ScreenBackground.GetBackground();
@@ -106,45 +106,45 @@ namespace FourteenNumbers {
                     // Keep the image centered during size changes
                     imageRect.anchoredPosition = Vector2.zero;
 
-                    float endGetLarge = 0.4f;
-                    float endGetSmall = 0.6f;
+                    float endGetLarge = 0.6f;
+                    // float endGetSmall = 1.0f;
 
                     if (animationProgress < endGetLarge) {
                         // Grow from 300 to 500 pixels
                         float size = Mathf.Lerp(300, 600, animationProgress * 4);
                         imageRect.sizeDelta = new Vector2(size, size);
                     }
-                    else if (animationProgress < endGetSmall) {
+                    else {//if (animationProgress < endGetSmall) {
                         // Shrink from 400 to 100 pixels
-                        float size = Mathf.Lerp(600, 100, (animationProgress - endGetLarge) * 4);
+                        float size = Mathf.Lerp(600, 0, (animationProgress - endGetLarge) * 4);
                         imageRect.sizeDelta = new Vector2(size, size);
                     }
-                    else {
-                        float xPos, yPos;
-                        switch (state) {
-                            case 3:
-                                // Fly diagonally to top left
-                                xPos = Mathf.Lerp(0, -panelWidth, (animationProgress - endGetSmall) * 2);
-                                yPos = Mathf.Lerp(0, panelHeight, (animationProgress - endGetSmall) * 2);
-                                break;
-                            case 4:
-                                // Fly diagonally to top right
-                                xPos = Mathf.Lerp(0, panelWidth, (animationProgress - endGetSmall) * 2);
-                                yPos = Mathf.Lerp(0, panelHeight, (animationProgress - endGetSmall) * 2);
-                                break;
-                            case 5:
-                                // Fly diagonally to bottom right
-                                xPos = Mathf.Lerp(0, panelWidth, (animationProgress - endGetSmall) * 2);
-                                yPos = Mathf.Lerp(0, -panelHeight, (animationProgress - endGetSmall) * 2);
-                                break;
-                            default:
-                                // Fly diagonally to bottom left
-                                xPos = Mathf.Lerp(0, -panelWidth, (animationProgress - endGetSmall) * 2);
-                                yPos = Mathf.Lerp(0, -panelHeight, (animationProgress - endGetSmall) * 2);
-                                break;
-                        }
-                        imageRect.anchoredPosition = new Vector2(xPos, yPos);
-                    }
+                    // else {
+                    //     float xPos, yPos;
+                    //     switch (state) {
+                    //         case 3:
+                    //             // Fly diagonally to top left
+                    //             xPos = Mathf.Lerp(0, -panelWidth, (animationProgress - endGetSmall) * 2);
+                    //             yPos = Mathf.Lerp(0, panelHeight, (animationProgress - endGetSmall) * 2);
+                    //             break;
+                    //         case 4:
+                    //             // Fly diagonally to top right
+                    //             xPos = Mathf.Lerp(0, panelWidth, (animationProgress - endGetSmall) * 2);
+                    //             yPos = Mathf.Lerp(0, panelHeight, (animationProgress - endGetSmall) * 2);
+                    //             break;
+                    //         case 5:
+                    //             // Fly diagonally to bottom right
+                    //             xPos = Mathf.Lerp(0, panelWidth, (animationProgress - endGetSmall) * 2);
+                    //             yPos = Mathf.Lerp(0, -panelHeight, (animationProgress - endGetSmall) * 2);
+                    //             break;
+                    //         default:
+                    //             // Fly diagonally to bottom left
+                    //             xPos = Mathf.Lerp(0, -panelWidth, (animationProgress - endGetSmall) * 2);
+                    //             yPos = Mathf.Lerp(0, -panelHeight, (animationProgress - endGetSmall) * 2);
+                    //             break;
+                    //     }
+                    //     imageRect.anchoredPosition = new Vector2(xPos, yPos);
+                    //}
                     break;
                 // case 4:
                 //     break;
