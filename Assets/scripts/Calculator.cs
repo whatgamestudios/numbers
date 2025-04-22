@@ -125,7 +125,10 @@ namespace FourteenNumbers {
             newPlayer = daysPlayed < 2;
             gameDayInt = Timeline.GameDay();
 
-            await PassportLogin.Init();
+            bool isLoggedIn = PassportStore.IsLoggedIn();
+            if (isLoggedIn) {
+                await PassportLogin.Init();
+            }
 
             startANewDay(gameDayInt);
         }
@@ -133,7 +136,10 @@ namespace FourteenNumbers {
         public async Task OnApplicationFocus(bool hasFocus) {
             Debug.Log("OnApplicationFocus: " + hasFocus);
             if (hasFocus) {
-                await PassportLogin.Login();
+                bool isLoggedIn = PassportStore.IsLoggedIn();
+                if (isLoggedIn) {
+                    await PassportLogin.Login();
+                }
                 uint gameDayNow = Timeline.GameDay();
                 Debug.Log("Game Day: Existing: " + gameDayInt + " Now: " + gameDayNow);
                 if (gameDayNow != gameDayInt) {

@@ -14,13 +14,16 @@ namespace FourteenNumbers {
     public class CheckIn : MonoBehaviour {
 
         public async Task Start() {
-            await PassportLogin.Init();
-            await PassportLogin.Login();
+            bool isLoggedIn = PassportStore.IsLoggedIn();
+            if (isLoggedIn) {
+                await PassportLogin.Init();
+                await PassportLogin.Login();
 
-            uint gameDay = Timeline.GameDay();
-            if (CheckInStore.DoINeedToCheckIn(gameDay)) {
-                FourteenNumbersContract contract = new FourteenNumbersContract();
-                contract.SubmitCheckIn(gameDay);
+                uint gameDay = Timeline.GameDay();
+                if (CheckInStore.DoINeedToCheckIn(gameDay)) {
+                    FourteenNumbersContract contract = new FourteenNumbersContract();
+                    contract.SubmitCheckIn(gameDay);
+                }
             }
         }
     }
