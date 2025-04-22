@@ -1,16 +1,12 @@
 #!/bin/bash
+# useMainNet: 1 for mainnet, 0 for testnet
+useMainNet=1
+# useLedger: 1 for ledger, 0 for private key
+useLedger=1
 
-echo Blockscout API Key: $APIKEY
+LEDGER_HD_PATH="m/44'/60'/0'/0/1" 
 
-forge script --rpc-url https://rpc.immutable.com \
-    --priority-gas-price 10000000000 \
-    --with-gas-price     10000000100 \
-    -vvv \
-    --broadcast \
-    --ledger \
-    --hd-paths "m/44'/60'/0'/0/1" \
-    --verify \
-    --verifier blockscout \
-    --verifier-url https://immutable-mainnet.blockscout.com//api?$APIKEY \
-    script/UpgradeToV2.s.sol:UpgradeToV2
+FUNCTION_TO_EXECUTE='upgradeToV2()'
 
+# Set-up variables and execute forge
+source $(dirname "$0")/common.sh
