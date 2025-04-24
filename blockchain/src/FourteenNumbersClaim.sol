@@ -46,11 +46,18 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PassportChe
     error ClaimTooEarly(uint256 _daysPlayed, uint256 _claimedSoFar);
     error ClaimNonPassportAccount(address _claimer);
 
+
+    event TokensAdded(uint256 _slot, address _erc1155Contract, uint256 _tokenId, uint256 _amount, uint256 _percentage);
+    event TokensRemoved(uint256 _slot, address _erc1155Contract, uint256 _tokenId, uint256 _amount);
+
     /// @notice Only UPGRADE_ROLE can upgrade the contract
     bytes32 public constant UPGRADE_ROLE = bytes32("UPGRADE_ROLE");
 
     /// @notice The first Owner role is returned as the owner of the contract.
     bytes32 public constant OWNER_ROLE = bytes32("OWNER_ROLE");
+
+    bytes32 public constant TOKEN_ADMIN_ROLE = bytes32("TOKEN_ADMIN_ROLE");
+
 
     /// @notice Version 0 version number
     uint256 internal constant _VERSION0 = 0;
@@ -89,7 +96,8 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PassportChe
      * @param _owner the address to grant `OWNER_ROLE` to.
      * @param _upgradeAdmin the address to grant `UPGRADE_ROLE` to.
      */
-    function initialize(address _roleAdmin, address _owner, address _upgradeAdmin, address _registerarAdmin,
+    function initialize(address _roleAdmin, address _owner, address _upgradeAdmin, 
+        address _registerarAdmin, address _tokenAdmin,
         address _fourteenNumbersSolutions) public virtual initializer {
         __UUPSUpgradeable_init();
         __AccessControl_init();
@@ -97,6 +105,7 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PassportChe
         _grantRole(DEFAULT_ADMIN_ROLE, _roleAdmin);
         _grantRole(OWNER_ROLE, _owner);
         _grantRole(UPGRADE_ROLE, _upgradeAdmin);
+        _grantRole(TOKEN_ADMIN_ROLE, _tokenAdmin);
         version = _VERSION0;
         fourteenNumbersSolutions = FourteenNumbersSolutionsV2(_fourteenNumbersSolutions);
     }
@@ -122,8 +131,7 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PassportChe
 
 
 
-// TODO only token admin
-    function addMoreTokens(ClaimableToken calldata _claimableToken) external {
+    function addMoreTokens(ClaimableToken calldata _claimableToken) external onlyRole(TOKEN_ADMIN_ROLE) {
         if (_claimableToken.balance == 0) {
             revert AddMoreTokensBalanceMustBeNonZero();
         }
@@ -134,11 +142,21 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PassportChe
         IERC1155 erc1155 = IERC1155(_claimableToken.erc1155Contract);
         erc1155.safeTransferFrom(msg.sender, address(this), _claimableToken.tokenId, _claimableToken.balance, new bytes(0));
 
-        claimableTokens[nextSpareClaimableTokenSlot] = _claimableToken;
-        nextSpareClaimableTokenSlot++;
+        uint256 slot = nextSpareClaimableTokenSlot;
+        claimableTokens[slot] = _claimableToken;
+        nextSpareClaimableTokenSlot = slot + 1;
 
-        // TODO added event
+        emit TokensAdded(slot, address(_claimableToken.erc1155Contract), _claimableToken.tokenId, 
+            _claimableToken.balance, _claimableToken.percentage);
     }
+
+    function removeTokens() external onlyRole(TOKEN_ADMIN_ROLE) {
+
+        // TODO
+
+         //event TokensRemoved(uint256 _slot, address _erc1155Contract, uint256 _tokenId, uint256 _amount);
+    }
+
 
 
     function claim() external {
