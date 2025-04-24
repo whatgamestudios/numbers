@@ -6,7 +6,7 @@ import "forge-std/Script.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {FourteenNumbersSolutions} from "../src/FourteenNumbersSolutions.sol";
 import {FourteenNumbersSolutionsV2} from "../src/FourteenNumbersSolutionsV2.sol";
-//import {ImmutableERC1155} from "@imtbl/token/erc1155/preset/ImmutableERC1155.sol";
+import {ImmutableERC1155} from "../src/immutable/ImmutableERC1155.sol";
 
 contract FourteenNumbersScript is Script {
     function deployV1() public {
@@ -65,13 +65,11 @@ contract FourteenNumbersScript is Script {
     }
 
 
-// TODO re-enable once Immutable upgrades OZ to 5.x
-
-    // function transferAll(ImmutableERC1155 _erc1155, address _from, address _to, uint256 _tokenId) private {
-    //     uint256 bal = _erc1155.balanceOf(_from, _tokenId);
-    //     console.log("Token: %x, balance: %x", _tokenId, bal);
-    //     if (bal > 0) {
-    //         //_erc1155.safeTransferFrom(_from, _to, _tokenId, bal, bytes(""));
-    //     }
-    // }
+    function transferAll(ImmutableERC1155 _erc1155, address _from, address _to, uint256 _tokenId) private {
+        uint256 bal = _erc1155.balanceOf(_from, _tokenId);
+        console.log("Token: %x, balance: %x", _tokenId, bal);
+        if (bal > 0) {
+            _erc1155.safeTransferFrom(_from, _to, _tokenId, bal, bytes(""));
+        }
+    }
 }

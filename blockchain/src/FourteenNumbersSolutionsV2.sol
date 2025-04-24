@@ -6,10 +6,6 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/extensions/AccessControlEnumerableUpgradeable.sol";
 
-// import {GameDayCheck} from "./GameDayCheck.sol";
-// import {TargetValue} from "./TargetValue.sol";
-// import {CalcProcessor} from "./CalcProcessor.sol";
-// import {Points} from "./Points.sol";
 import {FourteenNumbersSolutions} from "./FourteenNumbersSolutions.sol";
 
 
