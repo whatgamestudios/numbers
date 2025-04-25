@@ -297,14 +297,12 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
      *   the call trace before execution to ensure only game owned contracts are in the call path.
      *   This is important as it ensures players can't call the claim function from a contract that
      *   reverts if the game player's preferred number isn't returned.
+     *
+     * This function is virtual so that overriding test contracts can insert a random number of 
+     * their choice.
      */
-    function _generateRandom() private view returns (uint256) {
-        bytes32 bhash1 = blockhash(block.number - 1);
-        bytes32 bhash2 = blockhash(block.number - 2);
-        bytes32 bhash3 = blockhash(block.number - 3);
-        bytes32 bhash4 = blockhash(block.number - 4);
-        bytes32 bhash5 = blockhash(block.number - 250);
-        bytes32 bhash = keccak256(abi.encodePacked(bhash1, bhash2, bhash3, bhash4, bhash5));
+    function _generateRandom() internal virtual view returns (uint256) {
+        bytes32 bhash = blockhash(block.number - 1);
         return uint256(bhash) % ONE_HUNDRED_PERCENT;
     }
 
