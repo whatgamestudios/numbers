@@ -5,6 +5,7 @@ pragma solidity ^0.8.24;
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/extensions/AccessControlEnumerableUpgradeable.sol";
+import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import {IERC1155} from "@openzeppelin/contracts/token/erc1155/IERC1155.sol";
 
 import {FourteenNumbersSolutionsV2} from "./FourteenNumbersSolutionsV2.sol";
@@ -32,31 +33,45 @@ import {PassportCheck} from "./PassportCheck.sol";
  *   Allocate token from the first fallback option available.
  * }
  *
- *
  * This contract is designed to be upgradeable.
  */
-contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PassportCheck, UUPSUpgradeable {
+contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpgradeable, PassportCheck, UUPSUpgradeable {
 
     /// @notice Error: Attempting to upgrade contract storage to version 0.
     error CanNotUpgradeToLowerOrSameVersion(uint256 _storageVersion);
 
+    /// @notice The number of tokens to be added can not be zero.
     error AddMoreTokensBalanceMustBeNonZero();
+    /// @notice The percentage can not be greater than 100%.
     error AddMoreTokensPercentageTooLarge();
+
+    /// @notice When calling RemoveTokens, the number of tokens to be removed can not be zero.
+    error CantRemoveNoTokens();
+    /// @notice The number of tokens to be removed was greater than the balance. 
+    error BalanceTooLow(uint256 slot, uint256 amount, uint256 balance);
+
+    /// @notice There are not tokens avaialable for claim.
     error NoTokensAvailableForClaim();
+    /// @notice The game player has attempted a claim too early.
     error ClaimTooEarly(uint256 _daysPlayed, uint256 _claimedSoFar);
+    /// @notice Claim was called from an account that isn't a Passport Wallet.
     error ClaimNonPassportAccount(address _claimer);
 
-
+    /// @notice Value of daysPlayedToClaim has been set.
+    event SettingDaysPlayedToClaim(uint256 _newDaysPlayedToClaim);
+    /// @notice Tokens were added to the contract.
     event TokensAdded(uint256 _slot, address _erc1155Contract, uint256 _tokenId, uint256 _amount, uint256 _percentage);
+    /// @notice Tokens were removed from the contract.
     event TokensRemoved(uint256 _slot, address _erc1155Contract, uint256 _tokenId, uint256 _amount);
-
-    /// @notice Only UPGRADE_ROLE can upgrade the contract
-    bytes32 public constant UPGRADE_ROLE = bytes32("UPGRADE_ROLE");
+    /// @notice A game player has claimed an NFT.
+    event Claimed(address _gamePlayer, address _erc1155Contract, uint256 _tokenId, uint256 _daysPlayed, uint256 _claimedSoFar);
 
     /// @notice The first Owner role is returned as the owner of the contract.
     bytes32 public constant OWNER_ROLE = bytes32("OWNER_ROLE");
 
-    bytes32 public constant TOKEN_ADMIN_ROLE = bytes32("TOKEN_ADMIN_ROLE");
+    /// @notice CONFIG_ROLE: Controls upgrades, token adding and removal, passport check 
+    /// config, time to wait for claiming a token.
+    bytes32 public constant CONFIG_ROLE = bytes32("CONFIG_ROLE");
 
 
     /// @notice Version 0 version number
@@ -94,18 +109,19 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PassportChe
      * @notice Initialises the upgradeable contract, setting up admin accounts.
      * @param _roleAdmin the address to grant `DEFAULT_ADMIN_ROLE` to.
      * @param _owner the address to grant `OWNER_ROLE` to.
-     * @param _upgradeAdmin the address to grant `UPGRADE_ROLE` to.
+     * @param _configAdmin the address to grant `CONFIG_ROLE` to.
+     * @param _aPassportWallet A passport wallet address. This can be any Passport wallet.
+     * @param _fourteenNumbersSolutions Solutions contract.
      */
-    function initialize(address _roleAdmin, address _owner, address _upgradeAdmin, 
-        address _registerarAdmin, address _tokenAdmin,
-        address _fourteenNumbersSolutions) public virtual initializer {
+    function initialize(address _roleAdmin, address _owner, address _configAdmin, 
+        address _aPassportWallet, address _fourteenNumbersSolutions) public virtual initializer {
         __UUPSUpgradeable_init();
         __AccessControl_init();
-        __PassportCheck_init(_registerarAdmin);
+        __Pausable_init();
+        __PassportCheck_init(_aPassportWallet);
         _grantRole(DEFAULT_ADMIN_ROLE, _roleAdmin);
         _grantRole(OWNER_ROLE, _owner);
-        _grantRole(UPGRADE_ROLE, _upgradeAdmin);
-        _grantRole(TOKEN_ADMIN_ROLE, _tokenAdmin);
+        _grantRole(CONFIG_ROLE, _configAdmin);
         version = _VERSION0;
         fourteenNumbersSolutions = FourteenNumbersSolutionsV2(_fourteenNumbersSolutions);
     }
@@ -125,13 +141,41 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PassportChe
         revert CanNotUpgradeToLowerOrSameVersion(version);
     }
 
+    /**
+     * @notice Add a smart contract wallet to the Allowlist.
+     * This will allowlist the proxy and implementation contract pair.
+     * First, the bytecode of the proxy is added to the bytecode allowlist.
+     * Second, the implementation address stored in the proxy is stored in the
+     * implementation address allowlist.
+     * @param walletAddr the wallet address to be added to the allowlist
+     */
+    function addWalletToAllowlist(address walletAddr) internal onlyRole(CONFIG_ROLE) {
+        _addWalletToAllowlist(walletAddr);
+    }
 
-// TODO only token admin
-// remove tokens or transfer some or all of balance
+    /**
+     * @notice Remove  a smart contract wallet from the Allowlist
+     * This will remove the proxy bytecode hash and implementation contract address pair from the allowlist
+     * @param walletAddr the wallet address to be removed from the allowlist
+     */
+    function removeWalletFromAllowlist(address walletAddr) external onlyRole(CONFIG_ROLE) {
+        _removeWalletFromAllowlist(walletAddr);
+    }
 
+    /**
+     * @notice Change the number of days between when game players can claim new tokens.
+     * @param _newDaysPlayedToClaim The new number of days before a player can claim.
+     */
+    function setDaysPlayedToClaim(uint256 _newDaysPlayedToClaim) external onlyRole(CONFIG_ROLE) {
+        daysPlayedToClaim = _newDaysPlayedToClaim;
+        emit SettingDaysPlayedToClaim(_newDaysPlayedToClaim);
+    }
 
-
-    function addMoreTokens(ClaimableToken calldata _claimableToken) external onlyRole(TOKEN_ADMIN_ROLE) {
+    /**
+     * @notice Add tokens to the contract.
+     * @param _claimableToken Information about tokens to be added to the contract.
+     */
+    function addMoreTokens(ClaimableToken calldata _claimableToken) external onlyRole(CONFIG_ROLE) {
         if (_claimableToken.balance == 0) {
             revert AddMoreTokensBalanceMustBeNonZero();
         }
@@ -150,40 +194,83 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PassportChe
             _claimableToken.balance, _claimableToken.percentage);
     }
 
-    function removeTokens() external onlyRole(TOKEN_ADMIN_ROLE) {
-
-        // TODO
-
-         //event TokensRemoved(uint256 _slot, address _erc1155Contract, uint256 _tokenId, uint256 _amount);
+    /**
+     * @notice Remove all tokens from a token slot.
+     * @param _slot Entry in claimable tokens map.
+     */
+    function removeAllTokens(uint256 _slot) external onlyRole(CONFIG_ROLE) {
+        _removeTokens(_slot, 0);
     }
 
+    /**
+     * @notice Remove some tokens from a token slot.
+     * @param _slot Entry in claimable tokens map.
+     * @param _amount The number of tokens to remove. 
+     */
+    function removeTokens(uint256 _slot, uint256 _amount) external onlyRole(CONFIG_ROLE) {
+        if (_amount == 0) {
+            revert CantRemoveNoTokens();
+        }
+        _removeTokens(_slot, _amount);
+    }
 
-
-    function claim() external {
+    /**
+     * @notice Claim 
+     */
+    function claim() external whenNotPaused() {
+        // Claims are only allowed from passport wallets.
         if (!isPassport(msg.sender)) {
             revert ClaimNonPassportAccount(msg.sender);
         }
-        // TODO check if passport user.
 
-        _checkAndUpdateClaimedDay();
+        // Check that the player is eligible to claim.
+        (uint256 daysPlayed, uint256 claimedSoFar) = _checkAndUpdateClaimedDay();
+
+        // Calculate an on-chain random number.
         uint256 randomValue = _generateRandom();
+
+        // Select a NFT based on the random value.
         (address nftContract, uint256 tokenId) = _determineRandomNft(randomValue);
 
+        // Transfer an NFT to the game player.
         IERC1155 erc1155 = IERC1155(nftContract);
         erc1155.safeTransferFrom(address(this), msg.sender, tokenId, 1, new bytes(0));
 
-        // TODO claim event
+        emit Claimed(msg.sender, nftContract, tokenId, daysPlayed, claimedSoFar);
+    }
+
+    /**
+     * @dev Returns the address of the current owner, for use by systems that need an "owner".
+     */
+    function owner() public view virtual returns (address) {
+        return getRoleMember(OWNER_ROLE, 0);
     }
 
 
-    function setDaysPlayedToClaim(uint256 _newDaysPlayedToClaim) external {
-        daysPlayedToClaim = _newDaysPlayedToClaim;
+    /**
+     * @notice Remove tokens allocated to a slot.
+     * @dev This function will crash if the slot hasn't been initialised.
+     * @param _slot Entry in claimable tokens map.
+     * @param _amount The number of tokens to transfer, or 0 if all tokens should be transferred.
+     */
+    function _removeTokens(uint256 _slot, uint256 _amount) internal {
+        ClaimableToken storage claimableToken = claimableTokens[_slot];
+        uint256 balance = claimableToken.balance;
+        uint256 amount = (_amount == 0) ? balance : _amount;
+        if (balance < amount) {
+            revert BalanceTooLow(_slot, _amount, balance);
+        }
+        IERC1155 erc1155 = IERC1155(claimableToken.erc1155Contract);
+        uint256 tokenId = claimableToken.tokenId;
+        erc1155.safeTransferFrom(address(this), msg.sender, tokenId, amount, new bytes(0));
+        emit TokensRemoved(_slot, address(erc1155), tokenId, amount);
     }
 
 
-
-    function _checkAndUpdateClaimedDay() private {
-        // Check if days played is DAYS_PLAYED_TO_CLAIM more than when they previously claimed.
+    /**
+     * @notice Check if days played is DAYS_PLAYED_TO_CLAIM more than when the game player previously claimed.
+     */
+    function _checkAndUpdateClaimedDay() private returns (uint256, uint256) {
         uint256 daysPlayed;
         (, , , daysPlayed) = fourteenNumbersSolutions.stats(msg.sender);
         uint256 claimedSoFar = claimedDay[msg.sender];
@@ -194,26 +281,37 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PassportChe
         else {
             revert ClaimTooEarly(daysPlayed, claimedSoFar);
         }
+        return (daysPlayed, claimedSoFar);
     }
 
 
     /**
-     * Return a random number between 0 and 100000.
-     * NOTE that this system isn't fool proof. A player could on-chain check the value returned, 
-     * and if it wasn't they wanted, revert the transaction.
-     * An improved, two phase system will be created if needed.
+     * @notice Return a random number between 0 and 100000.
+     * @dev The security of this function relies on:
+     * - There is a significant number of transaction on chain from a variety of sources. 
+     *   This ensures the value of block hash for recent blocks to be non-deterministic.
+     *   If this wasnt't the case, then a game player could observe the blockchain and 
+     *   attempt to determine the precise moment to do an in-game action to result in a 
+     *   certain random value.
+     * - Only Passport Wallets can call the claim function. This ensures Immutable's Relayer checks
+     *   the call trace before execution to ensure only game owned contracts are in the call path.
+     *   This is important as it ensures players can't call the claim function from a contract that
+     *   reverts if the game player's preferred number isn't returned.
      */
     function _generateRandom() private view returns (uint256) {
         bytes32 bhash1 = blockhash(block.number - 1);
-        bytes32 bhash2 = blockhash(block.number - 50);
-        bytes32 bhash3 = blockhash(block.number - 100);
-        bytes32 bhash4 = blockhash(block.number - 200);
+        bytes32 bhash2 = blockhash(block.number - 2);
+        bytes32 bhash3 = blockhash(block.number - 3);
+        bytes32 bhash4 = blockhash(block.number - 4);
         bytes32 bhash5 = blockhash(block.number - 250);
         bytes32 bhash = keccak256(abi.encodePacked(bhash1, bhash2, bhash3, bhash4, bhash5));
         return uint256(bhash) % ONE_HUNDRED_PERCENT;
     }
 
-
+    /**
+     * @notice Determine the NFT to return based on the random value.
+     * @param _randomValue Value that matches a percentage between 0 and 10000 (0% and 100%).
+     */
     function _determineRandomNft(uint256 _randomValue) private returns (address, uint256) {
         uint256 infiniteToken = INVALID;
         uint256 runningTotalPercentage = 0;
@@ -249,22 +347,9 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PassportChe
         revert NoTokensAvailableForClaim();
     }
 
-
-
-
-
-    /**
-     * @dev Returns the address of the current owner, for use by systems that need an "owner".
-     * This is the first role admin.
-     */
-    function owner() public view virtual returns (address) {
-        return getRoleMember(OWNER_ROLE, 0);
-    }
-
-
     // Override the _authorizeUpgrade function
     // solhint-disable-next-line no-empty-blocks
-    function _authorizeUpgrade(address newImplementation) internal override onlyRole(UPGRADE_ROLE) {}
+    function _authorizeUpgrade(address newImplementation) internal override onlyRole(CONFIG_ROLE) {}
 
 
     /// @notice storage gap for additional variables for upgrades
