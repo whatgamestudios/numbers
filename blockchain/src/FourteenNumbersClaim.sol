@@ -7,6 +7,7 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/extensions/AccessControlEnumerableUpgradeable.sol";
 import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import {IERC1155} from "@openzeppelin/contracts/token/erc1155/IERC1155.sol";
+import {IERC1155Receiver} from "@openzeppelin/contracts/token/erc1155/IERC1155Receiver.sol";
 
 import {FourteenNumbersSolutionsV2} from "./FourteenNumbersSolutionsV2.sol";
 import {PassportCheck} from "./PassportCheck.sol";
@@ -35,8 +36,7 @@ import {PassportCheck} from "./PassportCheck.sol";
  *
  * This contract is designed to be upgradeable.
  */
-contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpgradeable, PassportCheck, UUPSUpgradeable {
-
+contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpgradeable, PassportCheck, UUPSUpgradeable, IERC1155Receiver {
     /// @notice Error: Attempting to upgrade contract storage to version 0.
     error CanNotUpgradeToLowerOrSameVersion(uint256 _storageVersion);
 
@@ -69,16 +69,22 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
     /// @notice The first Owner role is returned as the owner of the contract.
     bytes32 public constant OWNER_ROLE = bytes32("OWNER_ROLE");
 
-    /// @notice CONFIG_ROLE: Controls upgrades, token adding and removal, passport check 
+    /// @notice CONFIG_ROLE: Controls upgrades, passport check 
     /// config, time to wait for claiming a token.
     bytes32 public constant CONFIG_ROLE = bytes32("CONFIG_ROLE");
+
+    /// @notice TOKEN_ROLE: Token adding and removal.
+    bytes32 public constant TOKEN_ROLE = bytes32("TOKEN_ROLE");
 
 
     /// @notice Version 0 version number
     uint256 internal constant _VERSION0 = 0;
 
-    uint256 public constant DEFAULT_DAYS_PLAYED_TO_CLAIM = 30;
+    uint256 private constant DEFAULT_DAYS_PLAYED_TO_CLAIM = 30;
     uint256 public constant ONE_HUNDRED_PERCENT = 10000;
+
+    uint256 public constant INVALID = 0;
+
 
     /// @notice version number of the storage variable layout.
     uint256 public version;
@@ -93,16 +99,14 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
         uint256 balance;
         uint256 percentage; // Percentage to two decimal places. Hence 23.45% is 2345
     }
-
     mapping (uint256 => ClaimableToken) public claimableTokens;
 
-    uint256 public constant INVALID = 0;
-    uint256 public nextSpareClaimableTokenSlot = 1;
-    uint256 public firstInUseClaimableTokenSlot = 1;
+    uint256 public nextSpareClaimableTokenSlot;
+    uint256 public firstInUseClaimableTokenSlot;
 
     FourteenNumbersSolutionsV2 public fourteenNumbersSolutions;
 
-    uint256 public daysPlayedToClaim = DEFAULT_DAYS_PLAYED_TO_CLAIM;
+    uint256 public daysPlayedToClaim;
 
 
     /**
@@ -113,7 +117,7 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
      * @param _aPassportWallet A passport wallet address. This can be any Passport wallet.
      * @param _fourteenNumbersSolutions Solutions contract.
      */
-    function initialize(address _roleAdmin, address _owner, address _configAdmin, 
+    function initialize(address _roleAdmin, address _owner, address _configAdmin, address _tokenAdmin,
         address _aPassportWallet, address _fourteenNumbersSolutions) public virtual initializer {
         __UUPSUpgradeable_init();
         __AccessControl_init();
@@ -122,8 +126,13 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
         _grantRole(DEFAULT_ADMIN_ROLE, _roleAdmin);
         _grantRole(OWNER_ROLE, _owner);
         _grantRole(CONFIG_ROLE, _configAdmin);
+        _grantRole(TOKEN_ROLE, _tokenAdmin);
         version = _VERSION0;
         fourteenNumbersSolutions = FourteenNumbersSolutionsV2(_fourteenNumbersSolutions);
+
+        nextSpareClaimableTokenSlot = 1;
+        firstInUseClaimableTokenSlot = 1;
+        daysPlayedToClaim = DEFAULT_DAYS_PLAYED_TO_CLAIM;
     }
 
     /**
@@ -175,7 +184,7 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
      * @notice Add tokens to the contract.
      * @param _claimableToken Information about tokens to be added to the contract.
      */
-    function addMoreTokens(ClaimableToken calldata _claimableToken) external onlyRole(CONFIG_ROLE) {
+    function addMoreTokens(ClaimableToken calldata _claimableToken) external onlyRole(TOKEN_ROLE) {
         if (_claimableToken.balance == 0) {
             revert AddMoreTokensBalanceMustBeNonZero();
         }
@@ -198,7 +207,7 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
      * @notice Remove all tokens from a token slot.
      * @param _slot Entry in claimable tokens map.
      */
-    function removeAllTokens(uint256 _slot) external onlyRole(CONFIG_ROLE) {
+    function removeAllTokens(uint256 _slot) external onlyRole(TOKEN_ROLE) {
         _removeTokens(_slot, 0);
     }
 
@@ -207,7 +216,7 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
      * @param _slot Entry in claimable tokens map.
      * @param _amount The number of tokens to remove. 
      */
-    function removeTokens(uint256 _slot, uint256 _amount) external onlyRole(CONFIG_ROLE) {
+    function removeTokens(uint256 _slot, uint256 _amount) external onlyRole(TOKEN_ROLE) {
         if (_amount == 0) {
             revert CantRemoveNoTokens();
         }
@@ -239,6 +248,59 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
         emit Claimed(msg.sender, nftContract, tokenId, daysPlayed, claimedSoFar);
     }
 
+
+    /**
+     * @dev Handles the receipt of a single ERC-1155 token type. This function is
+     * called at the end of a `safeTransferFrom` after the balance has been updated.
+     *
+     * NOTE: To accept the transfer, this must return
+     * `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))`
+     * (i.e. 0xf23a6e61, or its own function selector).
+     *
+     * @param operator The address which initiated the transfer (i.e. msg.sender)
+     * @param from The address which previously owned the token
+     * @param id The ID of the token being transferred
+     * @param value The amount of tokens being transferred
+     * @param data Additional data with no specified format
+     * @return `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))` if transfer is allowed
+     */
+    function onERC1155Received(
+        address operator,
+        address from,
+        uint256 id,
+        uint256 value,
+        bytes calldata data
+    ) external override(IERC1155Receiver) returns (bytes4) {
+        return bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"));
+    }
+
+/**
+     * @dev Handles the receipt of a multiple ERC-1155 token types. This function
+     * is called at the end of a `safeBatchTransferFrom` after the balances have
+     * been updated.
+     *
+     * NOTE: To accept the transfer(s), this must return
+     * `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`
+     * (i.e. 0xbc197c81, or its own function selector).
+     *
+     * @param operator The address which initiated the batch transfer (i.e. msg.sender)
+     * @param from The address which previously owned the token
+     * @param ids An array containing ids of each token being transferred (order and length must match values array)
+     * @param values An array containing amounts of each token being transferred (order and length must match ids array)
+     * @param data Additional data with no specified format
+     * @return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` if transfer is allowed
+     */
+    function onERC1155BatchReceived(
+        address operator,
+        address from,
+        uint256[] calldata ids,
+        uint256[] calldata values,
+        bytes calldata data
+    ) external override(IERC1155Receiver) returns (bytes4) {
+        return bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"));
+    }
+
+
     /**
      * @dev Returns the address of the current owner, for use by systems that need an "owner".
      */
@@ -246,6 +308,37 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
         return getRoleMember(OWNER_ROLE, 0);
     }
 
+    /**
+     * @notice Return the list of claimable tokens. 
+     * @return Information about claimable tokens.
+     */
+    function getClaimableNfts() external view returns (ClaimableToken[] memory) {
+        // Determine how big the array to be returned should be.
+        uint256 numUniqueNfts = 0;
+        for (uint256 i = firstInUseClaimableTokenSlot; i < nextSpareClaimableTokenSlot; i++) {
+            ClaimableToken storage claimableToken = claimableTokens[i];
+            uint256 balance = claimableToken.balance;
+            if (balance != 0) {
+                numUniqueNfts++;
+            }
+        }
+
+        // Populate the array to return
+        ClaimableToken[] memory uniqueNfts = new ClaimableToken[](numUniqueNfts);
+        uint256 offset = 0;
+        for (uint256 i = firstInUseClaimableTokenSlot; i < nextSpareClaimableTokenSlot; i++) {
+            ClaimableToken storage claimableToken = claimableTokens[i];
+            uint256 balance = claimableToken.balance;
+            if (balance != 0) {
+                uniqueNfts[offset].erc1155Contract = claimableToken.erc1155Contract;
+                uniqueNfts[offset].tokenId = claimableToken.tokenId;
+                uniqueNfts[offset].balance = claimableToken.balance;
+                uniqueNfts[offset].percentage = claimableToken.percentage;
+                offset++;
+            }
+        }
+        return uniqueNfts;
+    }
 
     /**
      * @notice Remove tokens allocated to a slot.

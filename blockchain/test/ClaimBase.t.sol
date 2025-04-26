@@ -11,6 +11,8 @@ import {FourteenNumbersSolutionsV2} from "../src/FourteenNumbersSolutionsV2.sol"
 import {FourteenNumbersClaim} from "../src/FourteenNumbersClaim.sol";
 
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
+import {ImmutableERC1155} from "../src/immutable/ImmutableERC1155.sol";
+import {OperatorAllowlistUpgradeable} from "../src/immutable/allowlist/OperatorAllowlistUpgradeable.sol";
 
 contract FakePassportMainModule {
     FourteenNumbersClaim claimContract;
@@ -24,12 +26,29 @@ contract FakePassportMainModule {
 
 
 abstract contract ClaimBaseTest is Test {
+    uint256 constant TOK1_TOKEN_ID = 1;
+    uint256 constant TOK1_AMOUNT = 100;
+    uint256 constant TOK1_PERCENTAGE = 4900;
+    uint256 constant TOK2_TOKEN_ID = 2;
+    uint256 constant TOK2_AMOUNT = 1000;
+    uint256 constant TOK2_PERCENTAGE = 100;
+    uint256 constant TOK3_TOKEN_ID = 3;
+    uint256 constant TOK3_AMOUNT = 10000;
+    uint256 constant TOK3_PERCENTAGE = 90;
+
+    uint256 constant DEFAULT_TOKEN_ID = TOK1_TOKEN_ID;
+    uint256 constant DEFAULT_AMOUNT = TOK1_AMOUNT;
+    uint256 constant DEFAULT_PERCENTAGE = TOK1_PERCENTAGE;
+
+
+
     bytes32 public defaultAdminRole;
     bytes32 public configRole;
     bytes32 public ownerRole;
 
     address public roleAdmin;
     address public configAdmin;
+    address public tokenAdmin;
     address public owner;
 
     address public player1;
@@ -38,11 +57,16 @@ abstract contract ClaimBaseTest is Test {
     FourteenNumbersClaim fourteenNumbersClaim;
     FourteenNumbersSolutions fourteenNumbersSolutions;
 
-    FakePassportMainModule passportWallet;
+    OperatorAllowlistUpgradeable allowList;
+    ImmutableERC1155 public mockERC1155;
+    FakePassportMainModule public passportWallet;
+
+
 
     function setUp() public virtual {
         roleAdmin = makeAddr("RoleAdmin");
         configAdmin = makeAddr("ConfigAdmin");
+        tokenAdmin = makeAddr("TokenAdmin");
         owner = makeAddr("Owner");
 
         player1 = makeAddr("Player1");
@@ -57,6 +81,8 @@ abstract contract ClaimBaseTest is Test {
         setUpPassportWallet();
         setUpFourteenNumbersClaim();
         passportWallet.setClaimContract(address(fourteenNumbersClaim));
+        setUpOperatorAllowlist();
+        setUpMockERC1155();
     }
 
     function setUpFourteenNumbersSolutionsV2() private {
@@ -94,8 +120,56 @@ abstract contract ClaimBaseTest is Test {
         FourteenNumbersClaim impl = new FourteenNumbersClaim();
         bytes memory initData = abi.encodeWithSelector(
             FourteenNumbersClaim.initialize.selector, 
-            roleAdmin, owner, configAdmin, passportWallet, fourteenNumbersSolutions);
+            roleAdmin, owner, configAdmin, tokenAdmin, passportWallet, fourteenNumbersSolutions);
         ERC1967Proxy proxy = new ERC1967Proxy(address(impl), initData);
         fourteenNumbersClaim = FourteenNumbersClaim(address(proxy));
+    }
+
+    function setUpOperatorAllowlist() private {
+        address admin = address(0);
+        address upgradeAdmin = address(0);
+        address registrarAdmin = makeAddr("registrarAdmin");
+        OperatorAllowlistUpgradeable impl = new OperatorAllowlistUpgradeable();
+        bytes memory initData = abi.encodeWithSelector(
+            OperatorAllowlistUpgradeable.initialize.selector, admin, upgradeAdmin, registrarAdmin
+        );
+        ERC1967Proxy proxy = new ERC1967Proxy(address(impl), initData);
+        allowList = OperatorAllowlistUpgradeable(address(proxy));
+
+        // Add Passport Wallet to the allowlist
+        vm.prank(registrarAdmin);
+        allowList.addWalletToAllowlist(address(passportWallet));
+
+        // Add claim contract to the allowlist
+        address[] memory contracts = new address[](1);
+        contracts[0] = address(fourteenNumbersClaim);
+        vm.prank(registrarAdmin);
+        allowList.addAddressesToAllowlist(contracts);
+    }
+
+    function setUpMockERC1155() private {
+        string memory name = "Test Collection";
+        string memory baseURI = "https://test.com/nfts/{id}.json";
+        string memory contractURI = "https://test.com/collection.json";
+        address operatorAllowlist = address(allowList);
+        address receiver = address(1);
+        uint96 feeNumerator = 10;
+        address minter = makeAddr("minter");
+
+        mockERC1155 = new ImmutableERC1155(
+            owner,
+            name,
+            baseURI,
+            contractURI,
+            operatorAllowlist,
+            receiver,
+            feeNumerator);
+        vm.prank(owner);
+        mockERC1155.grantMinterRole(minter);
+        vm.startPrank(minter);
+        mockERC1155.safeMint(tokenAdmin, TOK1_TOKEN_ID, TOK1_AMOUNT, new bytes(0));
+        mockERC1155.safeMint(tokenAdmin, TOK2_TOKEN_ID, TOK2_AMOUNT, new bytes(0));
+        mockERC1155.safeMint(tokenAdmin, TOK3_TOKEN_ID, TOK3_AMOUNT, new bytes(0));    
+        vm.stopPrank();
     }
 }
