@@ -50,6 +50,7 @@ abstract contract ClaimBaseTest is Test {
     address public configAdmin;
     address public tokenAdmin;
     address public owner;
+    address public operatorRegistrarAdmin;
 
     address public player1;
     address public player2;
@@ -128,22 +129,22 @@ abstract contract ClaimBaseTest is Test {
     function setUpOperatorAllowlist() private {
         address admin = address(0);
         address upgradeAdmin = address(0);
-        address registrarAdmin = makeAddr("registrarAdmin");
+        operatorRegistrarAdmin = makeAddr("operatorRegistrarAdmin");
         OperatorAllowlistUpgradeable impl = new OperatorAllowlistUpgradeable();
         bytes memory initData = abi.encodeWithSelector(
-            OperatorAllowlistUpgradeable.initialize.selector, admin, upgradeAdmin, registrarAdmin
+            OperatorAllowlistUpgradeable.initialize.selector, admin, upgradeAdmin, operatorRegistrarAdmin
         );
         ERC1967Proxy proxy = new ERC1967Proxy(address(impl), initData);
         allowList = OperatorAllowlistUpgradeable(address(proxy));
 
         // Add Passport Wallet to the allowlist
-        vm.prank(registrarAdmin);
+        vm.prank(operatorRegistrarAdmin);
         allowList.addWalletToAllowlist(address(passportWallet));
 
         // Add claim contract to the allowlist
         address[] memory contracts = new address[](1);
         contracts[0] = address(fourteenNumbersClaim);
-        vm.prank(registrarAdmin);
+        vm.prank(operatorRegistrarAdmin);
         allowList.addAddressesToAllowlist(contracts);
     }
 

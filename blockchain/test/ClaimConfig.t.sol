@@ -14,6 +14,9 @@ contract ClaimConfigTest is ClaimBaseTest {
     error AddMoreTokensBalanceMustBeNonZero();
     error AddMoreTokensPercentageTooLarge();
 
+    error ERC1155InsufficientBalance(address sender, uint256 balance, uint256 needed, uint256 tokenId);
+    error ERC1155MissingApprovalForAll(address target, address sender);
+    error ERC1155InvalidReceiver(address receiver);
 
     event SettingDaysPlayedToClaim(uint256 _newDaysPlayedToClaim);
     event TokensAdded(uint256 _slot, address _erc1155Contract, uint256 _tokenId, uint256 _amount, uint256 _percentage);
@@ -61,67 +64,93 @@ contract ClaimConfigTest is ClaimBaseTest {
         assertEq(percentage, TOK1_PERCENTAGE, "Percentage should match");
     }
 
-    // function testAddMoreTokensWithZeroBalance() public {
-    //     vm.prank(tokenAdmin);
-    //     mockERC1155.setApprovalForAll(address(fourteenNumbersClaim), true);
+    function testAddMoreTokensWithZeroBalance() public {
+        vm.prank(tokenAdmin);
+        mockERC1155.setApprovalForAll(address(fourteenNumbersClaim), true);
 
-    //     FourteenNumbersClaim.ClaimableToken memory token = FourteenNumbersClaim.ClaimableToken({
-    //         erc1155Contract: address(mockERC1155),
-    //         tokenId: TOK1_TOKEN_ID,
-    //         balance: 0,
-    //         percentage: TOK1_PERCENTAGE
-    //     });
-    //     vm.prank(tokenAdmin);
-    //     vm.expectRevert(abi.encodeWithSelector(AddMoreTokensBalanceMustBeNonZero.selector));
-    //     fourteenNumbersClaim.addMoreTokens(token);
-    // }
+        FourteenNumbersClaim.ClaimableToken memory token = FourteenNumbersClaim.ClaimableToken({
+            erc1155Contract: address(mockERC1155),
+            tokenId: TOK1_TOKEN_ID,
+            balance: 0,
+            percentage: TOK1_PERCENTAGE
+        });
+        vm.prank(tokenAdmin);
+        vm.expectRevert(abi.encodeWithSelector(AddMoreTokensBalanceMustBeNonZero.selector));
+        fourteenNumbersClaim.addMoreTokens(token);
+    }
 
-    // function testAddMoreTokensWithERC1155ZeroBalance() public {
-    //     vm.prank(tokenAdmin);
-    //     mockERC1155.setApprovalForAll(address(fourteenNumbersClaim), true);
+    function testAddMoreTokensWithERC1155ZeroBalance() public {
+        vm.prank(tokenAdmin);
+        mockERC1155.setApprovalForAll(address(fourteenNumbersClaim), true);
 
-    //     FourteenNumbersClaim.ClaimableToken memory token = FourteenNumbersClaim.ClaimableToken({
-    //         erc1155Contract: address(mockERC1155),
-    //         tokenId: 1000,
-    //         balance: TOK1_AMOUNT,
-    //         percentage: TOK1_PERCENTAGE
-    //     });
-    //     vm.prank(tokenAdmin);
-    //     vm.expectRevert("ERC1155: insufficient balance for transfer");
-    //     fourteenNumbersClaim.addMoreTokens(token);
-    // }
+        FourteenNumbersClaim.ClaimableToken memory token = FourteenNumbersClaim.ClaimableToken({
+            erc1155Contract: address(mockERC1155),
+            tokenId: 1000,
+            balance: TOK1_AMOUNT,
+            percentage: TOK1_PERCENTAGE
+        });
+        vm.prank(tokenAdmin);
+        vm.expectRevert(abi.encodeWithSelector(ERC1155InsufficientBalance.selector, tokenAdmin, 0, TOK1_AMOUNT, 1000));
+        fourteenNumbersClaim.addMoreTokens(token);
+    }
 
-    // function testAddMoreTokensERC1155NotApproved() public {
-    //     FourteenNumbersClaim.ClaimableToken memory token = FourteenNumbersClaim.ClaimableToken({
-    //         erc1155Contract: address(mockERC1155),
-    //         tokenId: 1000,
-    //         balance: TOK1_AMOUNT,
-    //         percentage: TOK1_PERCENTAGE
-    //     });
-    //     vm.prank(tokenAdmin);
-    //     //TODO what will be the error?
-    //     vm.expectRevert("ERC1155: insufficient balance for transfer");
-    //     fourteenNumbersClaim.addMoreTokens(token);
-    // }
+    function testAddMoreTokensERC1155NotApproved() public {
+        FourteenNumbersClaim.ClaimableToken memory token = FourteenNumbersClaim.ClaimableToken({
+            erc1155Contract: address(mockERC1155),
+            tokenId: 1000,
+            balance: TOK1_AMOUNT,
+            percentage: TOK1_PERCENTAGE
+        });
+        vm.prank(tokenAdmin);
+        vm.expectRevert(abi.encodeWithSelector(ERC1155MissingApprovalForAll.selector, address(fourteenNumbersClaim), tokenAdmin));
+        fourteenNumbersClaim.addMoreTokens(token);
+    }
 
-    // function testAddMoreTokensWithInvalidPercentage() public {
-    //     vm.prank(tokenAdmin);
-    //     mockERC1155.setApprovalForAll(address(fourteenNumbersClaim), true);
+    function testAddMoreTokensWithInvalidPercentage() public {
+        vm.prank(tokenAdmin);
+        mockERC1155.setApprovalForAll(address(fourteenNumbersClaim), true);
 
-    //     FourteenNumbersClaim.ClaimableToken memory token = FourteenNumbersClaim.ClaimableToken({
-    //         erc1155Contract: address(mockERC1155),
-    //         tokenId: DEFAULT_TOKEN_ID,
-    //         balance: DEFAULT_AMOUNT,
-    //         percentage: 10001 // More than 100%
-    //     });
-    //     vm.prank(tokenAdmin);
-    //     vm.expectRevert(abi.encodeWithSelector(AddMoreTokensPercentageTooLarge.selector));
-    //     fourteenNumbersClaim.addMoreTokens(token);
-    // }
+        FourteenNumbersClaim.ClaimableToken memory token = FourteenNumbersClaim.ClaimableToken({
+            erc1155Contract: address(mockERC1155),
+            tokenId: DEFAULT_TOKEN_ID,
+            balance: DEFAULT_AMOUNT,
+            percentage: 10001 // More than 100%
+        });
+        vm.prank(tokenAdmin);
+        vm.expectRevert(abi.encodeWithSelector(AddMoreTokensPercentageTooLarge.selector));
+        fourteenNumbersClaim.addMoreTokens(token);
+    }
 
+    function testDirectTransferFail() public {
+        // Fake add token admin, which is perceived as a contract by the code, this so that the test will work.
+        address[] memory contracts = new address[](1);
+        contracts[0] = address(tokenAdmin);
+        vm.prank(operatorRegistrarAdmin);
+        allowList.addAddressesToAllowlist(contracts);
 
+        // Now check that a direct transfer will fail.
+        vm.prank(tokenAdmin);
+        vm.expectRevert(abi.encodeWithSelector(ERC1155InvalidReceiver.selector, address(fourteenNumbersClaim)));
+        mockERC1155.safeTransferFrom(tokenAdmin, address(fourteenNumbersClaim), TOK1_TOKEN_ID, TOK1_AMOUNT, new bytes(0));
+    }
 
+    function testBatchDirectTransferFail() public {
+        // Fake add token admin, which is perceived as a contract by the code, this so that the test will work.
+        address[] memory contracts = new address[](1);
+        contracts[0] = address(tokenAdmin);
+        vm.prank(operatorRegistrarAdmin);
+        allowList.addAddressesToAllowlist(contracts);
 
+        // Now check that a direct batch transfer will fail.
+        uint256[] memory ids = new uint256[](1);
+        ids[0] = TOK1_TOKEN_ID;
+        uint256[] memory amounts = new uint256[](1);
+        amounts[0] = TOK1_AMOUNT;
+
+        vm.prank(tokenAdmin);
+        vm.expectRevert(abi.encodeWithSelector(ERC1155InvalidReceiver.selector, address(fourteenNumbersClaim)));
+        mockERC1155.safeBatchTransferFrom(tokenAdmin, address(fourteenNumbersClaim), ids, amounts, new bytes(0));
+    }
 
 
 

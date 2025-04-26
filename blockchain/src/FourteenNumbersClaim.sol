@@ -1,6 +1,6 @@
 // Copyright (c) Whatgame Studios 2024 - 2025
 // SPDX-License-Identifier: PROPRIETORY
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.28;
 
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
@@ -108,6 +108,9 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
 
     uint256 public daysPlayedToClaim;
 
+    // True when the add function is being called.
+    bool private transient inAddFunction;
+
 
     /**
      * @notice Initialises the upgradeable contract, setting up admin accounts.
@@ -185,6 +188,7 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
      * @param _claimableToken Information about tokens to be added to the contract.
      */
     function addMoreTokens(ClaimableToken calldata _claimableToken) external onlyRole(TOKEN_ROLE) {
+        inAddFunction = true;
         if (_claimableToken.balance == 0) {
             revert AddMoreTokensBalanceMustBeNonZero();
         }
@@ -201,6 +205,9 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
 
         emit TokensAdded(slot, address(_claimableToken.erc1155Contract), _claimableToken.tokenId, 
             _claimableToken.balance, _claimableToken.percentage);
+
+        // Reset the transient variable just in case this function is being called as a larger call graph.
+        inAddFunction = false;
     }
 
     /**
@@ -257,24 +264,30 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
      * `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))`
      * (i.e. 0xf23a6e61, or its own function selector).
      *
-     * @param operator The address which initiated the transfer (i.e. msg.sender)
-     * @param from The address which previously owned the token
-     * @param id The ID of the token being transferred
-     * @param value The amount of tokens being transferred
-     * @param data Additional data with no specified format
+     * @ param operator The address which initiated the transfer (i.e. msg.sender)
+     * @ param from The address which previously owned the token
+     * @ param id The ID of the token being transferred
+     * @ param value The amount of tokens being transferred
+     * @ param data Additional data with no specified format
      * @return `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))` if transfer is allowed
      */
     function onERC1155Received(
-        address operator,
-        address from,
-        uint256 id,
-        uint256 value,
-        bytes calldata data
-    ) external override(IERC1155Receiver) returns (bytes4) {
-        return bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"));
+        address /* operator */,
+        address /* from */,
+        uint256 /* id */,
+        uint256 /* value */,
+        bytes calldata /* data */
+    ) external view override(IERC1155Receiver) returns (bytes4) {
+        if (inAddFunction) {
+            return bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"));
+        }
+        else {
+            return bytes4(0);
+        }
+
     }
 
-/**
+    /**
      * @dev Handles the receipt of a multiple ERC-1155 token types. This function
      * is called at the end of a `safeBatchTransferFrom` after the balances have
      * been updated.
@@ -283,21 +296,22 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
      * `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`
      * (i.e. 0xbc197c81, or its own function selector).
      *
-     * @param operator The address which initiated the batch transfer (i.e. msg.sender)
-     * @param from The address which previously owned the token
-     * @param ids An array containing ids of each token being transferred (order and length must match values array)
-     * @param values An array containing amounts of each token being transferred (order and length must match ids array)
-     * @param data Additional data with no specified format
+     * @ param operator The address which initiated the batch transfer (i.e. msg.sender)
+     * @ param from The address which previously owned the token
+     * @ param ids An array containing ids of each token being transferred (order and length must match values array)
+     * @ param values An array containing amounts of each token being transferred (order and length must match ids array)
+     * @ param data Additional data with no specified format
      * @return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` if transfer is allowed
      */
     function onERC1155BatchReceived(
-        address operator,
-        address from,
-        uint256[] calldata ids,
-        uint256[] calldata values,
-        bytes calldata data
-    ) external override(IERC1155Receiver) returns (bytes4) {
-        return bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"));
+        address /* operator */,
+        address /* from */,
+        uint256[] calldata /* ids */,
+        uint256[] calldata /* values */,
+        bytes calldata /* data */
+    ) external pure override(IERC1155Receiver) returns (bytes4) {
+        // There is no circumstance in which a batch transfer should be made.
+        return bytes4(0);
     }
 
 
