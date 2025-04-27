@@ -26,13 +26,13 @@ contract FakePassportMainModule {
 
 
 abstract contract ClaimBaseTest is Test {
-    uint256 constant TOK1_TOKEN_ID = 1;
+    uint256 constant TOK1_TOKEN_ID = 12;
     uint256 constant TOK1_AMOUNT = 100;
     uint256 constant TOK1_PERCENTAGE = 4900;
-    uint256 constant TOK2_TOKEN_ID = 2;
+    uint256 constant TOK2_TOKEN_ID = 13;
     uint256 constant TOK2_AMOUNT = 1000;
     uint256 constant TOK2_PERCENTAGE = 100;
-    uint256 constant TOK3_TOKEN_ID = 3;
+    uint256 constant TOK3_TOKEN_ID = 14;
     uint256 constant TOK3_AMOUNT = 10000;
     uint256 constant TOK3_PERCENTAGE = 90;
 

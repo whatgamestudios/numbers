@@ -175,6 +175,20 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
     }
 
     /**
+     * @notice Pause the operational parts of the contract.
+     */
+    function pause() external onlyRole(CONFIG_ROLE) {
+        _pause();
+    }
+
+    /**
+     * @notice Unpause the operational parts of the contract.
+     */
+    function unpause() external onlyRole(CONFIG_ROLE) {
+        _unpause();
+    }
+
+    /**
      * @notice Change the number of days between when game players can claim new tokens.
      * @param _newDaysPlayedToClaim The new number of days before a player can claim.
      */

@@ -1,6 +1,5 @@
 // Copyright Whatgame Studios 2024 - 2025
 // SPDX-License-Identifier: PROPRIETORY
-// solhint-disable not-rely-on-time
 
 pragma solidity ^0.8.24;
 
@@ -63,6 +62,9 @@ contract ClaimConfigTest is ClaimBaseTest {
         assertEq(tokenId, TOK1_TOKEN_ID, "Token ID should match");
         assertEq(balance, TOK1_AMOUNT, "Balance should match");
         assertEq(percentage, TOK1_PERCENTAGE, "Percentage should match");
+
+        assertEq(mockERC1155.balanceOf(tokenAdmin, TOK1_TOKEN_ID), 0, "Token admin balance wrong");
+        assertEq(mockERC1155.balanceOf(address(fourteenNumbersClaim), TOK1_TOKEN_ID), TOK1_AMOUNT, "Contract balance wrong");
     }
 
     function testAddMoreTokensBadAccess() public {
@@ -174,7 +176,7 @@ contract ClaimConfigTest is ClaimBaseTest {
         testAddMoreTokens();
 
         // Then remove some tokens
-        uint256 removeAmount = TOK1_AMOUNT / 2;
+        uint256 removeAmount = TOK1_AMOUNT / 3;
         vm.prank(tokenAdmin);
         vm.expectEmit(true, true, true, true);
         emit TokensRemoved(1, address(mockERC1155), TOK1_TOKEN_ID, removeAmount);
@@ -183,7 +185,8 @@ contract ClaimConfigTest is ClaimBaseTest {
         // Check transfer.
         (, , uint256 balance, ) = fourteenNumbersClaim.claimableTokens(1);
         assertEq(balance, TOK1_AMOUNT - removeAmount, "Balance should match");
-        assertEq(mockERC1155.balanceOf(tokenAdmin, 1), removeAmount, "Token admin balance wrong");
+        assertEq(mockERC1155.balanceOf(tokenAdmin, TOK1_TOKEN_ID), removeAmount, "Token admin balance wrong");
+        assertEq(mockERC1155.balanceOf(address(fourteenNumbersClaim), TOK1_TOKEN_ID), TOK1_AMOUNT - removeAmount, "Contract balance wrong");
     }
 
     function testRemoveTokensBadAccessControl() public {
@@ -219,30 +222,70 @@ contract ClaimConfigTest is ClaimBaseTest {
         fourteenNumbersClaim.removeTokens(1, removeAmount);
     }
 
+    function testRemoveAllTokens() public {
+        // First add tokens
+        testAddMoreTokens();
 
-// TODO Not reviewed
+        // Then remove all tokens
+        vm.prank(tokenAdmin);
+        vm.expectEmit(true, true, true, true);
+        emit TokensRemoved(1, address(mockERC1155), TOK1_TOKEN_ID, TOK1_AMOUNT);
+        fourteenNumbersClaim.removeAllTokens(1);
 
+        // Check transfer.
+        (, , uint256 balance, ) = fourteenNumbersClaim.claimableTokens(1);
+        assertEq(balance, 0, "Balance should match");
+        assertEq(mockERC1155.balanceOf(tokenAdmin, TOK1_TOKEN_ID), TOK1_AMOUNT, "Token admin balance wrong");
+        assertEq(mockERC1155.balanceOf(address(fourteenNumbersClaim), TOK1_TOKEN_ID), 0, "Contract balance wrong");
+    }
 
+    function testRemoveAllTokensBadAuth() public {
+        // First add tokens
+        testAddMoreTokens();
 
+        // Then remove all tokens
+        vm.prank(player1);
+        vm.expectRevert(abi.encodeWithSelector(AccessControlUnauthorizedAccount.selector, player1, tokenRole));
+        fourteenNumbersClaim.removeAllTokens(1);
+    }
 
+    function testPassportCheck() public view {
+        assertTrue(fourteenNumbersClaim.isPassport(address(passportWallet)), "Passport wallet");
+        assertFalse(fourteenNumbersClaim.isPassport(address(fourteenNumbersClaim)), "fourteenNumbersClaim");
+    }
 
-    // function testPassportCheck() public {
-    //     vm.startPrank(configAdmin);
-    //     // Test adding wallet to allowlist
-    //     fourteenNumbersClaim.addWalletToAllowlist(user2);
-    //     // Test removing wallet from allowlist
-    //     fourteenNumbersClaim.removeWalletFromAllowlist(user2);
-    //     vm.stopPrank();
-    // }
+    function testRemovePassportWallet() public {
+        vm.prank(configAdmin);
+        fourteenNumbersClaim.removeWalletFromAllowlist(address(passportWallet));
+        assertFalse(fourteenNumbersClaim.isPassport(address(passportWallet)), "Passport wallet");
+    }
 
-    // function testPause() public {
-    //     vm.startPrank(configAdmin);
-    //     fourteenNumbersClaim.pause();
-    //     assertTrue(fourteenNumbersClaim.paused(), "Contract should be paused");
-    //     fourteenNumbersClaim.unpause();
-    //     assertFalse(fourteenNumbersClaim.paused(), "Contract should be unpaused");
-    //     vm.stopPrank();
-    // }
+    function testAddPassportWalletBadAuth() public {
+        testRemovePassportWallet();
+        vm.prank(player1);
+        vm.expectRevert(abi.encodeWithSelector(AccessControlUnauthorizedAccount.selector, player1, configRole));
+        fourteenNumbersClaim.removeWalletFromAllowlist(address(passportWallet));
+    }
+
+    function testRemovePassportWalletBadAuth() public {
+        vm.prank(player1);
+        vm.expectRevert(abi.encodeWithSelector(AccessControlUnauthorizedAccount.selector, player1, configRole));
+        fourteenNumbersClaim.removeWalletFromAllowlist(address(passportWallet));
+    }
+
+    function testPause() public {
+        vm.prank(configAdmin);
+        fourteenNumbersClaim.pause();
+        assertTrue(fourteenNumbersClaim.paused(), "Contract should be paused");
+    }
+
+    function testUnpause() public {
+        vm.prank(configAdmin);
+        fourteenNumbersClaim.pause();
+        vm.prank(configAdmin);
+        fourteenNumbersClaim.unpause();
+        assertFalse(fourteenNumbersClaim.paused(), "Contract should be unpaused");
+    }
 
     // function testGetClaimableNfts() public {
     //     vm.startPrank(configAdmin);
