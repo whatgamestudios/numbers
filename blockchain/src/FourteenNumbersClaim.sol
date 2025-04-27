@@ -367,6 +367,7 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
         if (balance < amount) {
             revert BalanceTooLow(_slot, _amount, balance);
         }
+        claimableToken.balance = balance - amount;
         IERC1155 erc1155 = IERC1155(claimableToken.erc1155Contract);
         uint256 tokenId = claimableToken.tokenId;
         erc1155.safeTransferFrom(address(this), msg.sender, tokenId, amount, new bytes(0));

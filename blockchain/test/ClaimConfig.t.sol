@@ -169,50 +169,62 @@ contract ClaimConfigTest is ClaimBaseTest {
     }
 
 
+    function testRemoveTokens() public {
+        // First add tokens
+        testAddMoreTokens();
+
+        // Then remove some tokens
+        uint256 removeAmount = TOK1_AMOUNT / 2;
+        vm.prank(tokenAdmin);
+        vm.expectEmit(true, true, true, true);
+        emit TokensRemoved(1, address(mockERC1155), TOK1_TOKEN_ID, removeAmount);
+        fourteenNumbersClaim.removeTokens(1, removeAmount);
+
+        // Check transfer.
+        (, , uint256 balance, ) = fourteenNumbersClaim.claimableTokens(1);
+        assertEq(balance, TOK1_AMOUNT - removeAmount, "Balance should match");
+        assertEq(mockERC1155.balanceOf(tokenAdmin, 1), removeAmount, "Token admin balance wrong");
+    }
+
+    function testRemoveTokensBadAccessControl() public {
+        // First add tokens
+        testAddMoreTokens();
+
+        // Then remove some tokens
+        uint256 removeAmount = 0;
+        vm.prank(player1);
+        vm.expectRevert(abi.encodeWithSelector(AccessControlUnauthorizedAccount.selector, player1, tokenRole));
+        fourteenNumbersClaim.removeTokens(1, removeAmount);
+    }
+
+    function testRemoveTokensWithZeroAmount() public {
+        // First add tokens
+        testAddMoreTokens();
+
+        // Then remove some tokens
+        uint256 removeAmount = 0;
+        vm.prank(tokenAdmin);
+        vm.expectRevert(abi.encodeWithSelector(FourteenNumbersClaim.CantRemoveNoTokens.selector));
+        fourteenNumbersClaim.removeTokens(1, removeAmount);
+    }
+
+    function testRemoveTokensExceedingBalance() public {
+        // First add tokens
+        testAddMoreTokens();
+
+        // Then remove some tokens
+        uint256 removeAmount = TOK1_AMOUNT + 1;
+        vm.prank(tokenAdmin);
+        vm.expectRevert(abi.encodeWithSelector(FourteenNumbersClaim.BalanceTooLow.selector, 1, TOK1_AMOUNT+1, TOK1_AMOUNT));
+        fourteenNumbersClaim.removeTokens(1, removeAmount);
+    }
+
 
 // TODO Not reviewed
 
 
-    // function testRemoveTokens() public {
-    //     // First add tokens
-    //     vm.startPrank(configAdmin);
-    //     FourteenNumbersClaim.ClaimableToken memory token = FourteenNumbersClaim.ClaimableToken({
-    //         erc1155Contract: address(mockERC1155),
-    //         tokenId: DEFAULT_TOKEN_ID,
-    //         balance: DEFAULT_AMOUNT,
-    //         percentage: DEFAULT_PERCENTAGE
-    //     });
-    //     fourteenNumbersClaim.addMoreTokens(token);
 
-    //     // Then remove some tokens
-    //     uint256 removeAmount = 50;
-    //     vm.expectEmit(true, true, true, true);
-    //     emit TokensRemoved(1, address(mockERC1155), DEFAULT_TOKEN_ID, removeAmount);
-    //     fourteenNumbersClaim.removeTokens(1, removeAmount);
-    //     vm.stopPrank();
-    // }
 
-    // function testFailRemoveTokensWithZeroAmount() public {
-    //     vm.startPrank(configAdmin);
-    //     fourteenNumbersClaim.removeTokens(1, 0);
-    //     vm.stopPrank();
-    // }
-
-    // function testFailRemoveTokensExceedingBalance() public {
-    //     // First add tokens
-    //     vm.startPrank(configAdmin);
-    //     FourteenNumbersClaim.ClaimableToken memory token = FourteenNumbersClaim.ClaimableToken({
-    //         erc1155Contract: address(mockERC1155),
-    //         tokenId: DEFAULT_TOKEN_ID,
-    //         balance: DEFAULT_AMOUNT,
-    //         percentage: DEFAULT_PERCENTAGE
-    //     });
-    //     fourteenNumbersClaim.addMoreTokens(token);
-
-    //     // Try to remove more than available
-    //     fourteenNumbersClaim.removeTokens(1, DEFAULT_AMOUNT + 1);
-    //     vm.stopPrank();
-    // }
 
     // function testPassportCheck() public {
     //     vm.startPrank(configAdmin);
