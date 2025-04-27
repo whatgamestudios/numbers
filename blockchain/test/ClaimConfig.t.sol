@@ -17,6 +17,7 @@ contract ClaimConfigTest is ClaimBaseTest {
     error ERC1155InsufficientBalance(address sender, uint256 balance, uint256 needed, uint256 tokenId);
     error ERC1155MissingApprovalForAll(address target, address sender);
     error ERC1155InvalidReceiver(address receiver);
+    error AccessControlUnauthorizedAccount(address account, bytes32 role);
 
     event SettingDaysPlayedToClaim(uint256 _newDaysPlayedToClaim);
     event TokensAdded(uint256 _slot, address _erc1155Contract, uint256 _tokenId, uint256 _amount, uint256 _percentage);
@@ -62,6 +63,21 @@ contract ClaimConfigTest is ClaimBaseTest {
         assertEq(tokenId, TOK1_TOKEN_ID, "Token ID should match");
         assertEq(balance, TOK1_AMOUNT, "Balance should match");
         assertEq(percentage, TOK1_PERCENTAGE, "Percentage should match");
+    }
+
+    function testAddMoreTokensBadAccess() public {
+        vm.prank(tokenAdmin);
+        mockERC1155.setApprovalForAll(address(fourteenNumbersClaim), true);
+
+        FourteenNumbersClaim.ClaimableToken memory token = FourteenNumbersClaim.ClaimableToken({
+            erc1155Contract: address(mockERC1155),
+            tokenId: TOK1_TOKEN_ID,
+            balance: TOK1_AMOUNT,
+            percentage: TOK1_PERCENTAGE
+        });
+        vm.prank(player1);
+        vm.expectRevert(abi.encodeWithSelector(AccessControlUnauthorizedAccount.selector, player1, tokenRole));
+        fourteenNumbersClaim.addMoreTokens(token);
     }
 
     function testAddMoreTokensWithZeroBalance() public {

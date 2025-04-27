@@ -45,6 +45,7 @@ abstract contract ClaimBaseTest is Test {
     bytes32 public defaultAdminRole;
     bytes32 public configRole;
     bytes32 public ownerRole;
+    bytes32 public tokenRole;
 
     address public roleAdmin;
     address public configAdmin;
@@ -77,6 +78,7 @@ abstract contract ClaimBaseTest is Test {
         defaultAdminRole = temp.DEFAULT_ADMIN_ROLE();
         configRole = temp.CONFIG_ROLE();
         ownerRole = temp.OWNER_ROLE();
+        tokenRole = temp.TOKEN_ROLE();
 
         setUpFourteenNumbersSolutionsV2();
         setUpPassportWallet();
