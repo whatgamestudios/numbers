@@ -193,6 +193,7 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
      * @param _newDaysPlayedToClaim The new number of days before a player can claim.
      */
     function setDaysPlayedToClaim(uint256 _newDaysPlayedToClaim) external onlyRole(CONFIG_ROLE) {
+        //TODO ensure _newDaysPlayedToClaim is not less than a minimum
         daysPlayedToClaim = _newDaysPlayedToClaim;
         emit SettingDaysPlayedToClaim(_newDaysPlayedToClaim);
     }
@@ -452,8 +453,8 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
                 }
                 continue;
             }
-            percentage = runningTotalPercentage + percentage;
-            if (percentage < _randomValue) {
+            runningTotalPercentage = runningTotalPercentage + percentage;
+            if (runningTotalPercentage > _randomValue) {
                 claimableToken.balance = balance - 1;
                 return (claimableToken.erc1155Contract, claimableToken.tokenId);
             }

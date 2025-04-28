@@ -13,8 +13,9 @@ import {FourteenNumbersClaim} from "../src/FourteenNumbersClaim.sol";
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {ImmutableERC1155} from "../src/immutable/ImmutableERC1155.sol";
 import {OperatorAllowlistUpgradeable} from "../src/immutable/allowlist/OperatorAllowlistUpgradeable.sol";
+import {IERC1155Receiver} from "@openzeppelin/contracts/token/erc1155/IERC1155Receiver.sol";
 
-contract FakePassportMainModule {
+contract FakePassportMainModule is IERC1155Receiver{
     FourteenNumbersClaim claimContract;
     function setClaimContract(address _claimContract) external {
         claimContract = FourteenNumbersClaim(_claimContract);
@@ -22,19 +23,45 @@ contract FakePassportMainModule {
     function claim() external {
         claimContract.claim();
     }
+
+    function onERC1155Received(
+        address /* operator */,
+        address /* from */,
+        uint256 /* id */,
+        uint256 /* value */,
+        bytes calldata /* data */
+    ) external pure override(IERC1155Receiver) returns (bytes4) {
+        return bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"));
+    }
+
+    function onERC1155BatchReceived(
+        address /* operator */,
+        address /* from */,
+        uint256[] calldata /* ids */,
+        uint256[] calldata /* values */,
+        bytes calldata /* data */
+    ) external pure override(IERC1155Receiver) returns (bytes4) {
+        // There is no circumstance in which a batch transfer should be made.
+        return bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"));
+    }
+
+    function supportsInterface(bytes4 /* interfaceId */) external pure returns (bool) {
+        return true;
+    }
+
 }
 
 
 abstract contract ClaimBaseTest is Test {
     uint256 constant TOK1_TOKEN_ID = 12;
     uint256 constant TOK1_AMOUNT = 100;
-    uint256 constant TOK1_PERCENTAGE = 4900;
+    uint256 constant TOK1_PERCENTAGE = 100; // 1%
     uint256 constant TOK2_TOKEN_ID = 13;
     uint256 constant TOK2_AMOUNT = 1000;
-    uint256 constant TOK2_PERCENTAGE = 100;
+    uint256 constant TOK2_PERCENTAGE = 1900; // 19%
     uint256 constant TOK3_TOKEN_ID = 14;
     uint256 constant TOK3_AMOUNT = 10000;
-    uint256 constant TOK3_PERCENTAGE = 90;
+    uint256 constant TOK3_PERCENTAGE = 0;   // Fallback NFT
 
     uint256 constant DEFAULT_TOKEN_ID = TOK1_TOKEN_ID;
     uint256 constant DEFAULT_AMOUNT = TOK1_AMOUNT;
@@ -62,6 +89,7 @@ abstract contract ClaimBaseTest is Test {
     OperatorAllowlistUpgradeable allowList;
     ImmutableERC1155 public mockERC1155;
     FakePassportMainModule public passportWallet;
+    address public passportWalletAddress;
 
 
 
@@ -117,6 +145,7 @@ abstract contract ClaimBaseTest is Test {
         // check deployment success
         require(deployedContract != address(0), 'WalletFactory: deployment failed');
         passportWallet = FakePassportMainModule(deployedContract);
+        passportWalletAddress = address(passportWallet);
     }
 
     function setUpFourteenNumbersClaim() private {
