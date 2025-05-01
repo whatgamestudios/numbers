@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 namespace FourteenNumbers {
     public class WelcomeScreen : MonoBehaviour {
         public async Task Start() {
+            AuditLog.Log("Welcome screen");
             await PassportLogin.Init();
 
             // If the player is already logged in, then skip the login screen

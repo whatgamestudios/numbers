@@ -41,7 +41,7 @@ namespace FourteenNumbers {
         * @param url The URL received from the deep link.
         */
         private void onDeepLinkActivated(string url) {
-            Debug.Log("Deep link: " + url);
+            AuditLog.Log("Deep link activated: " + url);
 
             if (url == PassportLogin.RedirectUri) {
                 PassportStore.SetLoggedIn(true);

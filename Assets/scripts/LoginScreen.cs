@@ -22,6 +22,7 @@ namespace FourteenNumbers {
         private string help = "Sign In to qualify for rewards and enable best score publishing";
 
         public async Task Start() {
+            AuditLog.Log("Login screen");
             await PassportLogin.Init();
             startCoroutine();
             startButtonAnimation();

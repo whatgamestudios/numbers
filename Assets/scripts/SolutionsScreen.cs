@@ -52,7 +52,7 @@ namespace FourteenNumbers {
         private uint gameDayDisplaying = 0;
 
         public void Start() {
-            Debug.Log("Solutions Screen Start");
+            AuditLog.Log("Solutions screen");
             uint gameDay = (uint) Timeline.GameDay();
             gameDayToday = gameDay;
             show(gameDay);

@@ -120,6 +120,7 @@ namespace FourteenNumbers {
         string help = "Use each number once to find three equations for the target number";
 
         public async Task Start() {
+            AuditLog.Log("Game Play screen");
             Debug.Log("Game Scene Start");
             int daysPlayed = Stats.GetNumDaysPlayed();
             newPlayer = daysPlayed < 2;

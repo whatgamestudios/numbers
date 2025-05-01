@@ -16,6 +16,8 @@ namespace FourteenNumbers {
 
 
         public void Start() {
+            AuditLog.Log("Scene detail screen");
+
             int option = ScreenBackground.GetBackground();
             SceneInfo sceneInfo = BackgroundsMetadata.GetInfo(option);
             string maxSupply = sceneInfo.maxSupply == 0 ? "Infinite" : sceneInfo.maxSupply.ToString();

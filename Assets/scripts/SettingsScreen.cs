@@ -7,18 +7,19 @@ using TMPro;
 
 namespace FourteenNumbers {
 
-    public class RoadmapScreen : MonoBehaviour {
+    public class SettingsScreen : MonoBehaviour {
 
         public void Start() {
-            AuditLog.Log("Roadmap screen");
+            AuditLog.Log("Settings screen");
         }
 
         public void OnButtonClick(string buttonText) {
-            if (buttonText == "Roadmap") {
-                Application.OpenURL("https://whatgamestudios.com/14numbers/");
+            if (buttonText == "ShareLogs") {
+                string msg = AuditLog.GetLogs();
+                SunShineNativeShare.instance.ShareText(msg, msg);
             }
             else {
-                Debug.Log("Unknown button: " + buttonText);
+                Debug.Log("Settings: Unknown button: " + buttonText);
             }
         }
 
