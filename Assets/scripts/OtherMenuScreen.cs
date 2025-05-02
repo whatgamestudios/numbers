@@ -35,11 +35,8 @@ namespace FourteenNumbers {
             else if (buttonText == "Credits") {
                 SceneManager.LoadScene("CreditsScene", LoadSceneMode.Single);
             }
-            else if (buttonText == "Roadmap") {
-                SceneManager.LoadScene("RoadmapScene", LoadSceneMode.Single);
-            }
             else {
-                Debug.Log("Unknown button");
+                Debug.Log("Other Menu: Unknown button" + buttonText);
             }
         }
     }
