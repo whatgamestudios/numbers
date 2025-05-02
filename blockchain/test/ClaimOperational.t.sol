@@ -94,7 +94,7 @@ contract ClaimOperationalTest is ClaimBaseTest {
         addTokens();
         FourteenNumbersClaim.ClaimableToken[] memory claimableTokens = fakeFourteenNumbersClaim.getClaimableNfts();
 
-        assertEq(claimableTokens.length, 3, "Length");
+        assertEq(claimableTokens.length, 5, "Length");
         assertEq(claimableTokens[0].erc1155Contract, address(mockERC1155), "ERC1155[0]");
         assertEq(claimableTokens[0].tokenId, TOK1_TOKEN_ID, "Token ID[0]");
         assertEq(claimableTokens[0].balance, TOK1_AMOUNT, "Balance[0]");
@@ -109,13 +109,23 @@ contract ClaimOperationalTest is ClaimBaseTest {
         assertEq(claimableTokens[2].tokenId, TOK3_TOKEN_ID, "Token ID[2]");
         assertEq(claimableTokens[2].balance, TOK3_AMOUNT, "Balance[2]");
         assertEq(claimableTokens[2].percentage, TOK3_PERCENTAGE, "Percentage[2]");
+
+        assertEq(claimableTokens[3].erc1155Contract, address(mockERC1155), "ERC1155[3]");
+        assertEq(claimableTokens[3].tokenId, TOK4_TOKEN_ID, "Token ID[3]");
+        assertEq(claimableTokens[3].balance, TOK4_AMOUNT, "Balance[3]");
+        assertEq(claimableTokens[3].percentage, TOK4_PERCENTAGE, "Percentage[3]");
+
+        assertEq(claimableTokens[4].erc1155Contract, address(mockERC1155), "ERC1155[4]");
+        assertEq(claimableTokens[4].tokenId, TOK5_TOKEN_ID, "Token ID[4]");
+        assertEq(claimableTokens[4].balance, TOK5_AMOUNT, "Balance[4]");
+        assertEq(claimableTokens[4].percentage, TOK5_PERCENTAGE, "Percentage[4]");
     }
 
     function testCheckSlotIds() public {
         addTokens();
 
         assertEq(fakeFourteenNumbersClaim.firstInUseClaimableTokenSlot(), 1, "First");
-        assertEq(fakeFourteenNumbersClaim.nextSpareClaimableTokenSlot(), 4, "Next");
+        assertEq(fakeFourteenNumbersClaim.nextSpareClaimableTokenSlot(), 6, "Next");
     }
 
     function testClaimableNfts() public {
@@ -144,7 +154,8 @@ contract ClaimOperationalTest is ClaimBaseTest {
     function testClaim() public {
         addTokens();
 
-        uint256 daysPlayed = fakeFourteenNumbersClaim.daysPlayedToClaim() + 3;
+        uint256 daysPlayedToClaim = fakeFourteenNumbersClaim.daysPlayedToClaim();
+        uint256 daysPlayed = daysPlayedToClaim + 3;
         vm.prank(passportWalletAddress);
         fakeFourteenNumbersSolutions.setDaysPlayed(daysPlayed);
 
@@ -165,7 +176,128 @@ contract ClaimOperationalTest is ClaimBaseTest {
         assertEq(balance, TOK1_AMOUNT - 1, "Balance should match");
         assertEq(mockERC1155.balanceOf(passportWalletAddress, TOK1_TOKEN_ID), 1, "Player balance wrong");
         assertEq(mockERC1155.balanceOf(address(fakeFourteenNumbersClaim), TOK1_TOKEN_ID), TOK1_AMOUNT - 1, "Contract balance wrong");
+
+        assertEq(fakeFourteenNumbersClaim.claimedDay(passportWalletAddress), daysPlayedToClaim, "Claimed day after claim");
     }
+
+    function testClaimTok1a() public {
+        checkClaim(0, TOK1_TOKEN_ID);
+    }
+
+    function testClaimTok1b() public {
+        checkClaim(TOK1_PERCENTAGE-1, TOK1_TOKEN_ID);
+    }
+
+    function testClaimTok2a() public {
+        checkClaim(TOK1_PERCENTAGE, TOK2_TOKEN_ID);
+    }
+
+    function testClaimTok2b() public {
+        checkClaim(TOK1_PERCENTAGE + TOK2_PERCENTAGE - 1, TOK2_TOKEN_ID);
+    }
+
+    function testClaimTok4a() public {
+        checkClaim(TOK1_PERCENTAGE + TOK2_PERCENTAGE, TOK4_TOKEN_ID);
+    }
+
+    function testClaimTok4b() public {
+        checkClaim(TOK1_PERCENTAGE + TOK2_PERCENTAGE + TOK4_PERCENTAGE - 1, TOK4_TOKEN_ID);
+    }
+
+    function testClaimTok5a() public {
+        checkClaim(TOK1_PERCENTAGE + TOK2_PERCENTAGE + TOK4_PERCENTAGE, TOK3_TOKEN_ID);
+    }
+
+    function testClaimTok5b() public {
+        uint256 ONE_HUNDRED_PERCENT = 10000;
+        checkClaim(ONE_HUNDRED_PERCENT, TOK3_TOKEN_ID);
+    }
+
+    function testClaimMultiple() public {
+        addTokens();
+
+        uint256 daysPlayedToClaim = fakeFourteenNumbersClaim.daysPlayedToClaim();
+        uint256 daysPlayed = 10 * daysPlayedToClaim;
+        vm.prank(passportWalletAddress);
+        fakeFourteenNumbersSolutions.setDaysPlayed(daysPlayed);
+
+        fakeFourteenNumbersClaim.setRand(0);
+
+        vm.prank(passportWalletAddress);
+        vm.expectEmit(true, true, true, true);
+        emit TransferSingle(address(fakeFourteenNumbersClaim), address(fakeFourteenNumbersClaim), 
+            passportWalletAddress, TOK1_TOKEN_ID, 1);
+        vm.expectEmit(true, true, true, true);
+        emit Claimed(passportWalletAddress, address(mockERC1155), TOK1_TOKEN_ID, daysPlayed, 0);
+        fakeFourteenNumbersClaim.claim();
+
+        vm.prank(passportWalletAddress);
+        vm.expectEmit(true, true, true, true);
+        emit TransferSingle(address(fakeFourteenNumbersClaim), address(fakeFourteenNumbersClaim), 
+            passportWalletAddress, TOK1_TOKEN_ID, 1);
+        vm.expectEmit(true, true, true, true);
+        emit Claimed(passportWalletAddress, address(mockERC1155), TOK1_TOKEN_ID, daysPlayed, daysPlayedToClaim);
+        fakeFourteenNumbersClaim.claim();
+
+        vm.prank(passportWalletAddress);
+        vm.expectEmit(true, true, true, true);
+        emit TransferSingle(address(fakeFourteenNumbersClaim), address(fakeFourteenNumbersClaim), 
+            passportWalletAddress, TOK1_TOKEN_ID, 1);
+        vm.expectEmit(true, true, true, true);
+        emit Claimed(passportWalletAddress, address(mockERC1155), TOK1_TOKEN_ID, daysPlayed, 2 * daysPlayedToClaim);
+        fakeFourteenNumbersClaim.claim();
+
+        vm.prank(passportWalletAddress);
+        vm.expectEmit(true, true, true, true);
+        emit TransferSingle(address(fakeFourteenNumbersClaim), address(fakeFourteenNumbersClaim), 
+            passportWalletAddress, TOK2_TOKEN_ID, 1);
+        vm.expectEmit(true, true, true, true);
+        emit Claimed(passportWalletAddress, address(mockERC1155), TOK2_TOKEN_ID, daysPlayed, 3 * daysPlayedToClaim);
+        fakeFourteenNumbersClaim.claim();
+
+        assertEq(fakeFourteenNumbersClaim.firstInUseClaimableTokenSlot(), 2, "First");
+    }
+
+
+    function testClaimMultipleInfinite() public {
+        addTokens();
+
+        uint256 daysPlayedToClaim = fakeFourteenNumbersClaim.daysPlayedToClaim();
+        uint256 daysPlayed = 10 * daysPlayedToClaim;
+        vm.prank(passportWalletAddress);
+        fakeFourteenNumbersSolutions.setDaysPlayed(daysPlayed);
+
+        uint256 ONE_HUNDRED_PERCENT = 10000;
+        fakeFourteenNumbersClaim.setRand(ONE_HUNDRED_PERCENT);
+
+        vm.prank(passportWalletAddress);
+        vm.expectEmit(true, true, true, true);
+        emit TransferSingle(address(fakeFourteenNumbersClaim), address(fakeFourteenNumbersClaim), 
+            passportWalletAddress, TOK3_TOKEN_ID, 1);
+        vm.expectEmit(true, true, true, true);
+        emit Claimed(passportWalletAddress, address(mockERC1155), TOK3_TOKEN_ID, daysPlayed, 0);
+        fakeFourteenNumbersClaim.claim();
+
+        vm.prank(passportWalletAddress);
+        vm.expectEmit(true, true, true, true);
+        emit TransferSingle(address(fakeFourteenNumbersClaim), address(fakeFourteenNumbersClaim), 
+            passportWalletAddress, TOK3_TOKEN_ID, 1);
+        vm.expectEmit(true, true, true, true);
+        emit Claimed(passportWalletAddress, address(mockERC1155), TOK3_TOKEN_ID, daysPlayed, daysPlayedToClaim);
+        fakeFourteenNumbersClaim.claim();
+
+        vm.prank(passportWalletAddress);
+        vm.expectEmit(true, true, true, true);
+        emit TransferSingle(address(fakeFourteenNumbersClaim), address(fakeFourteenNumbersClaim), 
+            passportWalletAddress, TOK5_TOKEN_ID, 1);
+        vm.expectEmit(true, true, true, true);
+        emit Claimed(passportWalletAddress, address(mockERC1155), TOK5_TOKEN_ID, daysPlayed, 2 * daysPlayedToClaim);
+        fakeFourteenNumbersClaim.claim();
+
+        assertEq(fakeFourteenNumbersClaim.firstInUseClaimableTokenSlot(), 1, "First");
+    }
+
+
 
     function addTokens() public {
         vm.prank(tokenAdmin);
@@ -204,8 +336,47 @@ contract ClaimOperationalTest is ClaimBaseTest {
         vm.expectEmit(true, true, true, true);
         emit TokensAdded(3, address(mockERC1155), TOK3_TOKEN_ID, TOK3_AMOUNT, TOK3_PERCENTAGE);
         fakeFourteenNumbersClaim.addMoreTokens(token);
+
+        token = FourteenNumbersClaim.ClaimableToken({
+            erc1155Contract: address(mockERC1155),
+            tokenId: TOK4_TOKEN_ID,
+            balance: TOK4_AMOUNT,
+            percentage: TOK4_PERCENTAGE
+        });
+        vm.prank(tokenAdmin);
+        vm.expectEmit(true, true, true, true);
+        emit TokensAdded(4, address(mockERC1155), TOK4_TOKEN_ID, TOK4_AMOUNT, TOK4_PERCENTAGE);
+        fakeFourteenNumbersClaim.addMoreTokens(token);
+
+        token = FourteenNumbersClaim.ClaimableToken({
+            erc1155Contract: address(mockERC1155),
+            tokenId: TOK5_TOKEN_ID,
+            balance: TOK5_AMOUNT,
+            percentage: TOK5_PERCENTAGE
+        });
+        vm.prank(tokenAdmin);
+        vm.expectEmit(true, true, true, true);
+        emit TokensAdded(5, address(mockERC1155), TOK5_TOKEN_ID, TOK5_AMOUNT, TOK5_PERCENTAGE);
+        fakeFourteenNumbersClaim.addMoreTokens(token);
     }
 
+    function checkClaim(uint256 _percentage, uint256 _tokenId) public {
+        addTokens();
 
+        uint256 daysPlayedToClaim = fakeFourteenNumbersClaim.daysPlayedToClaim();
+        uint256 daysPlayed = daysPlayedToClaim + 3;
+        vm.prank(passportWalletAddress);
+        fakeFourteenNumbersSolutions.setDaysPlayed(daysPlayed);
+
+        fakeFourteenNumbersClaim.setRand(_percentage);
+
+        vm.prank(passportWalletAddress);
+        vm.expectEmit(true, true, true, true);
+        emit TransferSingle(address(fakeFourteenNumbersClaim), address(fakeFourteenNumbersClaim), 
+            passportWalletAddress, _tokenId, 1);
+        vm.expectEmit(true, true, true, true);
+        emit Claimed(passportWalletAddress, address(mockERC1155), _tokenId, daysPlayed, 0);
+        fakeFourteenNumbersClaim.claim();
+    }
 }
 

@@ -81,9 +81,9 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
     uint256 internal constant _VERSION0 = 0;
 
     uint256 private constant DEFAULT_DAYS_PLAYED_TO_CLAIM = 30;
-    uint256 public constant ONE_HUNDRED_PERCENT = 10000;
+    uint256 private constant ONE_HUNDRED_PERCENT = 10000;
 
-    uint256 public constant INVALID = 0;
+    uint256 private constant INVALID = 0;
 
 
     /// @notice version number of the storage variable layout.
@@ -462,6 +462,7 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
 
         if (infiniteToken != INVALID) {
             ClaimableToken storage claimableToken = claimableTokens[infiniteToken];
+            claimableToken.balance = claimableToken.balance - 1;
             return (claimableToken.erc1155Contract, claimableToken.tokenId);
         }
 

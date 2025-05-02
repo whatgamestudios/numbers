@@ -54,14 +54,20 @@ contract FakePassportMainModule is IERC1155Receiver{
 
 abstract contract ClaimBaseTest is Test {
     uint256 constant TOK1_TOKEN_ID = 12;
-    uint256 constant TOK1_AMOUNT = 100;
+    uint256 constant TOK1_AMOUNT = 3;
     uint256 constant TOK1_PERCENTAGE = 100; // 1%
     uint256 constant TOK2_TOKEN_ID = 13;
     uint256 constant TOK2_AMOUNT = 1000;
     uint256 constant TOK2_PERCENTAGE = 1900; // 19%
     uint256 constant TOK3_TOKEN_ID = 14;
-    uint256 constant TOK3_AMOUNT = 10000;
+    uint256 constant TOK3_AMOUNT = 2;
     uint256 constant TOK3_PERCENTAGE = 0;   // Fallback NFT
+    uint256 constant TOK4_TOKEN_ID = 20;
+    uint256 constant TOK4_AMOUNT = 13;
+    uint256 constant TOK4_PERCENTAGE = 30; // 0.3%
+    uint256 constant TOK5_TOKEN_ID = 30;
+    uint256 constant TOK5_AMOUNT = 300;
+    uint256 constant TOK5_PERCENTAGE = 0;   // Fallback NFT
 
     uint256 constant DEFAULT_TOKEN_ID = TOK1_TOKEN_ID;
     uint256 constant DEFAULT_AMOUNT = TOK1_AMOUNT;
@@ -201,7 +207,9 @@ abstract contract ClaimBaseTest is Test {
         vm.startPrank(minter);
         mockERC1155.safeMint(tokenAdmin, TOK1_TOKEN_ID, TOK1_AMOUNT, new bytes(0));
         mockERC1155.safeMint(tokenAdmin, TOK2_TOKEN_ID, TOK2_AMOUNT, new bytes(0));
-        mockERC1155.safeMint(tokenAdmin, TOK3_TOKEN_ID, TOK3_AMOUNT, new bytes(0));    
+        mockERC1155.safeMint(tokenAdmin, TOK3_TOKEN_ID, TOK3_AMOUNT, new bytes(0));
+        mockERC1155.safeMint(tokenAdmin, TOK4_TOKEN_ID, TOK4_AMOUNT, new bytes(0));
+        mockERC1155.safeMint(tokenAdmin, TOK5_TOKEN_ID, TOK5_AMOUNT, new bytes(0));
         vm.stopPrank();
     }
 }
