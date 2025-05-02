@@ -19,7 +19,6 @@ namespace FourteenNumbers {
 
 
         public void Start() {
-            AuditLog.Log("CheatCode screen");
             cheatCodeText.text = "";
             code = "";
         }
@@ -56,6 +55,7 @@ namespace FourteenNumbers {
                 code = code + "J";
             }
             else if (buttonText == "CheatCode") {
+                AuditLog.Log("CheatCode: " + code);
                 await Task.Run(() => {
                     executeCheatCode(code);
                 });

@@ -7,18 +7,18 @@ using TMPro;
 
 namespace FourteenNumbers {
 
-    public class RoadmapScreen : MonoBehaviour {
+    public class CreditsScreen : MonoBehaviour {
 
         public void Start() {
-            AuditLog.Log("Roadmap screen");
+            AuditLog.Log("Credits screen");
         }
 
         public void OnButtonClick(string buttonText) {
-            if (buttonText == "Roadmap") {
-                Application.OpenURL("https://whatgamestudios.com/14numbers/");
+            if (buttonText == "Website") {
+                Application.OpenURL("https://whatgamestudios.com/");
             }
             else {
-                Debug.Log("Unknown button: " + buttonText);
+                Debug.Log("Credits screen: Unknown button: " + buttonText);
             }
         }
 

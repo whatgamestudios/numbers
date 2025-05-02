@@ -23,6 +23,7 @@ namespace FourteenNumbers {
         public static string GetLogs() {
             uint startIndex = getNext();
             System.Text.StringBuilder logs = new System.Text.StringBuilder();
+            logs.Append(getHeader());
             
             // Loop through all entries starting from the next position
             for (uint i = 0; i < LOG_SIZE; i++) {
@@ -47,6 +48,32 @@ namespace FourteenNumbers {
         private static uint getNext() {
             int next = PlayerPrefs.GetInt(AUDIT_NEXT, 0);
             return (uint) next;
+        }
+
+        private static string getHeader() {
+            string version = Application.version;
+            string device = SystemInfo.deviceModel;
+            string operatingSystem = SystemInfo.operatingSystem;
+            string screenWidth = Screen.width.ToString();
+            string screenHeight = Screen.height.ToString();
+
+            System.Text.StringBuilder info = new System.Text.StringBuilder();
+            info.Append("14Numbers v");
+            info.Append(version);
+            info.AppendLine();
+
+            info.Append(device);
+            info.Append(", ");
+            info.Append(operatingSystem);
+            info.AppendLine();
+
+            info.Append("Screen: height: ");
+            info.Append(screenHeight);
+            info.Append(", width");
+            info.Append(screenWidth);
+            info.AppendLine();
+            
+            return info.ToString();
         }
     }
 }
