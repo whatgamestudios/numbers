@@ -24,6 +24,10 @@ contract FakeFourteenNumbersClaim is FourteenNumbersClaim {
     function _generateRandom(uint256 /* _salt */) internal override view returns (uint256) {
         return rand;
     }
+
+    function random(uint256 _blockNum) external view returns (uint256) {
+        return super._generateRandom(_blockNum);
+    }
 }
 
 contract FakeFourteenNumbersSolutions is FourteenNumbersSolutionsV2 {
@@ -378,7 +382,7 @@ contract ClaimOperationalTest is ClaimBaseTest {
         addTokens();
 
         uint256 daysPlayedToClaim = fakeFourteenNumbersClaim.daysPlayedToClaim();
-        uint256 daysPlayed = daysPlayedToClaim + 3;
+        uint256 daysPlayed = 2 * daysPlayedToClaim;
         vm.prank(passportWalletAddress);
         fakeFourteenNumbersSolutions.setDaysPlayed(daysPlayed);
 
@@ -399,6 +403,71 @@ contract ClaimOperationalTest is ClaimBaseTest {
         fakeFourteenNumbersClaim.claim(_salt);
     }
 
+    function testClaimNotPassport() public {
+        vm.prank(player1);
+        vm.expectRevert(abi.encodeWithSelector(
+            FourteenNumbersClaim.ClaimNonPassportAccount.selector, player1));
+        fakeFourteenNumbersClaim.claim(0);
+    }
+
+    function testRand() public {
+        vm.prank(player1);
+        uint256 rand1 = fakeFourteenNumbersClaim.random(0);
+        uint256 rand2 = fakeFourteenNumbersClaim.random(1);
+        vm.roll(block.number + 1);
+        uint256 rand3 = fakeFourteenNumbersClaim.random(0);
+        uint256 rand4 = fakeFourteenNumbersClaim.random(1);
+        assertNotEq(rand1, rand2);
+        assertNotEq(rand1, rand3);
+        assertNotEq(rand1, rand4);
+        uint256 ONE_HUNDRED_PERCENT = 10000;
+        assertTrue(rand1 < ONE_HUNDRED_PERCENT);
+        assertTrue(rand2 < ONE_HUNDRED_PERCENT);
+        assertTrue(rand3 < ONE_HUNDRED_PERCENT);
+        assertTrue(rand4 < ONE_HUNDRED_PERCENT);
+    }
+
+    function testNothingToClaim() public {
+        uint256 daysPlayedToClaim = fakeFourteenNumbersClaim.daysPlayedToClaim();
+        uint256 daysPlayed = daysPlayedToClaim + 3;
+        vm.prank(passportWalletAddress);
+        fakeFourteenNumbersSolutions.setDaysPlayed(daysPlayed);
+
+        fakeFourteenNumbersClaim.setRand(1);
+
+        uint256 _salt = 0;
+        vm.prank(passportWalletAddress);
+        fakeFourteenNumbersClaim.prepareForClaim(_salt);
+        uint256 targetBlockNum = block.number + fakeFourteenNumbersClaim.RANDOM_DELAY();
+        vm.roll(targetBlockNum);
+
+        vm.prank(passportWalletAddress);
+        vm.expectRevert(abi.encodeWithSelector(
+            FourteenNumbersClaim.NoTokensAvailableForClaim.selector));
+        fakeFourteenNumbersClaim.claim(_salt);
+    }
+
+    function testClaimEarly() public {
+        addTokens();
+
+        uint256 daysPlayedToClaim = fakeFourteenNumbersClaim.daysPlayedToClaim();
+        uint256 daysPlayed = daysPlayedToClaim - 1;
+        vm.prank(passportWalletAddress);
+        fakeFourteenNumbersSolutions.setDaysPlayed(daysPlayed);
+
+        fakeFourteenNumbersClaim.setRand(1);
+
+        uint256 _salt = 0;
+        vm.prank(passportWalletAddress);
+        fakeFourteenNumbersClaim.prepareForClaim(_salt);
+        uint256 targetBlockNum = block.number + fakeFourteenNumbersClaim.RANDOM_DELAY();
+        vm.roll(targetBlockNum);
+
+        vm.prank(passportWalletAddress);
+        vm.expectRevert(abi.encodeWithSelector(
+            FourteenNumbersClaim.ClaimTooEarly.selector, daysPlayed, 0));
+        fakeFourteenNumbersClaim.claim(_salt);
+    }
 
     function addTokens() public {
         vm.prank(tokenAdmin);

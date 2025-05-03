@@ -175,19 +175,20 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
      * First, the bytecode of the proxy is added to the bytecode allowlist.
      * Second, the implementation address stored in the proxy is stored in the
      * implementation address allowlist.
-     * @param walletAddr the wallet address to be added to the allowlist
+     * @param _walletAddr the wallet address to be added to the allowlist
      */
-    function addWalletToAllowlist(address walletAddr) internal onlyRole(CONFIG_ROLE) {
-        _addWalletToAllowlist(walletAddr);
+//    function addWalletToAllowlist(address _walletAddr) external onlyRole(CONFIG_ROLE) {
+    function addPassportWallet(address _walletAddr) external onlyRole(CONFIG_ROLE) {
+        _addWalletToAllowlist(_walletAddr);
     }
 
     /**
-     * @notice Remove  a smart contract wallet from the Allowlist
+     * @notice Remove a smart contract wallet from the Allowlist
      * This will remove the proxy bytecode hash and implementation contract address pair from the allowlist
-     * @param walletAddr the wallet address to be removed from the allowlist
+     * @param _walletAddr the wallet address to be removed from the allowlist
      */
-    function removeWalletFromAllowlist(address walletAddr) external onlyRole(CONFIG_ROLE) {
-        _removeWalletFromAllowlist(walletAddr);
+    function removePassportWallet(address _walletAddr) external onlyRole(CONFIG_ROLE) {
+        _removeWalletFromAllowlist(_walletAddr);
     }
 
     /**
@@ -438,7 +439,7 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
         uint256 daysPlayed;
         (, , , daysPlayed) = fourteenNumbersSolutions.stats(msg.sender);
         uint256 claimedSoFar = claimedDay[msg.sender];
-        if (daysPlayed + daysPlayedToClaim > claimedSoFar) {
+        if (daysPlayed >= claimedSoFar + daysPlayedToClaim) {
             // Claim approved!
             claimedDay[msg.sender] = claimedSoFar + daysPlayedToClaim;
         }

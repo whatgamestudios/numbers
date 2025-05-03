@@ -39,4 +39,9 @@ contract ClaimInitTest is ClaimBaseTest {
         FourteenNumbersClaim.ClaimableToken[] memory claimableTokens = fourteenNumbersClaim.getClaimableNfts();
         assertEq(claimableTokens.length, 0, "No claimable tokens should be set");
     }
+
+    function testRemoveCoverageWarnings() public view {
+        uint256[] memory none = new uint256[](0);
+        fourteenNumbersClaim.onERC1155BatchReceived(address(0), address(0), none, none, bytes(""));
+    }
 }

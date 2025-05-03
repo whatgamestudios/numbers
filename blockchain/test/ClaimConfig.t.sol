@@ -7,6 +7,7 @@ pragma solidity ^0.8.24;
 import "forge-std/Test.sol";
 import {ClaimBaseTest} from "./ClaimBase.t.sol";
 import {FourteenNumbersClaim} from "../src/FourteenNumbersClaim.sol";
+import {PassportCheck} from "../src/PassportCheck.sol";
 import {IERC1155} from "@openzeppelin/contracts/token/erc1155/IERC1155.sol";
 
 contract FourteenNumbersClaimV2a is FourteenNumbersClaim {
@@ -75,6 +76,14 @@ contract ClaimConfigTest is ClaimBaseTest {
         emit SettingDaysPlayedToClaim(newDays);
         fourteenNumbersClaim.setDaysPlayedToClaim(newDays);
         assertEq(fourteenNumbersClaim.daysPlayedToClaim(), newDays, "Days played to claim should be updated");
+    }
+
+    function testSetDaysPlayedToClaimTooSmall() public {
+        uint256 newDays = 6;
+        vm.prank(configAdmin);
+        vm.expectRevert(abi.encodeWithSelector(
+            FourteenNumbersClaim.ProposedNewDaysPlayedToClaimTooSmall.selector, newDays));
+        fourteenNumbersClaim.setDaysPlayedToClaim(newDays);
     }
 
     function testAddMoreTokens() public {
@@ -291,27 +300,40 @@ contract ClaimConfigTest is ClaimBaseTest {
 
     function testRemovePassportWallet() public {
         vm.prank(configAdmin);
-        fourteenNumbersClaim.removeWalletFromAllowlist(address(passportWallet));
+        fourteenNumbersClaim.removePassportWallet(address(passportWallet));
         assertFalse(fourteenNumbersClaim.isPassport(address(passportWallet)), "Passport wallet");
+    }
+
+    function testAddPassportWallet() public {
+        testRemovePassportWallet();
+        vm.prank(configAdmin);
+        fourteenNumbersClaim.addPassportWallet(address(passportWallet));
+        assertTrue(fourteenNumbersClaim.isPassport(address(passportWallet)), "Passport wallet");
     }
 
     function testAddPassportWalletBadAuth() public {
         testRemovePassportWallet();
         vm.prank(player1);
         vm.expectRevert(abi.encodeWithSelector(AccessControlUnauthorizedAccount.selector, player1, configRole));
-        fourteenNumbersClaim.removeWalletFromAllowlist(address(passportWallet));
+        fourteenNumbersClaim.addPassportWallet(address(passportWallet));
     }
 
     function testRemovePassportWalletBadAuth() public {
         vm.prank(player1);
         vm.expectRevert(abi.encodeWithSelector(AccessControlUnauthorizedAccount.selector, player1, configRole));
-        fourteenNumbersClaim.removeWalletFromAllowlist(address(passportWallet));
+        fourteenNumbersClaim.removePassportWallet(address(passportWallet));
     }
 
     function testPause() public {
         vm.prank(configAdmin);
         fourteenNumbersClaim.pause();
         assertTrue(fourteenNumbersClaim.paused(), "Contract should be paused");
+    }
+
+    function testPauseBadAuth() public {
+        vm.prank(player1);
+        vm.expectRevert();
+        fourteenNumbersClaim.pause();
     }
 
     function testUnpause() public {
@@ -321,5 +343,18 @@ contract ClaimConfigTest is ClaimBaseTest {
         fourteenNumbersClaim.unpause();
         assertFalse(fourteenNumbersClaim.paused(), "Contract should be unpaused");
     }
+
+    function testBadAuth() public {
+        vm.prank(configAdmin);
+        fourteenNumbersClaim.pause();
+        vm.prank(player1);
+        vm.expectRevert();
+        fourteenNumbersClaim.unpause();
+    }
+
+    // function testAddWalletToAllowlist() public {
+
+
+    // }
 
 }
