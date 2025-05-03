@@ -21,7 +21,7 @@ contract FakeFourteenNumbersClaim is FourteenNumbersClaim {
         rand = _rand;
     }
 
-    function _generateRandom() internal override view returns (uint256) {
+    function _generateRandom(uint256 /* _salt */) internal override view returns (uint256) {
         return rand;
     }
 }
@@ -164,13 +164,18 @@ contract ClaimOperationalTest is ClaimBaseTest {
         (, , uint256 balance1, ) = fakeFourteenNumbersClaim.claimableTokens(1);
         assertEq(balance1, TOK1_AMOUNT, "Balance start should match");
 
+        uint256 _salt = 0;
+        vm.prank(passportWalletAddress);
+        fakeFourteenNumbersClaim.prepareForClaim(_salt);
+        vm.roll(block.number + fakeFourteenNumbersClaim.RANDOM_DELAY());
+
         vm.prank(passportWalletAddress);
         vm.expectEmit(true, true, true, true);
         emit TransferSingle(address(fakeFourteenNumbersClaim), address(fakeFourteenNumbersClaim), 
             passportWalletAddress, TOK1_TOKEN_ID, 1);
         vm.expectEmit(true, true, true, true);
         emit Claimed(passportWalletAddress, address(mockERC1155), TOK1_TOKEN_ID, daysPlayed, 0);
-        fakeFourteenNumbersClaim.claim();
+        fakeFourteenNumbersClaim.claim(_salt);
 
         (, , uint256 balance, ) = fakeFourteenNumbersClaim.claimableTokens(1);
         assertEq(balance, TOK1_AMOUNT - 1, "Balance should match");
@@ -223,13 +228,22 @@ contract ClaimOperationalTest is ClaimBaseTest {
 
         fakeFourteenNumbersClaim.setRand(0);
 
+        uint256 _salt = 0;
+        vm.prank(passportWalletAddress);
+        fakeFourteenNumbersClaim.prepareForClaim(_salt);
+        vm.roll(block.number + fakeFourteenNumbersClaim.RANDOM_DELAY());
+
         vm.prank(passportWalletAddress);
         vm.expectEmit(true, true, true, true);
         emit TransferSingle(address(fakeFourteenNumbersClaim), address(fakeFourteenNumbersClaim), 
             passportWalletAddress, TOK1_TOKEN_ID, 1);
         vm.expectEmit(true, true, true, true);
         emit Claimed(passportWalletAddress, address(mockERC1155), TOK1_TOKEN_ID, daysPlayed, 0);
-        fakeFourteenNumbersClaim.claim();
+        fakeFourteenNumbersClaim.claim(_salt);
+
+        vm.prank(passportWalletAddress);
+        fakeFourteenNumbersClaim.prepareForClaim(_salt);
+        vm.roll(block.number + fakeFourteenNumbersClaim.RANDOM_DELAY());
 
         vm.prank(passportWalletAddress);
         vm.expectEmit(true, true, true, true);
@@ -237,7 +251,11 @@ contract ClaimOperationalTest is ClaimBaseTest {
             passportWalletAddress, TOK1_TOKEN_ID, 1);
         vm.expectEmit(true, true, true, true);
         emit Claimed(passportWalletAddress, address(mockERC1155), TOK1_TOKEN_ID, daysPlayed, daysPlayedToClaim);
-        fakeFourteenNumbersClaim.claim();
+        fakeFourteenNumbersClaim.claim(_salt);
+
+        vm.prank(passportWalletAddress);
+        fakeFourteenNumbersClaim.prepareForClaim(_salt);
+        vm.roll(block.number + fakeFourteenNumbersClaim.RANDOM_DELAY());
 
         vm.prank(passportWalletAddress);
         vm.expectEmit(true, true, true, true);
@@ -245,7 +263,11 @@ contract ClaimOperationalTest is ClaimBaseTest {
             passportWalletAddress, TOK1_TOKEN_ID, 1);
         vm.expectEmit(true, true, true, true);
         emit Claimed(passportWalletAddress, address(mockERC1155), TOK1_TOKEN_ID, daysPlayed, 2 * daysPlayedToClaim);
-        fakeFourteenNumbersClaim.claim();
+        fakeFourteenNumbersClaim.claim(_salt);
+
+        vm.prank(passportWalletAddress);
+        fakeFourteenNumbersClaim.prepareForClaim(_salt);
+        vm.roll(block.number + fakeFourteenNumbersClaim.RANDOM_DELAY());
 
         vm.prank(passportWalletAddress);
         vm.expectEmit(true, true, true, true);
@@ -253,7 +275,7 @@ contract ClaimOperationalTest is ClaimBaseTest {
             passportWalletAddress, TOK2_TOKEN_ID, 1);
         vm.expectEmit(true, true, true, true);
         emit Claimed(passportWalletAddress, address(mockERC1155), TOK2_TOKEN_ID, daysPlayed, 3 * daysPlayedToClaim);
-        fakeFourteenNumbersClaim.claim();
+        fakeFourteenNumbersClaim.claim(_salt);
 
         assertEq(fakeFourteenNumbersClaim.firstInUseClaimableTokenSlot(), 2, "First");
     }
@@ -270,13 +292,22 @@ contract ClaimOperationalTest is ClaimBaseTest {
         uint256 ONE_HUNDRED_PERCENT = 10000;
         fakeFourteenNumbersClaim.setRand(ONE_HUNDRED_PERCENT);
 
+        uint256 _salt = 0;
+        vm.prank(passportWalletAddress);
+        fakeFourteenNumbersClaim.prepareForClaim(_salt);
+        vm.roll(block.number + fakeFourteenNumbersClaim.RANDOM_DELAY());
+
         vm.prank(passportWalletAddress);
         vm.expectEmit(true, true, true, true);
         emit TransferSingle(address(fakeFourteenNumbersClaim), address(fakeFourteenNumbersClaim), 
             passportWalletAddress, TOK3_TOKEN_ID, 1);
         vm.expectEmit(true, true, true, true);
         emit Claimed(passportWalletAddress, address(mockERC1155), TOK3_TOKEN_ID, daysPlayed, 0);
-        fakeFourteenNumbersClaim.claim();
+        fakeFourteenNumbersClaim.claim(_salt);
+
+        vm.prank(passportWalletAddress);
+        fakeFourteenNumbersClaim.prepareForClaim(_salt);
+        vm.roll(block.number + fakeFourteenNumbersClaim.RANDOM_DELAY());
 
         vm.prank(passportWalletAddress);
         vm.expectEmit(true, true, true, true);
@@ -284,7 +315,11 @@ contract ClaimOperationalTest is ClaimBaseTest {
             passportWalletAddress, TOK3_TOKEN_ID, 1);
         vm.expectEmit(true, true, true, true);
         emit Claimed(passportWalletAddress, address(mockERC1155), TOK3_TOKEN_ID, daysPlayed, daysPlayedToClaim);
-        fakeFourteenNumbersClaim.claim();
+        fakeFourteenNumbersClaim.claim(_salt);
+
+        vm.prank(passportWalletAddress);
+        fakeFourteenNumbersClaim.prepareForClaim(_salt);
+        vm.roll(block.number + fakeFourteenNumbersClaim.RANDOM_DELAY());
 
         vm.prank(passportWalletAddress);
         vm.expectEmit(true, true, true, true);
@@ -292,7 +327,7 @@ contract ClaimOperationalTest is ClaimBaseTest {
             passportWalletAddress, TOK5_TOKEN_ID, 1);
         vm.expectEmit(true, true, true, true);
         emit Claimed(passportWalletAddress, address(mockERC1155), TOK5_TOKEN_ID, daysPlayed, 2 * daysPlayedToClaim);
-        fakeFourteenNumbersClaim.claim();
+        fakeFourteenNumbersClaim.claim(_salt);
 
         assertEq(fakeFourteenNumbersClaim.firstInUseClaimableTokenSlot(), 1, "First");
     }
@@ -370,13 +405,18 @@ contract ClaimOperationalTest is ClaimBaseTest {
 
         fakeFourteenNumbersClaim.setRand(_percentage);
 
+        uint256 _salt = 0;
+        vm.prank(passportWalletAddress);
+        fakeFourteenNumbersClaim.prepareForClaim(_salt);
+        vm.roll(block.number + fakeFourteenNumbersClaim.RANDOM_DELAY());
+
         vm.prank(passportWalletAddress);
         vm.expectEmit(true, true, true, true);
         emit TransferSingle(address(fakeFourteenNumbersClaim), address(fakeFourteenNumbersClaim), 
             passportWalletAddress, _tokenId, 1);
         vm.expectEmit(true, true, true, true);
         emit Claimed(passportWalletAddress, address(mockERC1155), _tokenId, daysPlayed, 0);
-        fakeFourteenNumbersClaim.claim();
+        fakeFourteenNumbersClaim.claim(_salt);
     }
 }
 

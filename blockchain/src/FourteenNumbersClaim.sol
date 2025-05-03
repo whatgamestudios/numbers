@@ -44,18 +44,25 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
     error AddMoreTokensBalanceMustBeNonZero();
     /// @notice The percentage can not be greater than 100%.
     error AddMoreTokensPercentageTooLarge();
-
+    /// @notice NewDaysPlayedToClaim is too small.
+    error ProposedNewDaysPlayedToClaimTooSmall(uint256 _newDaysPlayedToClaim);
     /// @notice When calling RemoveTokens, the number of tokens to be removed can not be zero.
     error CantRemoveNoTokens();
     /// @notice The number of tokens to be removed was greater than the balance. 
     error BalanceTooLow(uint256 slot, uint256 amount, uint256 balance);
 
-    /// @notice There are not tokens avaialable for claim.
+    /// @notice There are no tokens avaialable for claim.
     error NoTokensAvailableForClaim();
     /// @notice The game player has attempted a claim too early.
     error ClaimTooEarly(uint256 _daysPlayed, uint256 _claimedSoFar);
     /// @notice Claim was called from an account that isn't a Passport Wallet.
     error ClaimNonPassportAccount(address _claimer);
+    /// @notice prepareClaim hasn't been called before claim was called.
+    error ClaimBeforeClaimPrepare(address _passportAddr, uint256 _salt);
+    /// @notice claim called more than 256 blocks after prepareClaim.
+    error ClaimTooLate(address _passportAddr, uint256 _salt, uint256 _expectedBloc, uint256 _blockNumber);
+    /// @notice claim called before block specified in prepareClaim.
+    error ClaimTooSoon(address _passportAddr, uint256 _salt, uint256 _expectedBloc, uint256 _blockNumber);
 
     /// @notice Value of daysPlayedToClaim has been set.
     event SettingDaysPlayedToClaim(uint256 _newDaysPlayedToClaim);
@@ -83,7 +90,11 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
     uint256 private constant DEFAULT_DAYS_PLAYED_TO_CLAIM = 30;
     uint256 private constant ONE_HUNDRED_PERCENT = 10000;
 
+    uint256 public constant RANDOM_DELAY = 5;
+
     uint256 private constant INVALID = 0;
+
+    uint256 private constant MIN_DAYS_PLAYED_TO_CLAIM = 7;
 
 
     /// @notice version number of the storage variable layout.
@@ -110,6 +121,11 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
 
     // True when the add function is being called.
     bool private transient inAddFunction;
+
+    // Holds request for random values.
+    // randRequestId = hash (msg.sender, salt)
+    // targetBlockNumber is the block number to get the block has
+    mapping (bytes32 randRequestId => uint256 targetBlockNumber) public randomRequest;
 
 
     /**
@@ -193,7 +209,9 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
      * @param _newDaysPlayedToClaim The new number of days before a player can claim.
      */
     function setDaysPlayedToClaim(uint256 _newDaysPlayedToClaim) external onlyRole(CONFIG_ROLE) {
-        //TODO ensure _newDaysPlayedToClaim is not less than a minimum
+        if (_newDaysPlayedToClaim < MIN_DAYS_PLAYED_TO_CLAIM) {
+            revert ProposedNewDaysPlayedToClaimTooSmall(_newDaysPlayedToClaim);
+        }
         daysPlayedToClaim = _newDaysPlayedToClaim;
         emit SettingDaysPlayedToClaim(_newDaysPlayedToClaim);
     }
@@ -246,9 +264,20 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
     }
 
     /**
-     * @notice Claim 
+     * @notice Prepare for the claim call.
+     * @dev Register for generating a random value. 
+     * @param _salt A random value specified by the game app.
      */
-    function claim() external whenNotPaused() {
+    function prepareForClaim(uint256 _salt) external whenNotPaused() {
+        bytes32 randRequestId = keccak256(abi.encodePacked(msg.sender, _salt));
+        randomRequest[randRequestId] = block.number + RANDOM_DELAY - 1;
+    }
+
+    /**
+     * @notice Claim an NFT. 
+     * @param _salt A random value specified by the game app in the prepareForClaim function.
+     */
+    function claim(uint256 _salt) external whenNotPaused() {
         // Claims are only allowed from passport wallets.
         if (!isPassport(msg.sender)) {
             revert ClaimNonPassportAccount(msg.sender);
@@ -258,7 +287,19 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
         (uint256 daysPlayed, uint256 claimedSoFar) = _checkAndUpdateClaimedDay();
 
         // Calculate an on-chain random number.
-        uint256 randomValue = _generateRandom();
+        bytes32 randRequestId = keccak256(abi.encodePacked(msg.sender, _salt));
+        uint256 blockNum = randomRequest[randRequestId];
+        randomRequest[randRequestId] = 0;
+        if (blockNum == 0) {
+            revert ClaimBeforeClaimPrepare(msg.sender, _salt);
+        }
+        if (blockNum < block.number - 255) {
+            revert ClaimTooLate(msg.sender, _salt, blockNum, block.number);
+        }
+        if (blockNum > block.number - 1) {
+            revert ClaimTooSoon(msg.sender, _salt, blockNum, block.number);
+        }
+        uint256 randomValue = _generateRandom(blockNum);
 
         // Select a NFT based on the random value.
         (address nftContract, uint256 tokenId) = _determineRandomNft(randomValue);
@@ -410,23 +451,30 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
 
     /**
      * @notice Return a random number between 0 and 100000.
-     * @dev The security of this function relies on:
-     * - There is a significant number of transaction on chain from a variety of sources. 
-     *   This ensures the value of block hash for recent blocks to be non-deterministic.
-     *   If this wasnt't the case, then a game player could observe the blockchain and 
-     *   attempt to determine the precise moment to do an in-game action to result in a 
-     *   certain random value.
+     * @dev The security of this function is no absolute. 
+     * Things to consider:
      * - Only Passport Wallets can call the claim function. This ensures Immutable's Relayer checks
      *   the call trace before execution to ensure only game owned contracts are in the call path.
-     *   This is important as it ensures players can't call the claim function from a contract that
-     *   reverts if the game player's preferred number isn't returned.
+     * - Attackers would need to create a modified version of the game app, that uses the games
+     *   API key, to make the Relayer perceive the game is executing the transaction. 
+     * - Attackers would need to find a time when many blocks in a row are empty (this doesn't happen
+     *   on Immutable zkEVM).
+     * - Attackers would need to estimate the future block hash based on no transactions in the
+     *   blocks with the exception of the prepareClaim transaction, and estimate the generated
+     *   random number. They could modify the _salt value until they determine the random number
+     *   that they want to generate.
+     * - The attacker could use passport directly, and not via the SDK, and execute a multi-call
+     *   and check the returned random value. If the random value isn't what they want, they could 
+     *   revert.
+     * - If this type of attack is observed, this random number generator could be updated to use a VRF.
      *
      * This function is virtual so that overriding test contracts can insert a random number of 
      * their choice.
      */
-    function _generateRandom() internal virtual view returns (uint256) {
-        bytes32 bhash = blockhash(block.number - 1);
-        return uint256(bhash) % ONE_HUNDRED_PERCENT;
+    function _generateRandom(uint256 _blockNum) internal virtual view returns (uint256) {
+        bytes32 bhash = blockhash(_blockNum);
+        bytes32 rand = keccak256(abi.encodePacked(msg.sender, bhash));
+        return uint256(rand) % ONE_HUNDRED_PERCENT;
     }
 
     /**

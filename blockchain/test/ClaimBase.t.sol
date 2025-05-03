@@ -20,8 +20,8 @@ contract FakePassportMainModule is IERC1155Receiver{
     function setClaimContract(address _claimContract) external {
         claimContract = FourteenNumbersClaim(_claimContract);
     }
-    function claim() external {
-        claimContract.claim();
+    function claim(uint256 _salt) external {
+        claimContract.claim(_salt);
     }
 
     function onERC1155Received(
@@ -100,6 +100,8 @@ abstract contract ClaimBaseTest is Test {
 
 
     function setUp() public virtual {
+        vm.roll(1000);
+
         roleAdmin = makeAddr("RoleAdmin");
         configAdmin = makeAddr("ConfigAdmin");
         tokenAdmin = makeAddr("TokenAdmin");
