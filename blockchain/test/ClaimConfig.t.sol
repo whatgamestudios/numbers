@@ -9,6 +9,14 @@ import {ClaimBaseTest} from "./ClaimBase.t.sol";
 import {FourteenNumbersClaim} from "../src/FourteenNumbersClaim.sol";
 import {IERC1155} from "@openzeppelin/contracts/token/erc1155/IERC1155.sol";
 
+contract FourteenNumbersClaimV2a is FourteenNumbersClaim {
+    function upgradeStorage(bytes memory /* _data */) external override virtual {
+        // Note real version of V2 contract would need to check for downgrades.
+        version = 2;
+    }
+}
+
+
 contract ClaimConfigTest is ClaimBaseTest {
     error AddMoreTokensBalanceMustBeNonZero();
     error AddMoreTokensPercentageTooLarge();
@@ -26,11 +34,38 @@ contract ClaimConfigTest is ClaimBaseTest {
 
     function setUp() public virtual override {
         super.setUp();
-        
-        // Add user1 to passport allowlist
-        // vm.startPrank(configAdmin);
-        // fourteenNumbersClaim.addWalletToAllowlist(user1);
-        // vm.stopPrank();
+    }
+
+    function testUpgradeToV2() public {
+        FourteenNumbersClaimV2a v2Impl = new FourteenNumbersClaimV2a();
+        bytes memory initData = abi.encodeWithSelector(FourteenNumbersClaim.upgradeStorage.selector, bytes(""));
+        vm.prank(configAdmin);
+        fourteenNumbersClaim.upgradeToAndCall(address(v2Impl), initData);
+
+        uint256 ver = fourteenNumbersClaim.version();
+        assertEq(ver, 2, "Upgrade did not upgrade version");
+    }
+
+    function testUpgradeToV1() public {
+        FourteenNumbersClaim v1Impl = new FourteenNumbersClaim();
+        bytes memory initData = abi.encodeWithSelector(FourteenNumbersClaim.upgradeStorage.selector, bytes(""));
+        vm.expectRevert(abi.encodeWithSelector(FourteenNumbersClaim.CanNotUpgradeToLowerOrSameVersion.selector, 0));
+        vm.prank(configAdmin);
+        fourteenNumbersClaim.upgradeToAndCall(address(v1Impl), initData);
+    }
+
+    function testDowngradeV1ToV0() public {
+        // Upgrade from V0 to V1
+        FourteenNumbersClaimV2a v2Impl = new FourteenNumbersClaimV2a();
+        bytes memory initData = abi.encodeWithSelector(FourteenNumbersClaim.upgradeStorage.selector, bytes(""));
+        vm.prank(configAdmin);
+        fourteenNumbersClaim.upgradeToAndCall(address(v2Impl), initData);
+
+        // Attempt to downgrade from V1 to V0.
+        FourteenNumbersClaim v1Impl = new FourteenNumbersClaim();
+        vm.expectRevert(abi.encodeWithSelector(FourteenNumbersClaim.CanNotUpgradeToLowerOrSameVersion.selector, 2));
+        vm.prank(configAdmin);
+        fourteenNumbersClaim.upgradeToAndCall(address(v1Impl), initData);
     }
 
     function testSetDaysPlayedToClaim() public {
@@ -287,27 +322,4 @@ contract ClaimConfigTest is ClaimBaseTest {
         assertFalse(fourteenNumbersClaim.paused(), "Contract should be unpaused");
     }
 
-    // function testGetClaimableNfts() public {
-    //     vm.startPrank(configAdmin);
-    //     // Add multiple tokens
-    //     FourteenNumbersClaim.ClaimableToken memory token1 = FourteenNumbersClaim.ClaimableToken({
-    //         erc1155Contract: address(mockERC1155),
-    //         tokenId: 1,
-    //         balance: 100,
-    //         percentage: 3000
-    //     });
-    //     FourteenNumbersClaim.ClaimableToken memory token2 = FourteenNumbersClaim.ClaimableToken({
-    //         erc1155Contract: address(mockERC1155),
-    //         tokenId: 2,
-    //         balance: 200,
-    //         percentage: 4000
-    //     });
-        
-    //     fourteenNumbersClaim.addMoreTokens(token1);
-    //     fourteenNumbersClaim.addMoreTokens(token2);
-
-    //     FourteenNumbersClaim.ClaimableToken[] memory tokens = fourteenNumbersClaim.getClaimableNfts();
-    //     assertEq(tokens.length, 2, "Should return 2 tokens");
-    //     vm.stopPrank();
-    // }
 }
