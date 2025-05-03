@@ -27,6 +27,8 @@ contract ClaimConfigTest is ClaimBaseTest {
     error ERC1155InvalidReceiver(address receiver);
     error AccessControlUnauthorizedAccount(address account, bytes32 role);
 
+    error EnforcedPause();
+
     event SettingDaysPlayedToClaim(uint256 _newDaysPlayedToClaim);
     event TokensAdded(uint256 _slot, address _erc1155Contract, uint256 _tokenId, uint256 _amount, uint256 _percentage);
     event TokensRemoved(uint256 _slot, address _erc1155Contract, uint256 _tokenId, uint256 _amount);
@@ -344,7 +346,7 @@ contract ClaimConfigTest is ClaimBaseTest {
         assertFalse(fourteenNumbersClaim.paused(), "Contract should be unpaused");
     }
 
-    function testBadAuth() public {
+    function testUnpauseBadAuth() public {
         vm.prank(configAdmin);
         fourteenNumbersClaim.pause();
         vm.prank(player1);
@@ -352,9 +354,19 @@ contract ClaimConfigTest is ClaimBaseTest {
         fourteenNumbersClaim.unpause();
     }
 
-    // function testAddWalletToAllowlist() public {
+    function testPrepareForClaimWhilePaused() public {
+        vm.prank(configAdmin);
+        fourteenNumbersClaim.pause();
+        vm.prank(player1);
+        vm.expectRevert(abi.encodeWithSelector(EnforcedPause.selector));
+        fourteenNumbersClaim.prepareForClaim(0);
+    }
 
-
-    // }
-
+    function testClaimWhilePaused() public {
+        vm.prank(configAdmin);
+        fourteenNumbersClaim.pause();
+        vm.prank(player1);
+        vm.expectRevert(abi.encodeWithSelector(EnforcedPause.selector));
+        fourteenNumbersClaim.claim(0);
+    }
 }
