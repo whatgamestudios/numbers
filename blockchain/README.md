@@ -27,3 +27,12 @@ Following the instructions here: [https://docs.nethereum.com/en/latest/nethereum
 * Open Visual Studio Code and select `./out/FourteenNumbersSolutions.sol/FouteenNumbersSolutions.json
 * In Visual Studio Code, use Command-Shift-P to open the command pallete, and choose `Solidity: Code generate CSharp from contract definition`.
 * Files will be written to `./FourteenNumbersSolutions`.
+
+
+# Lib installation
+
+To install Immutable's contracts:
+
+```
+forge install https://github.com/GNSPS/solidity-bytes-utils.git --no-commit
+```

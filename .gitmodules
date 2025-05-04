@@ -7,3 +7,6 @@
 [submodule "blockchain/lib/openzeppelin-contracts"]
 	path = blockchain/lib/openzeppelin-contracts
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "blockchain/lib/solidity-bytes-utils"]
+	path = blockchain/lib/solidity-bytes-utils
+	url = https://github.com/GNSPS/solidity-bytes-utils
