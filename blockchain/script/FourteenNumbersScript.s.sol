@@ -6,7 +6,8 @@ import "forge-std/Script.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {FourteenNumbersSolutions} from "../src/FourteenNumbersSolutions.sol";
 import {FourteenNumbersSolutionsV2} from "../src/FourteenNumbersSolutionsV2.sol";
-//import {ImmutableERC1155} from "@imtbl/token/erc1155/preset/ImmutableERC1155.sol";
+import {FourteenNumbersClaim} from "../src/FourteenNumbersClaim.sol";
+import {ImmutableERC1155} from "../src/immutable/ImmutableERC1155.sol";
 
 contract FourteenNumbersScript is Script {
     function deployV1() public {
@@ -65,13 +66,35 @@ contract FourteenNumbersScript is Script {
     }
 
 
-// TODO re-enable once Immutable upgrades OZ to 5.x
+    function transferAll(ImmutableERC1155 _erc1155, address _from, address _to, uint256 _tokenId) private {
+        uint256 bal = _erc1155.balanceOf(_from, _tokenId);
+        console.log("Token: %x, balance: %x", _tokenId, bal);
+        if (bal > 0) {
+            _erc1155.safeTransferFrom(_from, _to, _tokenId, bal, bytes(""));
+        }
+    }
 
-    // function transferAll(ImmutableERC1155 _erc1155, address _from, address _to, uint256 _tokenId) private {
-    //     uint256 bal = _erc1155.balanceOf(_from, _tokenId);
-    //     console.log("Token: %x, balance: %x", _tokenId, bal);
-    //     if (bal > 0) {
-    //         //_erc1155.safeTransferFrom(_from, _to, _tokenId, bal, bytes(""));
-    //     }
-    // }
+    function deployClaimV1() public {
+        address deployer = vm.envAddress("DEPLOYER_ADDRESS");
+        address roleAdmin = deployer;
+        address configAdmin = deployer;
+        address tokenAdmin = deployer;
+        address owner = deployer;
+
+        // A randomly selected passport wallet on mainnet.
+        address aPassportWalletMainnet = 0xDa77D416bb4238c9424b8d27A7f90fA2Bdf4911E;
+        address fourteenNumbersSolutionsMainnet = 0xe2E762770156FfE253C49Da6E008b4bECCCf2812;
+
+        vm.broadcast();
+        FourteenNumbersClaim impl = new FourteenNumbersClaim();
+        bytes memory initData = abi.encodeWithSelector(
+            FourteenNumbersClaim.initialize.selector, 
+            roleAdmin, owner, configAdmin, tokenAdmin, aPassportWalletMainnet, fourteenNumbersSolutionsMainnet);
+
+        vm.broadcast();
+        ERC1967Proxy proxy = new ERC1967Proxy(address(impl), initData);
+
+        console.logString("Deployment address");
+        console.logAddress(address(proxy));
+    }
 }

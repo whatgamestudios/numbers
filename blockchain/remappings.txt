@@ -1,3 +1,3 @@
 @openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
 @openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/
-@imtbl/=lib/contracts/contracts/
+solidity-bytes-utils/=lib/solidity-bytes-utils/
