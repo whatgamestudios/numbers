@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
-
+using System;
 
 namespace FourteenNumbers {
 
@@ -12,15 +12,22 @@ namespace FourteenNumbers {
 
         public void OnButtonClick(string buttonText) {
             if (buttonText == "Publish") {
-                panelPublish.SetActive(false);
+                AuditLog.Log("Publish");
+                try {
+                    panelPublish.SetActive(false);
 
-                uint gameDay = (uint) Stats.GetLastGameDay();
-                (string sol1, string sol2, string sol3) = Stats.GetSolutions();
+                    uint gameDay = (uint) Stats.GetLastGameDay();
+                    (string sol1, string sol2, string sol3) = Stats.GetSolutions();
 
-                FourteenNumbersContract contract = new FourteenNumbersContract();
-                contract.SubmitBestScore(gameDay, sol1, sol2, sol3);
+                    FourteenNumbersContract contract = new FourteenNumbersContract();
+                    contract.SubmitBestScore(gameDay, sol1, sol2, sol3);
 
-                SceneManager.LoadScene("PublishScene", LoadSceneMode.Additive);
+                    SceneManager.LoadScene("PublishScene", LoadSceneMode.Additive);
+                }
+                catch (Exception ex) {
+                    string errorMessage = $"Exception in Publish: {ex.Message}\nStack Trace: {ex.StackTrace}";
+                    AuditLog.Log(errorMessage);
+                }
             }
             else {
                 Debug.Log("Unknown button: " + buttonText);

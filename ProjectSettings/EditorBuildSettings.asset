@@ -39,9 +39,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu/Other/SocialsScene.unity
     guid: 3117a7028423347fbbea5f96f344f57c
   - enabled: 1
-    path: Assets/Scenes/Menu/Other/RoadmapScene.unity
-    guid: d1de867c51c1e48f0b960aacace2f8b5
-  - enabled: 1
     path: Assets/Scenes/Menu/Other/SettingsScene.unity
     guid: 0d4c62a14f66a42eb85b3d27bbe7f3e6
   - enabled: 1

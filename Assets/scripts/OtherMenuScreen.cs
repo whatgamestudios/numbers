@@ -17,6 +17,10 @@ namespace FourteenNumbers {
         public Button buttonCredits;
         public Button buttonRoadmap;
 
+        public void Start() {
+            AuditLog.Log("Menu (secondary) screen");
+        }
+
         public void OnButtonClick(string buttonText) {
             if (buttonText == "Passport") {
                 // Only specifying the sceneName or sceneBuildIndex will load the Scene with the Single mode
@@ -31,11 +35,8 @@ namespace FourteenNumbers {
             else if (buttonText == "Credits") {
                 SceneManager.LoadScene("CreditsScene", LoadSceneMode.Single);
             }
-            else if (buttonText == "Roadmap") {
-                SceneManager.LoadScene("RoadmapScene", LoadSceneMode.Single);
-            }
             else {
-                Debug.Log("Unknown button");
+                Debug.Log("Other Menu: Unknown button" + buttonText);
             }
         }
     }

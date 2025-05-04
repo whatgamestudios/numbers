@@ -23,6 +23,7 @@ namespace FourteenNumbers {
 
 
         public async void Start() {
+            AuditLog.Log("Menu screen");
             loggedIn.text = "Loading";
 
             bool isLoggedIn = PassportStore.IsLoggedIn();

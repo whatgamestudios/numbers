@@ -8,6 +8,10 @@ using TMPro;
 namespace FourteenNumbers {
 
     public class SocialsScreen : MonoBehaviour {
+
+        public void Start() {
+            AuditLog.Log("Socials screen");
+        }
     
         public void OnButtonClick(string buttonText) {
             if (buttonText == "Instagram") {

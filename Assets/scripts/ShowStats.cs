@@ -29,6 +29,8 @@ namespace FourteenNumbers {
             "Streaks are sequential days played.";
 
         public void Start() {
+            AuditLog.Log("Stats screen");
+
             int firstPlayed;
             int lastPlayed;
             int timesPlayed;

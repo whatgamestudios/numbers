@@ -93,7 +93,7 @@ namespace FourteenNumbers {
             }
             catch (System.Exception ex) {
                 LastTransactionStatus = TransactionStatus.Failed;
-                Debug.Log("Err: " + ex.Message);
+                throw ex;
             }
         }
 

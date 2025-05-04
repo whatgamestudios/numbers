@@ -20,6 +20,7 @@ namespace FourteenNumbers {
         string status;
 
         public void Start() {
+            AuditLog.Log("Publishing screen");
             status = "Publishing";
         }
 

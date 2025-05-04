@@ -20,6 +20,7 @@ namespace FourteenNumbers {
         private ScrollRect scrollRect;
 
         public void Start() {
+            AuditLog.Log("Scene screen");
             // Get the ScrollRect component
             scrollRect = panelOwned.GetComponentInParent<ScrollRect>();
             if (scrollRect == null) {
