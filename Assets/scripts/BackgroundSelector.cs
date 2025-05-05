@@ -16,8 +16,16 @@ namespace FourteenNumbers {
 
         public GameObject panelOwned;
 
+        // Claim button
+        public Button claimButton;
+        public TextMeshProUGUI claimButtonText;
+
+
         private GameObject[] panelOwnedNfts;
         private ScrollRect scrollRect;
+
+        private FourteenNumbersContract fourteenNumbersContracts = new FourteenNumbersContract();
+        private Coroutine loadRoutine;
 
         public void Start() {
             AuditLog.Log("Scene screen");
@@ -32,7 +40,18 @@ namespace FourteenNumbers {
 
             int selected = SceneStore.GetBackground();
             setSelected(selected);
+
+            claimButton.interactable = false;
         }
+
+        public void OnEnable() {
+            StartLoader();
+        }
+
+        public void OnDisable() {
+        }
+
+
 
         public void OnButtonClick(string buttonText) {
             int option = BackgroundsMetadata.ButtonTextToOption(buttonText);
@@ -138,7 +157,8 @@ namespace FourteenNumbers {
             
             // Resize panelOwned based on number of NFTs
             RectTransform panelOwnedRect = panelOwned.GetComponent<RectTransform>();
-            float panelHeight = 247 + (owned.Length * 220) + 20; // 247 initial offset + (220 per panel) + 20 padding at bottom
+            int topOfScreen = 247+220+20;
+            float panelHeight = topOfScreen + (owned.Length * 220) + 20; // 247 initial offset + (220 per panel) + 20 padding at bottom
             panelOwnedRect.sizeDelta = new Vector2(panelOwnedRect.sizeDelta.x, panelHeight);
             
             // Create new array for panels
@@ -161,7 +181,7 @@ namespace FourteenNumbers {
                 RectTransform buttonRect = buttonContainer.AddComponent<RectTransform>();
                 buttonRect.anchorMin = new Vector2(0.5f, 1f);
                 buttonRect.anchorMax = new Vector2(0.5f, 1f);
-                buttonRect.anchoredPosition = new Vector2(0, -247 - (i * 220));
+                buttonRect.anchoredPosition = new Vector2(0, -topOfScreen - (i * 220));
                 buttonRect.sizeDelta = new Vector2(750, 210); // Width of parent less a bit
  
                 // Add Image component for background
@@ -236,6 +256,44 @@ namespace FourteenNumbers {
                 
                 // Store panel reference
                 panelOwnedNfts[i] = buttonContainer;
+            }
+        }
+
+        private void StartLoader() {
+            // Only load the days played once per day.
+            uint statsGameDay = (uint) Stats.GetLastGameDay();
+            uint gameDay = (uint) Timeline.GameDay();
+            if (statsGameDay == gameDay) {
+                uint daysPlayed = (uint) Stats.GetDaysPlayed();
+                daysPlayedLoaded(daysPlayed);
+            }
+            else {
+                Debug.Log("Loading Days Played");
+                loadRoutine = StartCoroutine(LoadRoutine());
+            }
+        }
+
+        IEnumerator LoadRoutine() {
+            FetchDaysPlayed();
+            yield return new WaitForSeconds(0f);
+        }
+
+        private async void FetchDaysPlayed() {
+            string account = PassportStore.GetPassportAccount();
+            uint daysPlayed = await fourteenNumbersContracts.GetDaysPlayed(account);
+            Stats.SetDaysPlayed((int) daysPlayed);
+            daysPlayedLoaded(daysPlayed);
+        }
+
+        public void daysPlayedLoaded(uint daysPlayed) {
+            AuditLog.Log("Days played: " + daysPlayed);
+
+            if (daysPlayed >= 30) {
+                claimButton.interactable = true;
+            }
+            else {
+                uint daysBeforeClaim = 30 - daysPlayed;
+                claimButtonText.text = daysBeforeClaim.ToString() + " days until claim";
             }
         }
     }

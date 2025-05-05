@@ -17,6 +17,7 @@ namespace FourteenNumbers {
 
         public const string STATS_POINTS_TODAY = "STATS_POINTS_TODAY";
 
+        public const string STATS_DAYS_PLAYED = "STATS_DAYS_PLAYED";
         public const string BEST_TODAY = "BEST_TODAY";
 
         public const string STATS_SILVER_STREAK_LENGTH = "STATS_SSTREAK_LEN";
@@ -158,6 +159,14 @@ namespace FourteenNumbers {
 
         public static int GetBestPointsToday() {
             return PlayerPrefs.GetInt(BEST_TODAY, 0);
+        }
+
+        public static void SetDaysPlayed(int daysPlayed) {
+            PlayerPrefs.SetInt(STATS_DAYS_PLAYED, daysPlayed);
+        }
+
+        public static int GetDaysPlayed() {
+            return PlayerPrefs.GetInt(STATS_DAYS_PLAYED, 0);
         }
 
         private static void setCombinedSolution(uint gameDay) {

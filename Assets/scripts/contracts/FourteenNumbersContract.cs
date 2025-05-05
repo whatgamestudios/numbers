@@ -58,6 +58,19 @@ namespace FourteenNumbers {
         }
 
 
+        public async Task<uint> GetDaysPlayed(string address) {
+            StatsOutputDTO stats = await service.StatsQueryAsync(address);
+            BigInteger daysPlayedInt = stats.DaysPlayed;
+            if (daysPlayedInt < 0 || daysPlayedInt > uint.MaxValue) {
+                Debug.LogError($"Number {daysPlayedInt} is outside uint range");
+                // Use 7 to indicate an error.
+                return 7;
+            }
+            else {
+                return (uint) stats.DaysPlayed;
+            }
+        }
+
 
         public async void SubmitBestScore(uint gameDay, string sol1, string sol2, string sol3) {
             LastTransactionStatus = TransactionStatus.Init;         

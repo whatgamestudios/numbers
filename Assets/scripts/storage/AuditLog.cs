@@ -12,6 +12,7 @@ namespace FourteenNumbers {
         public static void Log(string entry) {
             string timestamp = DateTime.Now.ToString("yyyyMMdd: HHmmss");
             string logEntry = $"{timestamp}: {entry}";
+            Debug.Log(entry);
             
             uint index = getNext();
             string key = AUDIT_ENTRY + index.ToString();
