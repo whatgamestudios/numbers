@@ -25,7 +25,13 @@ namespace FourteenNumbers {
         private ScrollRect scrollRect;
 
         private FourteenNumbersContract fourteenNumbersContracts = new FourteenNumbersContract();
-        private Coroutine loadRoutine;
+        private FourteenNumbersClaimContract fourteenNumbersClaimContracts = new FourteenNumbersClaimContract();
+        private Coroutine loadRoutineDaysPlayed;
+        private Coroutine loadRoutineDaysClaimed;
+
+        private const int NOT_SET = -1;
+        private volatile int DaysPlayed = NOT_SET;
+        private volatile int DaysClaimed = NOT_SET;
 
         public void Start() {
             AuditLog.Log("Scene screen");
@@ -45,7 +51,7 @@ namespace FourteenNumbers {
         }
 
         public void OnEnable() {
-            StartLoader();
+            StartLoaders();
         }
 
         public void OnDisable() {
@@ -259,41 +265,68 @@ namespace FourteenNumbers {
             }
         }
 
-        private void StartLoader() {
+        private void StartLoaders() {
             // Only load the days played once per day.
             uint statsGameDay = (uint) Stats.GetLastGameDay();
             uint gameDay = (uint) Timeline.GameDay();
             if (statsGameDay == gameDay) {
-                uint daysPlayed = (uint) Stats.GetDaysPlayed();
-                daysPlayedLoaded(daysPlayed);
+                int daysPlayed = Stats.GetDaysPlayed();
+                int daysClaimed = Stats.GetDaysClaimed();
+                daysPlayedLoaded(daysPlayed, daysClaimed);
             }
             else {
                 Debug.Log("Loading Days Played");
-                loadRoutine = StartCoroutine(LoadRoutine());
+                loadRoutineDaysPlayed = StartCoroutine(LoadRoutineDaysPlayed());
+                loadRoutineDaysClaimed = StartCoroutine(LoadRoutineDaysClaimed());
             }
         }
 
-        IEnumerator LoadRoutine() {
+        IEnumerator LoadRoutineDaysPlayed() {
             FetchDaysPlayed();
-            yield return new WaitForSeconds(0f);
+            yield return new WaitForSeconds(0.1f);
+        }
+        IEnumerator LoadRoutineDaysClaimed() {
+            FetchDaysClaimed();
+            yield return new WaitForSeconds(0.1f);
         }
 
         private async void FetchDaysPlayed() {
             string account = PassportStore.GetPassportAccount();
-            uint daysPlayed = await fourteenNumbersContracts.GetDaysPlayed(account);
-            Stats.SetDaysPlayed((int) daysPlayed);
-            daysPlayedLoaded(daysPlayed);
+            DaysPlayed = (int) (await fourteenNumbersContracts.GetDaysPlayed(account));
+            Stats.SetDaysPlayed(DaysPlayed);
+            if (DaysClaimed != NOT_SET) {
+                daysPlayedLoaded(DaysPlayed, DaysClaimed);
+            } 
+            else {
+                AuditLog.Log("DaysPlayed loaded before DaysClaimed");
+            }
         }
 
-        public void daysPlayedLoaded(uint daysPlayed) {
-            AuditLog.Log("Days played: " + daysPlayed);
+        private async void FetchDaysClaimed() {
+            string account = PassportStore.GetPassportAccount();
+            DaysClaimed = (int) (await fourteenNumbersClaimContracts.GetDaysClaimed(account));
+            Stats.SetDaysClaimed(DaysClaimed);
+            if (DaysPlayed != NOT_SET) {
+                daysPlayedLoaded(DaysPlayed, DaysClaimed);
+            } 
+            else {
+                AuditLog.Log("DaysClaimed loaded before DaysPlayed");
+            }
+        }
 
-            if (daysPlayed >= 30) {
+        public void daysPlayedLoaded(int daysPlayed, int daysClaimed) {
+            AuditLog.Log("Days played: " + daysPlayed.ToString() + ", days claimed: " + daysClaimed.ToString());
+            if (daysClaimed > daysPlayed) {
+                AuditLog.Log("Days claimed greater than days played");
+            }
+            int net = daysPlayed - daysClaimed;
+
+            if (net >= 30) {
                 claimButton.interactable = true;
             }
             else {
-                uint daysBeforeClaim = 30 - daysPlayed;
-                claimButtonText.text = daysBeforeClaim.ToString() + " days until claim";
+                int daysBeforeClaim = 30 - daysPlayed;
+                claimButtonText.text = net.ToString() + " days until claim";
             }
         }
     }
