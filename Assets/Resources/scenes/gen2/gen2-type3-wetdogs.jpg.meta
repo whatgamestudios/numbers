@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      gen2-type3-wetdogs_0: -7145308265006462059
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

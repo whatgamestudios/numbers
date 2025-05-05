@@ -26,7 +26,7 @@ namespace FourteenNumbers {
         private const string text3 = "Tradable\nScenes \n ";
 
         public void Start() {
-            // int selected = ScreenBackground.GetBackground();
+            // int selected = SceneStore.GetBackground();
             // SceneInfo sceneInfo = BackgroundsMetadata.GetInfo(selected);
             // textFaceColour = sceneInfo.faceColour;
             textFaceColour = UnityEngine.Color.black;

@@ -42,6 +42,7 @@ namespace FourteenNumbers {
                                     ") as\n" + 
                                     accounts[0];
                     Debug.Log("Account count was: " + accounts.Count);
+                    PassportStore.SetPassportAccount(accounts[0]);
                 }
             }
             else {

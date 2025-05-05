@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      gen2-type6-chineselandscape_0: 3279955548752723785
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

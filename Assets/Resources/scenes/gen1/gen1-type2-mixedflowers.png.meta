@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      gen1-type2-mixedflowers_0: -9168610404913099016
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

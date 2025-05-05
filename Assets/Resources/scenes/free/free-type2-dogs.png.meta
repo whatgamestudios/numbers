@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      free-type2-dogs_0: 665619168863647677
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

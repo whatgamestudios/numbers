@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Text;
@@ -63,7 +64,10 @@ namespace FourteenNumbers {
                 // Set up provider
                 await Immutable.Passport.Passport.Instance.ConnectEvm();
                 // Set up wallet (includes creating a wallet for new players)
-                await Immutable.Passport.Passport.Instance.ZkEvmRequestAccounts();
+                List<string> accounts = await Immutable.Passport.Passport.Instance.ZkEvmRequestAccounts();
+                if (accounts.Count !=0) {
+                    PassportStore.SetPassportAccount(accounts[0]);
+                }
             }
         }
 
