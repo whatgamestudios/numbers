@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      gen1-type0-goldenfans_0: 5942879085984703517
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -16,7 +16,7 @@ namespace FourteenNumbers {
                 return;
             }
 
-            int option = ScreenBackground.GetBackground();
+            int option = SceneStore.GetBackground();
             SceneInfo sceneInfo = BackgroundsMetadata.GetInfo(option);
 
             // Set the background image.

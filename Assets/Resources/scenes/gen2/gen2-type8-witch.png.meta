@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      gen2-type8-witch_0: 5224322016364159072
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

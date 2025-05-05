@@ -6,12 +6,16 @@ using TMPro;
 using System;
 
 namespace FourteenNumbers {
-    public class ScreenBackground {
+    /**
+     * Storage for holding scene related information.
+    **/
+    public class SceneStore {
         public const string BG_OPTION = "OPTION_BACKGROUND";
 
         public const int BG_DEFAULT = 1;
 
         public const string BG_OWNED = "BACKGROUND_OWNED";
+        public const string BG_BALANCES = "BACKGROUND_BALANCES";
         public const string BG_LAST_CHECKED = "BACKGROUND_LAST_CHECKED";
 
         // Interval between rechecking whether NFTs are owned, in hours.
@@ -39,9 +43,11 @@ namespace FourteenNumbers {
          *
          * @param owned Array of owned background ids.
          */
-        public static void SetOwned(int[] owned) {
+        public static void SetOwned(int[] owned, int[] balances) {
             string ownedString = string.Join(",", owned);
             PlayerPrefs.SetString(BG_OWNED, ownedString);
+            string balancesString = string.Join(",", balances);
+            PlayerPrefs.SetString(BG_BALANCES, balancesString);
             PlayerPrefs.Save();
         }
 
@@ -58,6 +64,13 @@ namespace FourteenNumbers {
             return Array.ConvertAll(ownedString.Split(','), int.Parse);
         }
 
+        public static int[] GetBalances() {
+            string balancesString = PlayerPrefs.GetString(BG_BALANCES, "");
+            if (string.IsNullOrEmpty(balancesString)) {
+                return new int[0];
+            }
+            return Array.ConvertAll(balancesString.Split(','), int.Parse);
+        }
 
         /**
          * Determine whether the NFTs owned by the player has been checked recently.
@@ -65,15 +78,26 @@ namespace FourteenNumbers {
          * @return true if the NFTs owned by the player should be checked.
          */
         public static bool DoINeedToCheckOwnedNfts() {
+            return true;
+            // DateTime now = DateTime.Now;
+            // int currentTimeInHours = ((now.Year * 12 + now.Month) * 31 + now.Day) * 24 + now.Hour;
+
+            // int lastChecked = PlayerPrefs.GetInt(BG_LAST_CHECKED, 0);
+            // if (currentTimeInHours > lastChecked + RECHECK_INTERVAL) {
+            //     return true;
+            // }
+            // return false;
+        }
+
+        /**
+         * Determine whether the NFTs owned by the player has been checked recently.
+         * 
+         * @return true if the NFTs owned by the player should be checked.
+         */
+        public static void SetNftsSynced() {
             DateTime now = DateTime.Now;
             int currentTimeInHours = ((now.Year * 12 + now.Month) * 31 + now.Day) * 24 + now.Hour;
-
-            int lastChecked = PlayerPrefs.GetInt(BG_LAST_CHECKED, 0);
-            if (currentTimeInHours > lastChecked + RECHECK_INTERVAL) {
-                PlayerPrefs.SetInt(BG_LAST_CHECKED, currentTimeInHours);
-                return true;
-            }
-            return false;
+            PlayerPrefs.SetInt(BG_LAST_CHECKED, currentTimeInHours);
         }
     }
 }

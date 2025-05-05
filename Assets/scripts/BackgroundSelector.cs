@@ -30,18 +30,18 @@ namespace FourteenNumbers {
 
             drawOwnedPanel();
 
-            int selected = ScreenBackground.GetBackground();
+            int selected = SceneStore.GetBackground();
             setSelected(selected);
         }
 
         public void OnButtonClick(string buttonText) {
             int option = BackgroundsMetadata.ButtonTextToOption(buttonText);
-            int alreadySelectedOption = ScreenBackground.GetBackground();
+            int alreadySelectedOption = SceneStore.GetBackground();
             if (option == alreadySelectedOption) {
                 SceneManager.LoadScene("SceneDetailScene", LoadSceneMode.Additive);
             }
             else {
-                ScreenBackground.SetBackground(option);
+                SceneStore.SetBackground(option);
                 setSelected(option);
                 ScreenBackgroundSetter.SetPanelBackground(panelScreenBackground);
             }
@@ -121,9 +121,6 @@ namespace FourteenNumbers {
         }
 
         private void drawOwnedPanel() {
-            int[] owned1 = new int[4] { 100, 101, 102, 103};
-            ScreenBackground.SetOwned(owned1);
-
             // Get the owned backgrounds
             int[] owned = ScreenBackground.GetOwned();
             

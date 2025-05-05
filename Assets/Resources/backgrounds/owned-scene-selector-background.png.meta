@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      owned-scene-selector-background_0: 4470007512457644711
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

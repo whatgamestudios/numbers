@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      gen2-type4-honeycomb_0: -6478320168016019206
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

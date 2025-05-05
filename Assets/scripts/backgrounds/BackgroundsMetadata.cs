@@ -29,6 +29,10 @@ namespace FourteenNumbers {
             }
         }
 
+        public static int[] GetAllOwnedNftIds() {
+            return new int[4] { 100, 101, 102, 103};
+        }
+
 
         private static SceneInfo getDefaultInfo() {
             SceneInfo info = new SceneInfo("scenes/free/free-type1-coffee", UnityEngine.Color.white, UnityEngine.Color.black);

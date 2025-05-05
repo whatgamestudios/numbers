@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      gen1-type3-yellowflowers_0: 2653477637105981733
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

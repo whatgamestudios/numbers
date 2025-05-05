@@ -93,6 +93,15 @@ namespace FourteenNumbers {
                 Debug.Log("CheatCode: Logout done");
                 SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
             }
+            else if (cheatCode == "BBBB") {
+                Debug.Log("CheatCode: FakeOwnership start");
+                ScreenBackground.FakeOwnership = true;
+            }
+            else if (cheatCode == "CCCC") {
+                Debug.Log("CheatCode: FakeOwnership stop");
+                ScreenBackground.FakeOwnership = false;
+            }
+
         }
 
 

@@ -6,6 +6,7 @@ namespace FourteenNumbers {
     public class PassportStore {
         public const string PASS_LOGGED_IN = "PASS_LOGGED_IN";
         public const string PASS_WHEN_LOGGED_IN = "PASS_WHEN_LOGGED_IN";
+        public const string PASS_ACCOUNT = "PASS_ACCOUNT";
 
         // Classify "recently" as five minutes.
         public const int RECENTLY_MS = 1000 * 60 * 5;
@@ -33,6 +34,14 @@ namespace FourteenNumbers {
 
         public static void SetLoggedInChecked() {
             PlayerPrefs.SetString(PASS_WHEN_LOGGED_IN, (DateTime.Now.Ticks).ToString());
+        }
+
+        public static string GetPassportAccount() {
+            return PlayerPrefs.GetString(PASS_ACCOUNT, "");
+        }
+
+        public static void SetPassportAccount(string account) {
+            PlayerPrefs.SetString(PASS_ACCOUNT, account);
         }
     }
 }

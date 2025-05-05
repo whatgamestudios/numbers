@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      gen2-type9-blackcat_0: -8651639548616562250
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

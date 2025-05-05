@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      free-scene-selector-background_0: -4419518618567211912
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

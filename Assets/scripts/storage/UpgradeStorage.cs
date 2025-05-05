@@ -32,9 +32,9 @@ namespace FourteenNumbers {
                     Debug.Log("Upgrading storage from " + STORAGE_VERSION_0 + " to " + STORAGE_VERSION_1);
                     PlayerPrefs.SetInt(STORAGE_VERSION, STORAGE_VERSION_1);
 
-                    int back = ScreenBackground.GetBackground();
+                    int back = SceneStore.GetBackground();
                     if (back == 1 || back == 2 || back == 5) {
-                        ScreenBackground.SetBackground(3);
+                        SceneStore.SetBackground(3);
                     }
 
                     PlayerPrefs.Save();
