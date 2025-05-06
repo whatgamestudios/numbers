@@ -34,7 +34,7 @@ namespace FourteenNumbers {
             }
             else {
                 int timeToWait = (WAIT_TIME_MS - (int) timeElapsedMs) / 1000 + 1;
-                countDownText.text = "A" + (timeToWait).ToString();
+                countDownText.text = (timeToWait).ToString();
             }
         }
     }

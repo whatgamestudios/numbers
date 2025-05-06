@@ -60,12 +60,25 @@ namespace FourteenNumbers {
             return string.Format(format, diff.Hours, diff.Minutes);
         }
 
-        /**
-        * Return the time now in the local time zone.
-        */
-        private static DateTime getTimeNow() {
-            return DateTime.Now;
+        public static string TimeOfDayStr() {
+            DateTime now = getTimeNow();
+            DateTime startOfDay = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
+            TimeSpan diff = now.Subtract(startOfDay);
+            Debug.Log("time span: " + diff.ToString());
+            string format = "{0,2:D2}:{1,2:D2}:{2,2:D2}";
+            return string.Format(format, diff.Hours, diff.Minutes, diff.Seconds);
         }
 
+        /**
+        * Return the time now in either local time zone or GMT+14 time zone.
+        */
+        private static DateTime getTimeNow() {
+            if (TimezoneStore.UseLocalTimeZone()) {
+                return DateTime.Now;
+            } else {
+                // Get UTC time and add 14 hours for GMT+14
+                return DateTime.UtcNow.AddHours(14);
+            }
+        }
     }
 }
