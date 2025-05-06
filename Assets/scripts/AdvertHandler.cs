@@ -20,15 +20,9 @@ namespace FourteenNumbers {
         private uint state = 0;
         private uint lastImageState = 0;
         private float animationProgress = 0f;
-
-        private const string text1 = "Sign In\n \n ";
-        private const string text2 = "to earn\n \n ";
-        private const string text3 = "Tradable\nScenes \n ";
+        private const string text1 = "Sign In\nto earn\nTradable\nScenes";
 
         public void Start() {
-            // int selected = SceneStore.GetBackground();
-            // SceneInfo sceneInfo = BackgroundsMetadata.GetInfo(selected);
-            // textFaceColour = sceneInfo.faceColour;
             textFaceColour = UnityEngine.Color.black;
 
 
@@ -84,15 +78,9 @@ namespace FourteenNumbers {
                     infoText.text = text1;
                     break;
                 case 1:
-                    infoText.text = text2;
-                    break;
                 case 2:
-                    infoText.text = text3;
-                    break;
                 case 3:
                 case 4:
-                case 5:
-                case 6:
                     setImage();
                     infoText.gameObject.SetActive(false);
                     floatingImage.SetActive(true);
@@ -146,8 +134,6 @@ namespace FourteenNumbers {
                     //     imageRect.anchoredPosition = new Vector2(xPos, yPos);
                     //}
                     break;
-                // case 4:
-                //     break;
             }
         }
 
@@ -155,7 +141,7 @@ namespace FourteenNumbers {
             if (state != lastImageState) {
                 lastImageState = state;
 
-                uint gen1Id = state + (100 - 3);
+                uint gen1Id = state + (100 - 1);
                 SceneInfo sceneInfo = BackgroundsMetadata.GetInfo((int)gen1Id);
                 string resource = "scenes/gen1/gen1-type0-goldenfans";
                 if (sceneInfo.resource != null) {

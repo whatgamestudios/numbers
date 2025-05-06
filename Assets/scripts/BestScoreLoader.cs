@@ -8,7 +8,7 @@ using System.Numerics;
 namespace FourteenNumbers {
 
     // Connect this script to an empty game object that is on the first scene.
-    public class BestSolutionToday : MonoBehaviour {
+    public class BestScoreLoader : MonoBehaviour {
 
         // The best score so far today.
         public uint BestScore { get; private set; }

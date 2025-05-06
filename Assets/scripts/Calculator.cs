@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FourteenNumbers {
 
-    public class Calculator : BestSolutionToday {
+    public class Calculator : BestScoreLoader {
         // Maximum number of numbers in a solution
         private const int MAX_NUMBERS = CalcProcessor.MAX_NUMBERS;
 

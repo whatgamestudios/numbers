@@ -11,11 +11,11 @@ using System.Collections;
 namespace FourteenNumbers {
 
     public class ErrorScreen : MonoBehaviour {
-        private const int WAIT_TIME_MS = 3000;
-        private DateTime start;
-
         public TextMeshProUGUI errorText;
         public TextMeshProUGUI countDownText;
+
+        private const int WAIT_TIME_MS = 3000;
+        private DateTime start;
 
         public void Start() {
             string msg = MessagePass.GetErrorMsg();
@@ -32,9 +32,10 @@ namespace FourteenNumbers {
             if ((int)timeElapsedMs > WAIT_TIME_MS) {
                 await SceneManager.UnloadSceneAsync("ErrorScene");
             }
-            int timeToWait = (WAIT_TIME_MS - (int) timeElapsedMs) / 1000 + 1;
-
-            countDownText.text = (timeToWait).ToString();
+            else {
+                int timeToWait = (WAIT_TIME_MS - (int) timeElapsedMs) / 1000 + 1;
+                countDownText.text = (timeToWait).ToString();
+            }
         }
     }
 }
