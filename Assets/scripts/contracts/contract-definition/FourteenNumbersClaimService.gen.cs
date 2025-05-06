@@ -78,4 +78,11 @@ namespace FourteenNumbers {
         [Parameter("uint256", "", 1)]
         public virtual BigInteger DaysClaimed { get; set; }
     }
+
+    public partial class ClaimFunction : ClaimFunctionBase { }
+
+    [Function("claimed")]
+    public class ClaimFunctionBase : FunctionMessage
+    {
+    }
 } 

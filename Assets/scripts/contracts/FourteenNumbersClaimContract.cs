@@ -10,6 +10,9 @@ using Nethereum.Hex.HexTypes;
 using Nethereum.ABI.Encoders;
 using Nethereum.ABI;
 
+using Immutable.Passport;
+using Immutable.Passport.Model;
+
 namespace FourteenNumbers {
 
     public class FourteenNumbersClaimContract {
@@ -32,6 +35,23 @@ namespace FourteenNumbers {
             else {
                 return (uint) claimedDaysObj.DaysClaimed;
             }
+        }
+
+        public async void Claim() {
+            var func = new ClaimFunction() {};
+
+            byte[] abiEncoding = func.GetCallData();
+            Debug.Log("Claim: " + HexDump.Dump(abiEncoding));
+
+            TransactionReceiptResponse response = 
+                await Passport.Instance.ZkEvmSendTransactionWithConfirmation(
+                    new TransactionRequest() {
+                        to = contractAddress,
+                        data = "0x" + BitConverter.ToString(abiEncoding).Replace("-", "").ToLower(),
+                        value = "0"
+                    }
+                );
+            Debug.Log($"Transaction status: {response.status}, hash: {response.transactionHash}");
         }
 
 
