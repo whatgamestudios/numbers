@@ -60,15 +60,22 @@ namespace FourteenNumbers {
 
 
         public void OnButtonClick(string buttonText) {
-            int option = BackgroundsMetadata.ButtonTextToOption(buttonText);
-            int alreadySelectedOption = SceneStore.GetBackground();
-            if (option == alreadySelectedOption) {
-                SceneManager.LoadScene("SceneDetailScene", LoadSceneMode.Additive);
+            if (buttonText == "Claim") {
+                MessagePass.SetErrorMsg("Claim not implemented yet");
+                SceneManager.LoadScene("ErrorScene", LoadSceneMode.Additive);
             }
             else {
-                SceneStore.SetBackground(option);
-                setSelected(option);
-                ScreenBackgroundSetter.SetPanelBackground(panelScreenBackground);
+                // One of the image buttons has been pressed.
+                int option = BackgroundsMetadata.ButtonTextToOption(buttonText);
+                int alreadySelectedOption = SceneStore.GetBackground();
+                if (option == alreadySelectedOption) {
+                    SceneManager.LoadScene("SceneDetailScene", LoadSceneMode.Additive);
+                }
+                else {
+                    SceneStore.SetBackground(option);
+                    setSelected(option);
+                    ScreenBackgroundSetter.SetPanelBackground(panelScreenBackground);
+                }
             }
         }
 
@@ -267,18 +274,18 @@ namespace FourteenNumbers {
 
         private void StartLoaders() {
             // Only load the days played once per day.
-            uint statsGameDay = (uint) Stats.GetLastGameDay();
-            uint gameDay = (uint) Timeline.GameDay();
-            if (statsGameDay == gameDay) {
-                int daysPlayed = Stats.GetDaysPlayed();
-                int daysClaimed = Stats.GetDaysClaimed();
-                daysPlayedLoaded(daysPlayed, daysClaimed);
-            }
-            else {
-                Debug.Log("Loading Days Played");
+            // uint statsGameDay = (uint) Stats.GetLastGameDay();
+            // uint gameDay = (uint) Timeline.GameDay();
+            // if (statsGameDay == gameDay) {
+            //     int daysPlayed = Stats.GetDaysPlayed();
+            //     int daysClaimed = Stats.GetDaysClaimed();
+            //     daysPlayedLoaded(daysPlayed, daysClaimed);
+            // }
+            // else {
+                AuditLog.Log("Scene Screen: Loading days played and days claimed");
                 loadRoutineDaysPlayed = StartCoroutine(LoadRoutineDaysPlayed());
                 loadRoutineDaysClaimed = StartCoroutine(LoadRoutineDaysClaimed());
-            }
+            // }
         }
 
         IEnumerator LoadRoutineDaysPlayed() {
@@ -292,6 +299,9 @@ namespace FourteenNumbers {
 
         private async void FetchDaysPlayed() {
             string account = PassportStore.GetPassportAccount();
+            if (account == null || account == "") {
+                return;
+            }
             DaysPlayed = (int) (await fourteenNumbersContracts.GetDaysPlayed(account));
             Stats.SetDaysPlayed(DaysPlayed);
             if (DaysClaimed != NOT_SET) {
@@ -327,6 +337,7 @@ namespace FourteenNumbers {
             else {
                 int daysBeforeClaim = 30 - daysPlayed;
                 claimButtonText.text = net.ToString() + " days until claim";
+                claimButtonText.fontSize = 60;
             }
         }
     }
