@@ -26,7 +26,7 @@ namespace FourteenNumbers {
 
                     uint gameDay = Timeline.GameDay();
                     if (CheckInStore.DoINeedToCheckIn(gameDay)) {
-                        FourteenNumbersContract contract = new FourteenNumbersContract();
+                        FourteenNumbersSolutionsContract contract = new FourteenNumbersSolutionsContract();
                         contract.SubmitCheckIn(gameDay);
                     }
                 }

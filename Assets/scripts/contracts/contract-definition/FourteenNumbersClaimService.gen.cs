@@ -79,10 +79,23 @@ namespace FourteenNumbers {
         public virtual BigInteger DaysClaimed { get; set; }
     }
 
+    public partial class PrepareForClaimFunction : PrepareForClaimFunctionBase { }
+
+    [Function("prepareForClaim")]
+    public class PrepareForClaimFunctionBase : FunctionMessage
+    {
+        [Parameter("uint256", "", 1)]
+        public virtual BigInteger Salt { get; set; }
+
+    }
+
     public partial class ClaimFunction : ClaimFunctionBase { }
 
     [Function("claimed")]
     public class ClaimFunctionBase : FunctionMessage
     {
+        [Parameter("uint256", "", 1)]
+        public virtual BigInteger Salt { get; set; }
+
     }
 } 

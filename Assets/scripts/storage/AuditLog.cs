@@ -70,7 +70,7 @@ namespace FourteenNumbers {
 
             info.Append("Screen: height: ");
             info.Append(screenHeight);
-            info.Append(", width");
+            info.Append(", width: ");
             info.Append(screenWidth);
             info.AppendLine();
             

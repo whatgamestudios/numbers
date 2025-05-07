@@ -42,7 +42,7 @@ namespace FourteenNumbers {
                 }
                 info.text = status;
             }
-            else if (FourteenNumbersContract.LastTransactionStatus == FourteenNumbersContract.TransactionStatus.Success) {
+            else if (FourteenNumbersSolutionsContract.LastTransactionStatus == FourteenNumbersSolutionsContract.TransactionStatus.Success) {
                 info.text = "Published your high score!";
             }
             else {

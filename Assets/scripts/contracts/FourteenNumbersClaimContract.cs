@@ -15,12 +15,12 @@ using Immutable.Passport.Model;
 
 namespace FourteenNumbers {
 
-    public class FourteenNumbersClaimContract {
+    public class FourteenNumbersClaimContract : FourteenNumbersContract {
         private FourteenNumbersClaimService service;
-        private static string contractAddress = "0xb427336d725943BA4300EEC219587E207ad21146";
+        public const string FOURTEEN_NUMBERS_CLAIM_CONTRACT = "0xb427336d725943BA4300EEC219587E207ad21146";
 
-        public FourteenNumbersClaimContract() {
-            var web3 = new Web3("https://rpc.immutable.com/");
+        public FourteenNumbersClaimContract() : base(FOURTEEN_NUMBERS_CLAIM_CONTRACT) {
+            var web3 = new Web3(RPC_URL);
             service = new FourteenNumbersClaimService(web3, contractAddress);
         }
 
@@ -37,21 +37,19 @@ namespace FourteenNumbers {
             }
         }
 
-        public async void Claim() {
-            var func = new ClaimFunction() {};
+        public async void PrepareForClaim(int salt) {
+            var func = new PrepareForClaimFunction() {
+                Salt = new BigInteger(salt)
+            };
+            executeTransaction(func.GetCallData());
+        }
 
-            byte[] abiEncoding = func.GetCallData();
-            Debug.Log("Claim: " + HexDump.Dump(abiEncoding));
 
-            TransactionReceiptResponse response = 
-                await Passport.Instance.ZkEvmSendTransactionWithConfirmation(
-                    new TransactionRequest() {
-                        to = contractAddress,
-                        data = "0x" + BitConverter.ToString(abiEncoding).Replace("-", "").ToLower(),
-                        value = "0"
-                    }
-                );
-            Debug.Log($"Transaction status: {response.status}, hash: {response.transactionHash}");
+        public async void Claim(int salt) {
+            var func = new ClaimFunction() {
+                Salt = new BigInteger(salt)
+            };
+            executeTransaction(func.GetCallData());
         }
 
 
