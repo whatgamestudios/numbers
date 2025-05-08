@@ -46,6 +46,7 @@ namespace FourteenNumbers {
         {
             return new List<Type>
             {
+                typeof(ClaimEventDTO),
             };
         }
 
@@ -84,7 +85,7 @@ namespace FourteenNumbers {
     [Function("prepareForClaim")]
     public class PrepareForClaimFunctionBase : FunctionMessage
     {
-        [Parameter("uint256", "", 1)]
+        [Parameter("uint256", "_salt", 1)]
         public virtual BigInteger Salt { get; set; }
 
     }
@@ -94,8 +95,29 @@ namespace FourteenNumbers {
     [Function("claimed")]
     public class ClaimFunctionBase : FunctionMessage
     {
-        [Parameter("uint256", "", 1)]
+        [Parameter("uint256", "_salt", 1)]
         public virtual BigInteger Salt { get; set; }
 
+    }
+
+    public partial class ClaimEventDTO : ClaimEventDTOBase { }
+
+    [Event("Claim")]
+    public class ClaimEventDTOBase : IEventDTO
+    {
+        [Parameter("address", "_gamePlayer", 1, true)]
+        public virtual string GamePlayer { get; set; }
+
+        [Parameter("address", "_erc1155Contract", 2, true)]
+        public virtual string Erc1155Contract { get; set; }
+
+        [Parameter("uint256", "_tokenId", 3, false)]
+        public virtual BigInteger TokenId { get; set; }
+
+        [Parameter("uint256", "_daysPlayed", 4, false)]
+        public virtual BigInteger DaysPlayed { get; set; }
+
+        [Parameter("uint256", "_claimedSoFar", 5, false)]
+        public virtual BigInteger ClaimedSoFar { get; set; }
     }
 } 

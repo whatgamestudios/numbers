@@ -37,7 +37,7 @@ namespace FourteenNumbers {
         }
 
 
-        public async void executeTransaction(byte[] abiEncoding) {
+        public async Task<(bool success, TransactionReceiptResponse receipt)> executeTransaction(byte[] abiEncoding) {
             LastTransactionStatus = TransactionStatus.Init;         
             // Debug.Log("ExeTx: " + HexDump.Dump(abiEncoding));
 
@@ -54,16 +54,19 @@ namespace FourteenNumbers {
 
                 if (response.status != "1") {
                     LastTransactionStatus = TransactionStatus.Failed;
+                    return (false, response);
                 }
                 else {
                     LastTransactionStatus = TransactionStatus.Success;
+                    return (true, response);
                 }
             }
             catch (System.Exception ex) {
                 LastTransactionStatus = TransactionStatus.Failed;
-                throw ex;
+                string errorMessage = $"Tx exception: {ex.Message}\nStack: {ex.StackTrace}";
+                AuditLog.Log(errorMessage);
+                return (false, null);
             }
-
         }
 
     }

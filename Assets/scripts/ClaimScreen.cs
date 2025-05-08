@@ -6,8 +6,7 @@ using TMPro;
 using System.Collections;
 using System.Threading.Tasks;
 using System;
-
-
+using System.Numerics;
 
 namespace FourteenNumbers {
 
@@ -20,14 +19,57 @@ namespace FourteenNumbers {
         FourteenNumbersClaimContract claimContract;
 
         string status;
-
-        private int state = 0;
-        private DateTime start;
+        private bool isProcessing = false;
+        private bool prepareComplete = false;
+        private bool claimComplete = false;
+        private bool hasError = false;
+        private string errorMessage = "";
+        private BigInteger tokenId = BigInteger.Zero;
 
         public void Start() {
             AuditLog.Log("Claim screen");
             status = "Preparing to claim";
             claimContract = new FourteenNumbersClaimContract();
+            StartClaimProcess();
+        }
+
+        private async void StartClaimProcess() {
+            if (isProcessing) return;
+            isProcessing = true;
+            hasError = false;
+            errorMessage = "";
+            prepareComplete = false;
+            claimComplete = false;
+            tokenId = BigInteger.Zero;
+
+            try {
+                int salt = 1; // TODO fix this
+                AuditLog.Log("Prepare for claim transaction");
+                bool prepareSuccess = await claimContract.PrepareForClaim(salt);
+                if (!prepareSuccess) {
+                    throw new Exception("Prepare for claim transaction failed");
+                }
+                prepareComplete = true;
+
+                // Wait for 5 seconds before claiming
+                await Task.Delay(5000);
+
+                AuditLog.Log("Claim transaction");
+                var (claimSuccess, claimedTokenId) = await claimContract.Claim(salt);
+                if (!claimSuccess) {
+                    throw new Exception("Claim transaction failed");
+                }
+                tokenId = claimedTokenId;
+                claimComplete = true;
+            }
+            catch (Exception ex) {
+                hasError = true;
+                errorMessage = $"Error: {ex.Message}";
+                AuditLog.Log($"Exception in claim process: {ex.Message}");
+            }
+            finally {
+                isProcessing = false;
+            }
         }
 
         public async void OnButtonClick(string buttonText) {
@@ -39,57 +81,27 @@ namespace FourteenNumbers {
             }
         }
 
-        public async Task Update() {
-            int salt = 1; // TODO fix this
-            switch (state) {
-                case 0:
-                    AuditLog.Log("Prepare for claim transaction");
-                    try {
-                        claimContract.PrepareForClaim(salt);
-                    } catch (System.Exception ex) {
-                        string errorMessage = $"Exception in Prepare for Claim: {ex.Message}\nStack Trace: {ex.StackTrace}";
-                        AuditLog.Log(errorMessage);
-                        status = status + " Error";
-                        state = 4;
-                    }
-                    state = 1;
-                    break;
-                case 1:
-                    // TOOD should check when transaction done
+        public void Update() {
+            if (hasError) {
+                info.text = status + " " + errorMessage;
+                return;
+            }
 
-                    start = DateTime.Now;
-                    timeOfLastDot = start;
-                    state = 2;
-                    break;
-                case 2:
-                    DateTime now = DateTime.Now;
-                    if ((now - timeOfLastDot).TotalMilliseconds > TIME_PER_DOT) {
-                        timeOfLastDot = now;
-                        status = status + ".";
-                    }
-                    info.text = status;
-
-                    if ((now - start).TotalMilliseconds > 5000) {
-                        state = 3;
-                    }
-                    break;
-                case 3:
-                    AuditLog.Log("Claim transaction");
-                    status = status + "claim transaction";
-                    info.text = status;
-
-                    try {
-                        claimContract.Claim(salt);
-                    } catch (System.Exception ex) {
-                        string errorMessage = $"Exception in Claim: {ex.Message}\nStack Trace: {ex.StackTrace}";
-                        AuditLog.Log(errorMessage);
-                        status = status + " Error";
-                    }
-                    state = 4;
-                    break;
-                case 4:
-                    // TOOD should check when transaction done
-                    break;
+            if (isProcessing) {
+                DateTime now = DateTime.Now;
+                if ((now - timeOfLastDot).TotalMilliseconds > TIME_PER_DOT) {
+                    timeOfLastDot = now;
+                    status = status + ".";
+                }
+                info.text = status;
+            }
+            else if (prepareComplete && !claimComplete) {
+                status = "Preparing to claim complete. Starting claim transaction...";
+                info.text = status;
+            }
+            else if (claimComplete) {
+                status = $"Claim process complete! Token ID: {tokenId}";
+                info.text = status;
             }
         }
     }
