@@ -52,12 +52,12 @@ namespace FourteenNumbers {
             var func = new ClaimFunction() {
                 Salt = new BigInteger(salt)
             };
-            var (success, receipt) = await executeTransaction(func.GetCallData());
+            var (success, response) = await executeTransaction(func.GetCallData());
             if (!success) {
                 return (false, BigInteger.Zero);
             }
 
-            var tokenId = await GetClaimEventTokenId(receipt);
+            var tokenId = await GetClaimEventTokenId(response);
             if (tokenId == BigInteger.Zero) {
                 AuditLog.Log("No Claim event found in transaction receipt");
                 return (false, BigInteger.Zero);
@@ -66,52 +66,55 @@ namespace FourteenNumbers {
             return (true, tokenId);
         }
 
-        public async Task<BigInteger> GetClaimEventTokenId(TransactionReceiptResponse receipt) {
-            if (receipt == null) {
-                AuditLog.Log("Transaction receipt is null");
+        public async Task<BigInteger> GetClaimEventTokenId(TransactionReceiptResponse response) {
+            if (response == null) {
+                AuditLog.Log("Transaction response is null");
                 return BigInteger.Zero;
             }
-            Debug.Log("hash: " + receipt.hash);
 
             try {
                 var web3 = new Web3(RPC_URL);
-                var fetchedReceipt = await web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(receipt.hash);
+                var fetchedReceipt = await web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(response.transactionHash);
                 
                 if (fetchedReceipt == null) {
                     AuditLog.Log("Failed to fetch transaction receipt from RPC");
                     return BigInteger.Zero;
                 }
 
-                if (fetchedReceipt.logs == null) {
+                var transferEventOutputs = fetchedReceipt.DecodeAllEvents<ClaimEventDTO>();
+                if (transferEventOutputs == null) {
                     AuditLog.Log("Transaction logs are null");
                     return BigInteger.Zero;
                 }
+                var transferEventOutput = transferEventOutputs[0];
+                return transferEventOutput.Event.TokenId;
 
-                // SHA3 hash of "Claim(address,address,uint256,uint256,uint256)"
-                const string CLAIM_EVENT_SIGNATURE = "0x7f4091b46c33e918a0f3aa42307641d17bb67029427a5369e54b353984238705";
 
-                var eventABI = service.ContractHandler.GetEvent<ClaimEventDTO>().EventABI;
-                var claimEvent = fetchedReceipt.logs
-                    .Where(log => log.topics != null && 
-                                 log.topics.Length > 0 && 
-                                 log.topics[0] == CLAIM_EVENT_SIGNATURE)
-                    .Select(log => {
-                        try {
-                            AuditLog.Log("Event data: " + log.data.ToString());
-                            return eventABI.DecodeEvent<ClaimEventDTO>(log);
-                        }
-                        catch (Exception ex) {
-                            AuditLog.Log($"Failed to decode event log: {ex.Message}");
-                            return null;
-                        }
-                    })
-                    .FirstOrDefault(e => e != null);
+                // // SHA3 hash of "Claim(address,address,uint256,uint256,uint256)"
+                // const string CLAIM_EVENT_SIGNATURE = "0x7f4091b46c33e918a0f3aa42307641d17bb67029427a5369e54b353984238705";
 
-                if (claimEvent == null) {
-                    AuditLog.Log("No valid Claim event found in transaction receipt");
-                }
+                // var eventABI = service.ContractHandler.GetEvent<ClaimEventDTO>().EventABI;
+                // var claimEvent = fetchedReceipt.Logs
+                //     .Where(log => log.topics != null && 
+                //                  log.topics.Length > 0 && 
+                //                  log.topics[0] == CLAIM_EVENT_SIGNATURE)
+                //     .Select(log => {
+                //         try {
+                //             AuditLog.Log("Event data: " + log.data.ToString());
+                //             return eventABI.DecodeEvent<ClaimEventDTO>(log);
+                //         }
+                //         catch (Exception ex) {
+                //             AuditLog.Log($"Failed to decode event log: {ex.Message}");
+                //             return null;
+                //         }
+                //     })
+                //     .FirstOrDefault(e => e != null);
 
-                return claimEvent.Event.TokenId;
+                // if (claimEvent == null) {
+                //     AuditLog.Log("No valid Claim event found in transaction receipt");
+                // }
+
+                //return claimEvent.Event.TokenId;
             }
             catch (Exception ex) {
                 AuditLog.Log($"Error processing Claim event: {ex.Message}");
