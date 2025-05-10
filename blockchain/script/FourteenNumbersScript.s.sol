@@ -7,6 +7,8 @@ import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {FourteenNumbersSolutions} from "../src/FourteenNumbersSolutions.sol";
 import {FourteenNumbersSolutionsV2} from "../src/FourteenNumbersSolutionsV2.sol";
 import {FourteenNumbersClaim} from "../src/FourteenNumbersClaim.sol";
+import {FourteenNumbersClaimV2} from "../src/FourteenNumbersClaimV2.sol";
+import {FourteenNumbersClaimV3} from "../src/FourteenNumbersClaimV3.sol";
 import {ImmutableERC1155} from "../src/immutable/ImmutableERC1155.sol";
 
 contract FourteenNumbersScript is Script {
@@ -96,5 +98,81 @@ contract FourteenNumbersScript is Script {
 
         console.logString("Deployment address");
         console.logAddress(address(proxy));
+    }
+
+    function grantTokenRole() public {
+        address admin = 0x575710d33d35d5274343ecb7A4Bc67D932303Fa2;
+        address tokenReserve = 0xD44D3C3EDC6D1dDBe429E6662Bd79F262DF25132;
+        bytes32 tokenRole = 0x544f4b454e5f524f4c4500000000000000000000000000000000000000000000;
+        address fourteenNumbersClaimMainnet = 0xb427336d725943BA4300EEC219587E207ad21146;
+
+        FourteenNumbersClaim claimContract = FourteenNumbersClaim(fourteenNumbersClaimMainnet);
+
+        vm.broadcast(admin);
+        claimContract.grantRole(tokenRole, tokenReserve);
+        console.logString("Done");
+    }
+
+
+    function populateTokens() public {
+        address tokenReserve = 0xD44D3C3EDC6D1dDBe429E6662Bd79F262DF25132;
+        address fourteenNumbersScenes = 0x29c3A209d8423f9A53Bf8AD39bBb85087a2A938B;
+        address fourteenNumbersClaim = 0xb427336d725943BA4300EEC219587E207ad21146;
+
+        ImmutableERC1155 erc1155 = ImmutableERC1155(fourteenNumbersScenes);
+
+        FourteenNumbersClaim.ClaimableToken memory token = FourteenNumbersClaim.ClaimableToken({
+            erc1155Contract: fourteenNumbersScenes,
+            tokenId: 100,
+            balance: 6,
+            percentage: 100
+        });
+
+        FourteenNumbersClaim claimContract = FourteenNumbersClaim(fourteenNumbersClaim);
+
+        vm.broadcast(tokenReserve);
+        erc1155.setApprovalForAll(address(fourteenNumbersClaim), true);
+
+        vm.broadcast(tokenReserve);
+        claimContract.addMoreTokens(token);
+        console.logString("Done");
+    }
+
+    function deployClaimV2() public {
+        vm.broadcast();
+        FourteenNumbersClaimV2 v2Impl = new FourteenNumbersClaimV2();
+        console.logString("Deployed v2");
+        console.logAddress(address(v2Impl));
+
+        address proxyDeployedAddress = 0xb427336d725943BA4300EEC219587E207ad21146;
+        address v2Address = address(v2Impl);
+
+        FourteenNumbersClaim fourteenNumbersClaim = FourteenNumbersClaim(proxyDeployedAddress);
+        bytes memory initData = abi.encodeWithSelector(FourteenNumbersSolutions.upgradeStorage.selector, bytes(""));
+
+        vm.broadcast();
+        fourteenNumbersClaim.upgradeToAndCall(v2Address, initData);
+
+        console.logString("Done");
+    }
+
+    function deployClaimV3() public {
+        vm.broadcast();
+        FourteenNumbersClaimV3 v3Impl = new FourteenNumbersClaimV3();
+        console.logString("Deployed v3");
+        console.logAddress(address(v3Impl));
+    }
+
+    function upgradeToClaimV3() public {
+        address proxyDeployedAddress = 0xb427336d725943BA4300EEC219587E207ad21146;
+        address v3Address = 0x92256FD8cC7F9D385A4A417cF90e0dC141c7e1D4;
+
+        FourteenNumbersClaim fourteenNumbersClaim = FourteenNumbersClaim(proxyDeployedAddress);
+        bytes memory initData = abi.encodeWithSelector(FourteenNumbersSolutions.upgradeStorage.selector, bytes(""));
+
+        vm.broadcast();
+        fourteenNumbersClaim.upgradeToAndCall(v3Address, initData);
+
+        console.logString("Done");
     }
 }
