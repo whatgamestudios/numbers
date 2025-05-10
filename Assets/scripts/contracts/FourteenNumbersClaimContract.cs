@@ -86,35 +86,12 @@ namespace FourteenNumbers {
                     AuditLog.Log("Transaction logs are null");
                     return BigInteger.Zero;
                 }
+                if (transferEventOutputs.Count == 0) {
+                    AuditLog.Log("No claim logs found in transaction");
+                    return BigInteger.Zero;
+                }
                 var transferEventOutput = transferEventOutputs[0];
                 return transferEventOutput.Event.TokenId;
-
-
-                // // SHA3 hash of "Claim(address,address,uint256,uint256,uint256)"
-                // const string CLAIM_EVENT_SIGNATURE = "0x7f4091b46c33e918a0f3aa42307641d17bb67029427a5369e54b353984238705";
-
-                // var eventABI = service.ContractHandler.GetEvent<ClaimEventDTO>().EventABI;
-                // var claimEvent = fetchedReceipt.Logs
-                //     .Where(log => log.topics != null && 
-                //                  log.topics.Length > 0 && 
-                //                  log.topics[0] == CLAIM_EVENT_SIGNATURE)
-                //     .Select(log => {
-                //         try {
-                //             AuditLog.Log("Event data: " + log.data.ToString());
-                //             return eventABI.DecodeEvent<ClaimEventDTO>(log);
-                //         }
-                //         catch (Exception ex) {
-                //             AuditLog.Log($"Failed to decode event log: {ex.Message}");
-                //             return null;
-                //         }
-                //     })
-                //     .FirstOrDefault(e => e != null);
-
-                // if (claimEvent == null) {
-                //     AuditLog.Log("No valid Claim event found in transaction receipt");
-                // }
-
-                //return claimEvent.Event.TokenId;
             }
             catch (Exception ex) {
                 AuditLog.Log($"Error processing Claim event: {ex.Message}");
