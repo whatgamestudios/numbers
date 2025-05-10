@@ -92,7 +92,7 @@ namespace FourteenNumbers {
 
     public partial class ClaimFunction : ClaimFunctionBase { }
 
-    [Function("claimed")]
+    [Function("claim")]
     public class ClaimFunctionBase : FunctionMessage
     {
         [Parameter("uint256", "_salt", 1)]

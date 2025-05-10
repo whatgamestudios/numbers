@@ -38,6 +38,7 @@ namespace FourteenNumbers {
             }
         }
 
+        // This function is no longer used in the claim contract.
         public async Task<bool> PrepareForClaim(int salt) {
             var func = new PrepareForClaimFunction() {
                 Salt = new BigInteger(salt)
@@ -46,7 +47,8 @@ namespace FourteenNumbers {
             return success;
         }
 
-        public async Task<(bool success, BigInteger tokenId)> Claim(int salt) {
+        public async Task<(bool success, BigInteger tokenId)> Claim() {
+            int salt = 0;
             var func = new ClaimFunction() {
                 Salt = new BigInteger(salt)
             };
@@ -55,52 +57,55 @@ namespace FourteenNumbers {
                 return (false, BigInteger.Zero);
             }
 
-            return (true, 103);
-            // var claimEvent = GetClaimEvent(receipt);
-            // if (claimEvent == null) {
-            //     AuditLog.Log("No Claim event found in transaction receipt");
-            //     return (false, BigInteger.Zero);
-            // }
+//            return (true, 103);
+            var tokenId = GetClaimEventTokenId(receipt);
+            if (tokenId == null) {
+                AuditLog.Log("No Claim event found in transaction receipt");
+                return (false, BigInteger.Zero);
+            }
 
-            // return (true, claimEvent.TokenId);
+            return (true, tokenId);
         }
 
-        // public ClaimEventDTO GetClaimEvent(TransactionReceiptResponse receipt) {
-        //     if (receipt == null || receipt.logs == null) {
-        //         Debug.LogError("Transaction receipt or logs are null");
-        //         return null;
-        //     }
+        public BigInteger GetClaimEventTokenId(TransactionReceiptResponse receipt) {
+            if (receipt == null || receipt.logs == null) {
+                AuditLog.Log("Transaction receipt or logs are null");
+                return BigInteger.Zero;
+            }
 
-        //     try {
-        //         // SHA3 hash of "Claim(address,address,uint256,uint256,uint256)"
-        //         const string CLAIM_EVENT_SIGNATURE = "0x7f4091b46c33e918a0f3aa42307641d17bb67029427a5369e54b353984238705";
+            try {
+                // SHA3 hash of "Claim(address,address,uint256,uint256,uint256)"
+                const string CLAIM_EVENT_SIGNATURE = "0x7f4091b46c33e918a0f3aa42307641d17bb67029427a5369e54b353984238705";
 
-        //         var eventABI = service.ContractHandler.GetEvent<ClaimEventDTO>().EventABI;
-        //         var claimEvent = receipt.logs
-        //             .Where(log => log.topics != null && 
-        //                          log.topics.Length > 0 && 
-        //                          log.topics[0] == CLAIM_EVENT_SIGNATURE)
-        //             .Select(log => {
-        //                 try {
-        //                     return eventABI.DecodeEvent<ClaimEventDTO>(log);
-        //                 }
-        //                 catch (Exception ex) {
-        //                     Debug.LogError($"Failed to decode event log: {ex.Message}");
-        //                     return null;
-        //                 }
-        //             })
-        //             .FirstOrDefault(e => e != null);
+                var eventABI = service.ContractHandler.GetEvent<ClaimEventDTO>().EventABI;
+                var claimEvent = receipt.logs
+                    .Where(log => log.topics != null && 
+                                 log.topics.Length > 0 && 
+                                 log.topics[0] == CLAIM_EVENT_SIGNATURE)
+                    .Select(log => {
+                        try {
+                            
+                            Nethereum.RPC.Eth.DTOs.FilterLog flog = new Nethereum.RPC.Eth.DTOs.FilterLog();
+                            flog.Data = log.data.ToString();
+                            return eventABI.DecodeEvent<ClaimEventDTO>(flog);
+                        }
+                        catch (Exception ex) {
+                            AuditLog.Log($"Failed to decode event log: {ex.Message}");
+                            return null;
+                        }
+                    })
+                    .FirstOrDefault(e => e != null);
 
-        //         if (claimEvent == null) {
-        //             Debug.LogWarning("No valid Claim event found in transaction receipt");
-        //         }
+                if (claimEvent == null) {
+                    AuditLog.Log("No valid Claim event found in transaction receipt");
+                }
 
-        //         return claimEvent;
-        //     }
-        //     catch (Exception ex) {
-        //         Debug.LogError($"Error processing Claim event: {ex.Message}");
-        //         return null;
-        //     }
-        // }
+                return claimEvent.Event.TokenId;
+            }
+            catch (Exception ex) {
+                AuditLog.Log($"Error processing Claim event: {ex.Message}");
+                return BigInteger.Zero;
+            }
+        }
     }
 } 

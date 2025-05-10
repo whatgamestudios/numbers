@@ -20,51 +20,40 @@ namespace FourteenNumbers {
 
         string status;
         private bool isProcessing = false;
-        private bool prepareComplete = false;
-        private bool claimComplete = false;
         private bool hasError = false;
         private string errorMessage = "";
         private BigInteger tokenId = BigInteger.Zero;
 
         public void Start() {
             AuditLog.Log("Claim screen");
-            status = "Preparing to claim";
+            status = "Claiming";
             claimContract = new FourteenNumbersClaimContract();
             StartClaimProcess();
         }
 
         private async void StartClaimProcess() {
-            if (isProcessing) return;
+            if (isProcessing) {
+                return;
+            }
             isProcessing = true;
             hasError = false;
             errorMessage = "";
-            prepareComplete = false;
-            claimComplete = false;
             tokenId = BigInteger.Zero;
 
             try {
-                int salt = 1; // TODO fix this
-                AuditLog.Log("Prepare for claim transaction");
-                bool prepareSuccess = await claimContract.PrepareForClaim(salt);
-                if (!prepareSuccess) {
-                    throw new Exception("Prepare for claim transaction failed");
-                }
-                prepareComplete = true;
-
-                // Wait for 5 seconds before claiming
-                await Task.Delay(5000);
-
                 AuditLog.Log("Claim transaction");
-                var (claimSuccess, claimedTokenId) = await claimContract.Claim(salt);
+                var (claimSuccess, claimedTokenId) = await claimContract.Claim();
                 if (!claimSuccess) {
-                    throw new Exception("Claim transaction failed");
+                    hasError = true;
+                    errorMessage = "Error during claim: type 1";
                 }
-                tokenId = claimedTokenId;
-                claimComplete = true;
+                else {
+                    tokenId = claimedTokenId;
+                }
             }
             catch (Exception ex) {
                 hasError = true;
-                errorMessage = $"Error: {ex.Message}";
+                errorMessage = "Error during claim: type 2";
                 AuditLog.Log($"Exception in claim process: {ex.Message}");
             }
             finally {
@@ -83,7 +72,7 @@ namespace FourteenNumbers {
 
         public void Update() {
             if (hasError) {
-                info.text = status + " " + errorMessage;
+                info.text = errorMessage;
                 return;
             }
 
@@ -95,11 +84,7 @@ namespace FourteenNumbers {
                 }
                 info.text = status;
             }
-            else if (prepareComplete && !claimComplete) {
-                status = "Preparing to claim complete. Starting claim transaction...";
-                info.text = status;
-            }
-            else if (claimComplete) {
+            else {
                 status = $"Claim process complete! Token ID: {tokenId}";
                 info.text = status;
             }
