@@ -269,7 +269,7 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
      * @dev Register for generating a random value. 
      * @param _salt A random value specified by the game app.
      */
-    function prepareForClaim(uint256 _salt) external whenNotPaused() {
+    function prepareForClaim(uint256 _salt) external virtual whenNotPaused() {
         bytes32 randRequestId = keccak256(abi.encodePacked(msg.sender, _salt));
         randomRequest[randRequestId] = block.number + RANDOM_DELAY - 1;
     }
@@ -278,7 +278,7 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
      * @notice Claim an NFT. 
      * @param _salt A random value specified by the game app in the prepareForClaim function.
      */
-    function claim(uint256 _salt) external whenNotPaused() {
+    function claim(uint256 _salt) external virtual whenNotPaused() {
         // Claims are only allowed from passport wallets.
         if (!isPassport(msg.sender)) {
             revert ClaimNonPassportAccount(msg.sender);
@@ -435,7 +435,7 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
     /**
      * @notice Check if days played is DAYS_PLAYED_TO_CLAIM more than when the game player previously claimed.
      */
-    function _checkAndUpdateClaimedDay() private returns (uint256, uint256) {
+    function _checkAndUpdateClaimedDay() internal returns (uint256, uint256) {
         uint256 daysPlayed;
         (, , , daysPlayed) = fourteenNumbersSolutions.stats(msg.sender);
         uint256 claimedSoFar = claimedDay[msg.sender];
@@ -482,7 +482,7 @@ contract FourteenNumbersClaim is AccessControlEnumerableUpgradeable, PausableUpg
      * @notice Determine the NFT to return based on the random value.
      * @param _randomValue Value that matches a percentage between 0 and 10000 (0% and 100%).
      */
-    function _determineRandomNft(uint256 _randomValue) private returns (address, uint256) {
+    function _determineRandomNft(uint256 _randomValue) internal returns (address, uint256) {
         uint256 infiniteToken = INVALID;
         uint256 runningTotalPercentage = 0;
 
