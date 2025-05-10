@@ -3,6 +3,7 @@ using UnityEngine;
 using System;
 using System.Numerics;
 using System.Threading.Tasks;
+using System.Linq;
 using Nethereum.Web3;
 using Nethereum.Contracts;
 using Nethereum.Web3.Accounts;
@@ -15,12 +16,12 @@ using Immutable.Passport.Model;
 
 namespace FourteenNumbers {
 
-    public class FourteenNumbersClaimContract {
+    public class FourteenNumbersClaimContract : FourteenNumbersContract {
         private FourteenNumbersClaimService service;
-        private static string contractAddress = "0xb427336d725943BA4300EEC219587E207ad21146";
+        public const string FOURTEEN_NUMBERS_CLAIM_CONTRACT = "0xb427336d725943BA4300EEC219587E207ad21146";
 
-        public FourteenNumbersClaimContract() {
-            var web3 = new Web3("https://rpc.immutable.com/");
+        public FourteenNumbersClaimContract() : base(FOURTEEN_NUMBERS_CLAIM_CONTRACT) {
+            var web3 = new Web3(RPC_URL);
             service = new FourteenNumbersClaimService(web3, contractAddress);
         }
 
@@ -37,23 +38,74 @@ namespace FourteenNumbers {
             }
         }
 
-        public async void Claim() {
-            var func = new ClaimFunction() {};
-
-            byte[] abiEncoding = func.GetCallData();
-            Debug.Log("Claim: " + HexDump.Dump(abiEncoding));
-
-            TransactionReceiptResponse response = 
-                await Passport.Instance.ZkEvmSendTransactionWithConfirmation(
-                    new TransactionRequest() {
-                        to = contractAddress,
-                        data = "0x" + BitConverter.ToString(abiEncoding).Replace("-", "").ToLower(),
-                        value = "0"
-                    }
-                );
-            Debug.Log($"Transaction status: {response.status}, hash: {response.transactionHash}");
+        // This function is no longer used in the claim contract.
+        public async Task<bool> PrepareForClaim(int salt) {
+            var func = new PrepareForClaimFunction() {
+                Salt = new BigInteger(salt)
+            };
+            var (success, _) = await executeTransaction(func.GetCallData());
+            return success;
         }
 
+        public async Task<(bool success, BigInteger tokenId)> Claim() {
+            int salt = 0;
+            var func = new ClaimFunction() {
+                Salt = new BigInteger(salt)
+            };
+            var (success, receipt) = await executeTransaction(func.GetCallData());
+            if (!success) {
+                return (false, BigInteger.Zero);
+            }
 
+//            return (true, 103);
+            var tokenId = GetClaimEventTokenId(receipt);
+            if (tokenId == null) {
+                AuditLog.Log("No Claim event found in transaction receipt");
+                return (false, BigInteger.Zero);
+            }
+
+            return (true, tokenId);
+        }
+
+        public BigInteger GetClaimEventTokenId(TransactionReceiptResponse receipt) {
+            if (receipt == null || receipt.logs == null) {
+                AuditLog.Log("Transaction receipt or logs are null");
+                return BigInteger.Zero;
+            }
+
+            try {
+                // SHA3 hash of "Claim(address,address,uint256,uint256,uint256)"
+                const string CLAIM_EVENT_SIGNATURE = "0x7f4091b46c33e918a0f3aa42307641d17bb67029427a5369e54b353984238705";
+
+                var eventABI = service.ContractHandler.GetEvent<ClaimEventDTO>().EventABI;
+                var claimEvent = receipt.logs
+                    .Where(log => log.topics != null && 
+                                 log.topics.Length > 0 && 
+                                 log.topics[0] == CLAIM_EVENT_SIGNATURE)
+                    .Select(log => {
+                        try {
+                            
+                            Nethereum.RPC.Eth.DTOs.FilterLog flog = new Nethereum.RPC.Eth.DTOs.FilterLog();
+                            flog.Data = log.data.ToString();
+                            return eventABI.DecodeEvent<ClaimEventDTO>(flog);
+                        }
+                        catch (Exception ex) {
+                            AuditLog.Log($"Failed to decode event log: {ex.Message}");
+                            return null;
+                        }
+                    })
+                    .FirstOrDefault(e => e != null);
+
+                if (claimEvent == null) {
+                    AuditLog.Log("No valid Claim event found in transaction receipt");
+                }
+
+                return claimEvent.Event.TokenId;
+            }
+            catch (Exception ex) {
+                AuditLog.Log($"Error processing Claim event: {ex.Message}");
+                return BigInteger.Zero;
+            }
+        }
     }
 } 
