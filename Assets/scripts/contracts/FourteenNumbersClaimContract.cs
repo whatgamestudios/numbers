@@ -57,9 +57,8 @@ namespace FourteenNumbers {
                 return (false, BigInteger.Zero);
             }
 
-//            return (true, 103);
-            var tokenId = GetClaimEventTokenId(receipt);
-            if (tokenId == null) {
+            var tokenId = await GetClaimEventTokenId(receipt);
+            if (tokenId == BigInteger.Zero) {
                 AuditLog.Log("No Claim event found in transaction receipt");
                 return (false, BigInteger.Zero);
             }
@@ -67,27 +66,39 @@ namespace FourteenNumbers {
             return (true, tokenId);
         }
 
-        public BigInteger GetClaimEventTokenId(TransactionReceiptResponse receipt) {
-            if (receipt == null || receipt.logs == null) {
-                AuditLog.Log("Transaction receipt or logs are null");
+        public async Task<BigInteger> GetClaimEventTokenId(TransactionReceiptResponse receipt) {
+            if (receipt == null) {
+                AuditLog.Log("Transaction receipt is null");
                 return BigInteger.Zero;
             }
+            Debug.Log("hash: " + receipt.hash);
 
             try {
+                var web3 = new Web3(RPC_URL);
+                var fetchedReceipt = await web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(receipt.hash);
+                
+                if (fetchedReceipt == null) {
+                    AuditLog.Log("Failed to fetch transaction receipt from RPC");
+                    return BigInteger.Zero;
+                }
+
+                if (fetchedReceipt.logs == null) {
+                    AuditLog.Log("Transaction logs are null");
+                    return BigInteger.Zero;
+                }
+
                 // SHA3 hash of "Claim(address,address,uint256,uint256,uint256)"
                 const string CLAIM_EVENT_SIGNATURE = "0x7f4091b46c33e918a0f3aa42307641d17bb67029427a5369e54b353984238705";
 
                 var eventABI = service.ContractHandler.GetEvent<ClaimEventDTO>().EventABI;
-                var claimEvent = receipt.logs
+                var claimEvent = fetchedReceipt.logs
                     .Where(log => log.topics != null && 
                                  log.topics.Length > 0 && 
                                  log.topics[0] == CLAIM_EVENT_SIGNATURE)
                     .Select(log => {
                         try {
-                            
-                            Nethereum.RPC.Eth.DTOs.FilterLog flog = new Nethereum.RPC.Eth.DTOs.FilterLog();
-                            flog.Data = log.data.ToString();
-                            return eventABI.DecodeEvent<ClaimEventDTO>(flog);
+                            AuditLog.Log("Event data: " + log.data.ToString());
+                            return eventABI.DecodeEvent<ClaimEventDTO>(log);
                         }
                         catch (Exception ex) {
                             AuditLog.Log($"Failed to decode event log: {ex.Message}");
