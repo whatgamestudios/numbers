@@ -50,7 +50,7 @@ namespace FourteenNumbers {
                             value = "0"
                         }
                     );
-                Debug.Log($"Transaction status: {response.status}, hash: {response.transactionHash}");
+                AuditLog.Log($"Transaction status: {response.status}, hash: {response.transactionHash}");
 
                 if (response.status != "1") {
                     LastTransactionStatus = TransactionStatus.Failed;

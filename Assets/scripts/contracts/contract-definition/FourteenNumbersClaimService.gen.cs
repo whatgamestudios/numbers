@@ -102,13 +102,13 @@ namespace FourteenNumbers {
 
     public partial class ClaimEventDTO : ClaimEventDTOBase { }
 
-    [Event("Claim")]
+    [Event("Claimed")]
     public class ClaimEventDTOBase : IEventDTO
     {
-        [Parameter("address", "_gamePlayer", 1, true)]
+        [Parameter("address", "_gamePlayer", 1, false)]
         public virtual string GamePlayer { get; set; }
 
-        [Parameter("address", "_erc1155Contract", 2, true)]
+        [Parameter("address", "_erc1155Contract", 2, false)]
         public virtual string Erc1155Contract { get; set; }
 
         [Parameter("uint256", "_tokenId", 3, false)]

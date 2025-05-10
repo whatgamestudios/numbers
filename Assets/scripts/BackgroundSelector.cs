@@ -334,7 +334,7 @@ namespace FourteenNumbers {
                 claimButton.interactable = true;
             }
             else {
-                int daysBeforeClaim = 30 - daysPlayed;
+                int daysBeforeClaim = 30 - net;
                 claimButtonText.text = daysBeforeClaim.ToString() + " days until claim";
                 claimButtonText.fontSize = 60;
             }
