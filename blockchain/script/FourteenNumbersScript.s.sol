@@ -175,4 +175,17 @@ contract FourteenNumbersScript is Script {
 
         console.logString("Done");
     }
+
+
+    function transferFromReserve() public {
+        address tokenReserve = 0xD44D3C3EDC6D1dDBe429E6662Bd79F262DF25132;
+        address fourteenNumbersScenes = 0x29c3A209d8423f9A53Bf8AD39bBb85087a2A938B;
+        address recipient = 0x44599A0afa551F3EB487A9E5717e67dB198f3125;
+
+        ImmutableERC1155 erc1155 = ImmutableERC1155(fourteenNumbersScenes);
+
+        vm.broadcast(tokenReserve);
+        erc1155.safeTransferFrom(tokenReserve, recipient, 102, 1, bytes(""));
+        console.logString("Done");
+    }
 }
