@@ -54,10 +54,12 @@ namespace FourteenNumbers {
                             PassportStore.SetLoggedInChecked();
                         }
                         else {
+                            AuditLog.Log("PassportLogin: Login using cached credentials failed. Going to login screen");
                             SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
                         }
                     }
                     else {
+                        AuditLog.Log("PassportLogin: Does not have cached credentials. Going to login screen");
                         SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
                     }
                 }
