@@ -176,7 +176,6 @@ contract FourteenNumbersScript is Script {
         console.logString("Done");
     }
 
-
     function transferFromReserve() public {
         address tokenReserve = 0xD44D3C3EDC6D1dDBe429E6662Bd79F262DF25132;
         address fourteenNumbersScenes = 0x29c3A209d8423f9A53Bf8AD39bBb85087a2A938B;

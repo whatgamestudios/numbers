@@ -24,7 +24,7 @@ namespace FourteenNumbers {
         private GameObject[] panelOwnedNfts;
         private ScrollRect scrollRect;
 
-        private FourteenNumbersContract fourteenNumbersContracts = new FourteenNumbersContract();
+        private FourteenNumbersSolutionsContract fourteenNumbersContracts = new FourteenNumbersSolutionsContract();
         private FourteenNumbersClaimContract fourteenNumbersClaimContracts = new FourteenNumbersClaimContract();
         private Coroutine loadRoutineDaysPlayed;
         private Coroutine loadRoutineDaysClaimed;
@@ -61,17 +61,7 @@ namespace FourteenNumbers {
 
         public void OnButtonClick(string buttonText) {
             if (buttonText == "Claim") {
-                AuditLog.Log("Scene selector: Claim");
-                try {
-                    FourteenNumbersClaimContract claimContract = new FourteenNumbersClaimContract();
-                    claimContract.Claim();
-
-                    MessagePass.SetErrorMsg("Claim not implemented yet");
-                    SceneManager.LoadScene("ErrorScene", LoadSceneMode.Additive);
-                } catch (System.Exception ex) {
-                    string errorMessage = $"Exception in CheckIn: {ex.Message}\nStack Trace: {ex.StackTrace}";
-                    AuditLog.Log(errorMessage);
-                }
+                SceneManager.LoadScene("ClaimScene", LoadSceneMode.Additive);
             }
             else {
                 // One of the image buttons has been pressed.
@@ -344,8 +334,8 @@ namespace FourteenNumbers {
                 claimButton.interactable = true;
             }
             else {
-                int daysBeforeClaim = 30 - daysPlayed;
-                claimButtonText.text = net.ToString() + " days until claim";
+                int daysBeforeClaim = 30 - net;
+                claimButtonText.text = daysBeforeClaim.ToString() + " days until claim";
                 claimButtonText.fontSize = 60;
             }
         }

@@ -15,7 +15,7 @@ namespace FourteenNumbers {
 
         public bool LoadedBestScore { get; private set; }
 
-        private FourteenNumbersContract fourteenNumbersContracts = new FourteenNumbersContract();
+        private FourteenNumbersSolutionsContract fourteenNumbersContracts = new FourteenNumbersSolutionsContract();
         private Coroutine loadRoutine;
 
 

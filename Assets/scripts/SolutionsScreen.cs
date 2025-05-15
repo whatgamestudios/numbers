@@ -101,7 +101,7 @@ namespace FourteenNumbers {
             yield return new WaitForSeconds(0f);
         }
         async void GetResult() {
-            FourteenNumbersContract fourteenNumbersContracts = new FourteenNumbersContract();
+            FourteenNumbersSolutionsContract fourteenNumbersContracts = new FourteenNumbersSolutionsContract();
             SolutionsOutputDTO result = await fourteenNumbersContracts.GetSolution(gameDayDisplaying);
 
             string player = result.Player;

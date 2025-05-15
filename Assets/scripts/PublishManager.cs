@@ -19,7 +19,7 @@ namespace FourteenNumbers {
                     uint gameDay = (uint) Stats.GetLastGameDay();
                     (string sol1, string sol2, string sol3) = Stats.GetSolutions();
 
-                    FourteenNumbersContract contract = new FourteenNumbersContract();
+                    FourteenNumbersSolutionsContract contract = new FourteenNumbersSolutionsContract();
                     contract.SubmitBestScore(gameDay, sol1, sol2, sol3);
 
                     SceneManager.LoadScene("PublishScene", LoadSceneMode.Additive);

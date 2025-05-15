@@ -26,65 +26,20 @@ namespace FourteenNumbers {
             Failed = 2
         }
 
-        private FourteenNumbersSolutionsService service;
+        public const string RPC_URL = "https://rpc.immutable.com/";
 
-        private static string contractAddress = "0xe2E762770156FfE253C49Da6E008b4bECCCf2812";
-
+        public static string contractAddress;
 
         public static TransactionStatus LastTransactionStatus = TransactionStatus.Init;
 
-        public FourteenNumbersContract() {
-            var web3 = new Web3("https://rpc.immutable.com/");
-            service = new FourteenNumbersSolutionsService(web3, contractAddress);
+        public FourteenNumbersContract(string contractAddr) {
+            contractAddress = contractAddr;
         }
 
 
-        public async Task<uint> GetBestScore(uint gameDay) {
-            SolutionsOutputDTO solution;
-            solution = await service.SolutionsQueryAsync(gameDay);
-            BigInteger bestScoreBigInt = solution.Points;
-            if (bestScoreBigInt < 0 || bestScoreBigInt > uint.MaxValue) {
-                Debug.LogError($"Number {bestScoreBigInt} is outside uint range");
-                // Use 7 to indicate an error.
-                return 7;
-            }
-            else {
-                return (uint) solution.Points;
-            }
-        }
-
-        public async Task<SolutionsOutputDTO> GetSolution(uint gameDay) {
-            return await service.SolutionsQueryAsync(gameDay);
-        }
-
-
-        public async Task<uint> GetDaysPlayed(string address) {
-            StatsOutputDTO stats = await service.StatsQueryAsync(address);
-            BigInteger daysPlayedInt = stats.DaysPlayed;
-            if (daysPlayedInt < 0 || daysPlayedInt > uint.MaxValue) {
-                Debug.LogError($"Number {daysPlayedInt} is outside uint range");
-                // Use 7 to indicate an error.
-                return 7;
-            }
-            else {
-                return (uint) stats.DaysPlayed;
-            }
-        }
-
-
-        public async void SubmitBestScore(uint gameDay, string sol1, string sol2, string sol3) {
+        public async Task<(bool success, TransactionReceiptResponse receipt)> executeTransaction(byte[] abiEncoding) {
             LastTransactionStatus = TransactionStatus.Init;         
-
-            StoreResultsFunction func = new StoreResultsFunction() {
-                GameDay = gameDay,
-                Sol1 = Encoding.UTF8.GetBytes(sol1),
-                Sol2 = Encoding.UTF8.GetBytes(sol2),
-                Sol3 = Encoding.UTF8.GetBytes(sol3),
-                Store = false,
-            };
-
-            byte[] abiEncoding = func.GetCallData();
-            Debug.Log("Publish: " + HexDump.Dump(abiEncoding));
+            // Debug.Log("ExeTx: " + HexDump.Dump(abiEncoding));
 
             try {
                 TransactionReceiptResponse response = 
@@ -95,39 +50,25 @@ namespace FourteenNumbers {
                             value = "0"
                         }
                     );
-                Debug.Log($"Transaction hash: {response.transactionHash}");
+                AuditLog.Log($"Transaction status: {response.status}, hash: {response.transactionHash}");
 
                 if (response.status != "1") {
                     LastTransactionStatus = TransactionStatus.Failed;
+                    return (false, response);
                 }
                 else {
                     LastTransactionStatus = TransactionStatus.Success;
+                    return (true, response);
                 }
             }
             catch (System.Exception ex) {
                 LastTransactionStatus = TransactionStatus.Failed;
-                throw ex;
+                string errorMessage = $"Tx exception: {ex.Message}\nStack: {ex.StackTrace}";
+                AuditLog.Log(errorMessage);
+                return (false, null);
             }
         }
 
-        public async void SubmitCheckIn(uint gameDay) {
-            var func = new CheckInFunction() {
-                GameDay = gameDay,
-            };
-
-            byte[] abiEncoding = func.GetCallData();
-            Debug.Log("CheckIn: " + HexDump.Dump(abiEncoding));
-
-            TransactionReceiptResponse response = 
-                await Passport.Instance.ZkEvmSendTransactionWithConfirmation(
-                    new TransactionRequest() {
-                        to = contractAddress,
-                        data = "0x" + BitConverter.ToString(abiEncoding).Replace("-", "").ToLower(),
-                        value = "0"
-                    }
-                );
-            Debug.Log($"Transaction status: {response.status}, hash: {response.transactionHash}");
-        }
     }
 }
 

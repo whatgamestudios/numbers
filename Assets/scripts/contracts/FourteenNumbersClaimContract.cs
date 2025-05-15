@@ -3,6 +3,7 @@ using UnityEngine;
 using System;
 using System.Numerics;
 using System.Threading.Tasks;
+using System.Linq;
 using Nethereum.Web3;
 using Nethereum.Contracts;
 using Nethereum.Web3.Accounts;
@@ -15,12 +16,12 @@ using Immutable.Passport.Model;
 
 namespace FourteenNumbers {
 
-    public class FourteenNumbersClaimContract {
+    public class FourteenNumbersClaimContract : FourteenNumbersContract {
         private FourteenNumbersClaimService service;
-        private static string contractAddress = "0xb427336d725943BA4300EEC219587E207ad21146";
+        public const string FOURTEEN_NUMBERS_CLAIM_CONTRACT = "0xb427336d725943BA4300EEC219587E207ad21146";
 
-        public FourteenNumbersClaimContract() {
-            var web3 = new Web3("https://rpc.immutable.com/");
+        public FourteenNumbersClaimContract() : base(FOURTEEN_NUMBERS_CLAIM_CONTRACT) {
+            var web3 = new Web3(RPC_URL);
             service = new FourteenNumbersClaimService(web3, contractAddress);
         }
 
@@ -37,23 +38,65 @@ namespace FourteenNumbers {
             }
         }
 
-        public async void Claim() {
-            var func = new ClaimFunction() {};
-
-            byte[] abiEncoding = func.GetCallData();
-            Debug.Log("Claim: " + HexDump.Dump(abiEncoding));
-
-            TransactionReceiptResponse response = 
-                await Passport.Instance.ZkEvmSendTransactionWithConfirmation(
-                    new TransactionRequest() {
-                        to = contractAddress,
-                        data = "0x" + BitConverter.ToString(abiEncoding).Replace("-", "").ToLower(),
-                        value = "0"
-                    }
-                );
-            Debug.Log($"Transaction status: {response.status}, hash: {response.transactionHash}");
+        // This function is no longer used in the claim contract.
+        public async Task<bool> PrepareForClaim(int salt) {
+            var func = new PrepareForClaimFunction() {
+                Salt = new BigInteger(salt)
+            };
+            var (success, _) = await executeTransaction(func.GetCallData());
+            return success;
         }
 
+        public async Task<(bool success, BigInteger tokenId)> Claim() {
+            int salt = 0;
+            var func = new ClaimFunction() {
+                Salt = new BigInteger(salt)
+            };
+            var (success, response) = await executeTransaction(func.GetCallData());
+            if (!success) {
+                return (false, BigInteger.Zero);
+            }
 
+            var tokenId = await GetClaimEventTokenId(response);
+            if (tokenId == BigInteger.Zero) {
+                AuditLog.Log("No Claim event found in transaction receipt");
+                return (false, BigInteger.Zero);
+            }
+
+            return (true, tokenId);
+        }
+
+        public async Task<BigInteger> GetClaimEventTokenId(TransactionReceiptResponse response) {
+            if (response == null) {
+                AuditLog.Log("Transaction response is null");
+                return BigInteger.Zero;
+            }
+
+            try {
+                var web3 = new Web3(RPC_URL);
+                var fetchedReceipt = await web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(response.transactionHash);
+                
+                if (fetchedReceipt == null) {
+                    AuditLog.Log("Failed to fetch transaction receipt from RPC");
+                    return BigInteger.Zero;
+                }
+
+                var transferEventOutputs = fetchedReceipt.DecodeAllEvents<ClaimEventDTO>();
+                if (transferEventOutputs == null) {
+                    AuditLog.Log("Transaction logs are null");
+                    return BigInteger.Zero;
+                }
+                if (transferEventOutputs.Count == 0) {
+                    AuditLog.Log("No claim logs found in transaction");
+                    return BigInteger.Zero;
+                }
+                var transferEventOutput = transferEventOutputs[0];
+                return transferEventOutput.Event.TokenId;
+            }
+            catch (Exception ex) {
+                AuditLog.Log($"Error processing Claim event: {ex.Message}");
+                return BigInteger.Zero;
+            }
+        }
     }
 } 
