@@ -119,26 +119,23 @@ namespace FourteenNumbers {
 
         string help = "Use each number once to find three equations for the target number";
 
-        public async Task Start() {
-            AuditLog.Log("Game Play screen");
-            Debug.Log("Game Scene Start");
+        public void Start() {
+            AuditLog.Log("Game Play screen start");
             int daysPlayed = Stats.GetNumDaysPlayed();
             newPlayer = daysPlayed < 2;
             gameDayInt = Timeline.GameDay();
-
-            bool isLoggedIn = PassportStore.IsLoggedIn();
-            if (isLoggedIn) {
-                await PassportLogin.Init();
-            }
 
             startANewDay(gameDayInt);
         }
 
         public async Task OnApplicationFocus(bool hasFocus) {
-            Debug.Log("OnApplicationFocus: " + hasFocus);
+            AuditLog.Log("Game Play screen has focus: " + hasFocus);
             if (hasFocus) {
+                // Check network connectivity
+                bool hasNetwork =  Application.internetReachability != NetworkReachability.NotReachable;
                 bool isLoggedIn = PassportStore.IsLoggedIn();
-                if (isLoggedIn) {
+                if (isLoggedIn && hasNetwork) {
+                    await PassportLogin.Init();
                     await PassportLogin.Login();
                 }
                 uint gameDayNow = Timeline.GameDay();

@@ -63,7 +63,9 @@ namespace FourteenNumbers {
 
         public async void OnButtonClick(string buttonText) {
             if (buttonText == "Back") {
-                await SceneManager.UnloadSceneAsync("CLaimScene");
+                // Rather than unload the scene, jump to the scene. 
+                // This will force an asset reload.
+                SceneManager.LoadScene("SolutionsScene", LoadSceneMode.Single);
             }
             else {
                 Debug.Log("Claim screen: Unknown button: " + buttonText);
