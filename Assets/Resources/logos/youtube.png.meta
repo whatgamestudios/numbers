@@ -1,22 +1,31 @@
 fileFormatVersion: 2
-guid: a33bdff49e5d84788bb33c89881d40a6
+guid: 69fd00246e7054eb090d6cfef4773e23
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -9197134654715703934
-    second: test1_0
+      213: 5609307360589900044
+    second: youtube_0
   - first:
-      213: -3245826588181596406
-    second: test1_1
+      213: -8104178488866380549
+    second: youtube_1
   - first:
-      213: -5991360266443149873
-    second: test1_2
+      213: 3718851154630999285
+    second: youtube_2
   - first:
-      213: 8818229234267686252
-    second: test1_3
+      213: -2157368818163323662
+    second: youtube_3
   - first:
-      213: 8818498191572356106
-    second: test1_4
+      213: 4467050475149823618
+    second: youtube_4
+  - first:
+      213: -326380025059585771
+    second: youtube_5
+  - first:
+      213: 5674244420930711870
+    second: youtube_6
+  - first:
+      213: 8188409375727051681
+    second: youtube_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -109,6 +118,19 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
     buildTarget: iOS
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -125,13 +147,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: test1_0
+      name: youtube_0
       rect:
         serializedVersion: 2
-        x: 497
-        y: 1110
-        width: 115
-        height: 174
+        x: 0
+        y: 0
+        width: 255
+        height: 178
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -140,19 +162,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 28d4c3292c63d5080800000000000000
-      internalID: -9197134654715703934
+      spriteID: c09e1f7335348dd40800000000000000
+      internalID: 5609307360589900044
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: test1_1
+      name: youtube_1
       rect:
         serializedVersion: 2
-        x: 620
-        y: 1110
-        width: 81
+        x: 277
+        y: 12
+        width: 85
         height: 155
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -162,20 +184,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a07fae84ae184f2d0800000000000000
-      internalID: -3245826588181596406
+      spriteID: bf4e1c62a9c288f80800000000000000
+      internalID: -8104178488866380549
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: test1_2
+      name: youtube_2
       rect:
         serializedVersion: 2
-        x: 710
-        y: 1110
-        width: 110
-        height: 123
+        x: 352
+        y: 10
+        width: 73
+        height: 118
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -184,20 +206,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: fcd244dc4996adca0800000000000000
-      internalID: -5991360266443149873
+      spriteID: 5fcf45cfb630c9330800000000000000
+      internalID: 3718851154630999285
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: test1_3
+      name: youtube_3
       rect:
         serializedVersion: 2
-        x: 827
-        y: 1113
-        width: 92
-        height: 120
+        x: 434
+        y: 10
+        width: 71
+        height: 116
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -206,19 +228,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c658d7084c4a06a70800000000000000
-      internalID: 8818229234267686252
+      spriteID: 2fceed77d7c7f02e0800000000000000
+      internalID: -2157368818163323662
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: test1_4
+      name: youtube_4
       rect:
         serializedVersion: 2
-        x: 918
-        y: 1110
-        width: 81
+        x: 496
+        y: 12
+        width: 77
         height: 155
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -228,8 +250,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a0c48110269916a70800000000000000
-      internalID: 8818498191572356106
+      spriteID: 28e8b0d5db62efd30800000000000000
+      internalID: 4467050475149823618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: youtube_5
+      rect:
+        serializedVersion: 2
+        x: 563
+        y: 10
+        width: 70
+        height: 116
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5115a80b817787bf0800000000000000
+      internalID: -326380025059585771
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: youtube_6
+      rect:
+        serializedVersion: 2
+        x: 645
+        y: 10
+        width: 73
+        height: 162
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e313156cc37febe40800000000000000
+      internalID: 5674244420930711870
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: youtube_7
+      rect:
+        serializedVersion: 2
+        x: 726
+        y: 10
+        width: 68
+        height: 118
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a360b371f213a170800000000000000
+      internalID: 8188409375727051681
       vertices: []
       indices: 
       edges: []
@@ -247,12 +335,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      test1_0: -9197134654715703934
-      test1_1: -3245826588181596406
-      test1_2: -5991360266443149873
-      test1_3: 8818229234267686252
-      test1_4: 8818498191572356106
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
