@@ -118,13 +118,16 @@ namespace FourteenNumbers {
                         img3.color = UnityEngine.Color.red;
                         break;
                 }
-            } else if (selected >= 100 && selected <= 103) {
+            } else if (selected >= 100) {
                 // Find the owned NFT panel with this ID
                 if (panelOwnedNfts != null) {
                     foreach (GameObject panel in panelOwnedNfts) {
                         if (panel != null) {
                             Button button = panel.GetComponentInChildren<Button>();
-                            if (button != null && button.name == $"button_Gen1_{selected}") {
+                            if (button != null && 
+                                (button.name == $"button_Gen1_{selected}") ||
+                                (button.name == $"button_Gen2_{selected}")
+                            ){
                                 Image panelImage = panel.GetComponent<Image>();
                                 if (panelImage != null) {
                                     panelImage.color = UnityEngine.Color.red;
@@ -241,7 +244,9 @@ namespace FourteenNumbers {
                 // Add Button component
                 Button buttonComponent = buttonContainer.AddComponent<Button>();
                 
-                button.name = $"gen1_{owned[i]}"; // Set the button name to match the format
+                int offset = BackgroundsMetadata.OptionToType(owned[i]);
+                int gen = BackgroundsMetadata.OptionToGeneration(owned[i]);
+                button.name = $"gen{gen}_{offset}"; // Set the button name to match the format
                 buttonComponent.onClick.AddListener(() => OnButtonClick(button.name));
                 
                 // Create text container (right side)
