@@ -63,6 +63,9 @@ namespace FourteenNumbers {
             if (buttonText == "Claim") {
                 SceneManager.LoadScene("ClaimScene", LoadSceneMode.Additive);
             }
+            else if (buttonText == "Prob") {
+                SceneManager.LoadScene("ClaimProbScene", LoadSceneMode.Additive);
+            }
             else {
                 // One of the image buttons has been pressed.
                 int option = BackgroundsMetadata.ButtonTextToOption(buttonText);

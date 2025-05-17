@@ -22,6 +22,9 @@ namespace FourteenNumbers {
             string maxSupply = sceneInfo.maxSupply == 0 ? "Infinite" : sceneInfo.maxSupply.ToString();
             sceneName.text = sceneInfo.name;
             int balance = SceneStore.GetBalanceFor(tokenId);
+            if (sceneInfo.series == "Free") {
+                balance = 1;
+            }
             sceneMetadata.text = 
                 sceneInfo.series + "\n" +
                 sceneInfo.rarity + "\n" +

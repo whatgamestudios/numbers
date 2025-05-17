@@ -66,7 +66,7 @@ namespace FourteenNumbers {
             if (buttonText == "Back") {
                 // Rather than unload the scene, jump to the scene. 
                 // This will force an asset reload.
-                SceneManager.LoadScene("SolutionsScene", LoadSceneMode.Single);
+                SceneManager.LoadScene("BackgroundsScene", LoadSceneMode.Single);
             }
             else {
                 AuditLog.Log("Claim screen: Unknown button: " + buttonText);
