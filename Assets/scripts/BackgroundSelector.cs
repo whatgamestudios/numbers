@@ -169,8 +169,8 @@ namespace FourteenNumbers {
             
             // Resize panelOwned based on number of NFTs
             RectTransform panelOwnedRect = panelOwned.GetComponent<RectTransform>();
-            int topOfScreen = 247+220+20;
-            float panelHeight = topOfScreen + (owned.Length * 220) + 20; // 247 initial offset + (220 per panel) + 20 padding at bottom
+            int topOfScreen = 225+220+20;
+            float panelHeight = topOfScreen + (owned.Length * 220) + 20; // 225 initial offset + (220 per panel) + 20 padding at bottom
             panelOwnedRect.sizeDelta = new Vector2(panelOwnedRect.sizeDelta.x, panelHeight);
             
             // Create new array for panels
