@@ -10,34 +10,52 @@ using System;
 namespace FourteenNumbers {
     public class CheckIn : MonoBehaviour {
 
-        public async Task OnApplicationFocus(bool hasFocus) {
-            AuditLog.Log("Game Play screen has focus: " + hasFocus);
-            if (hasFocus) {
-                try {
-                    AuditLog.Log("Checkin start");
-                    
-                    // Check network connectivity
-                    if (Application.internetReachability == NetworkReachability.NotReachable) {
-                        AuditLog.Log("No network connectivity available");
-                        return;
-                    }
+        FourteenNumbersSolutionsContract contract;
 
-                    bool isLoggedIn = PassportStore.IsLoggedIn();
-                    if (isLoggedIn) {
-                        await PassportLogin.Init();
-                        await PassportLogin.Login();
+        string status;
+        private bool isProcessing = false;
 
-                        uint gameDay = Timeline.GameDay();
-                        if (CheckInStore.DoINeedToCheckIn(gameDay)) {
-                            FourteenNumbersSolutionsContract contract = new FourteenNumbersSolutionsContract();
-                            contract.SubmitCheckIn(gameDay);
-                        }
-                    }
+        public void Start() {
+            AuditLog.Log("Checkin start");
+            contract = new FourteenNumbersSolutionsContract();
+            StartCheckinProcess();
+        }
+
+        private async void StartCheckinProcess() {
+            if (isProcessing) {
+                return;
+            }
+            if (!PassportStore.IsLoggedIn()) {
+                return;
+            }
+
+            // Check network connectivity
+            if (Application.internetReachability == NetworkReachability.NotReachable) {
+                AuditLog.Log("Checkin: No network connectivity available");
+                return;
+            }
+
+            isProcessing = true;
+
+            try {
+                await PassportLogin.Init();
+                await PassportLogin.Login();
+
+                uint gameDay = Timeline.GameDay();
+                if (CheckInStore.DoINeedToCheckIn(gameDay)) {
+                    AuditLog.Log("Checkin transaction");
+                    var checkInSuccess = await contract.SubmitCheckIn(gameDay);
+                    AuditLog.Log("Checkin: " + checkInSuccess.ToString());
                 }
-                catch (Exception ex) {
-                    string errorMessage = $"Exception in CheckIn: {ex.Message}\nStack Trace: {ex.StackTrace}";
-                    AuditLog.Log(errorMessage);
+                else {
+                    AuditLog.Log("Checked in today already");
                 }
+            }
+            catch (Exception ex) {
+                AuditLog.Log($"Exception in checkin process: {ex.Message}");
+            }
+            finally {
+                isProcessing = false;
             }
         }
     }

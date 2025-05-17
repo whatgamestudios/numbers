@@ -6,8 +6,7 @@ using TMPro;
 using System.Collections;
 using System.Threading.Tasks;
 using System;
-
-
+using System.Numerics;
 
 namespace FourteenNumbers {
 
@@ -17,11 +16,47 @@ namespace FourteenNumbers {
         private const int TIME_PER_DOT = 1000;
         DateTime timeOfLastDot = DateTime.Now;
 
+        FourteenNumbersSolutionsContract contract;
+
         string status;
+        private bool isProcessing = false;
+        private bool hasError = false;
+        private string errorMessage = "";
 
         public void Start() {
             AuditLog.Log("Publishing screen");
-            status = "Publishing";
+            status = "Publishing ";
+            contract = new FourteenNumbersSolutionsContract();
+            timeOfLastDot = DateTime.Now;
+            StartPublishProcess();
+        }
+
+        private async void StartPublishProcess() {
+            if (isProcessing) {
+                return;
+            }
+            isProcessing = true;
+            hasError = false;
+            errorMessage = "";
+
+            try {
+                AuditLog.Log("Publish transaction");
+                uint gameDay = (uint) Stats.GetLastGameDay();
+                (string sol1, string sol2, string sol3) = Stats.GetSolutions();
+                var publishSuccess = await contract.SubmitBestScore(gameDay, sol1, sol2, sol3);
+                if (!publishSuccess) {
+                    hasError = true;
+                    errorMessage = "Error during publish: type 1";
+                }
+            }
+            catch (Exception ex) {
+                hasError = true;
+                errorMessage = "Error during publish: type 2";
+                AuditLog.Log($"Exception in publish process: {ex.Message}");
+            }
+            finally {
+                isProcessing = false;
+            }
         }
 
         public async void OnButtonClick(string buttonText) {
@@ -29,12 +64,17 @@ namespace FourteenNumbers {
                 await SceneManager.UnloadSceneAsync("PublishScene");
             }
             else {
-                Debug.Log("Unknown button: " + buttonText);
+                AuditLog.Log("Publishing Screen: Unknown button: " + buttonText);
             }
         }
 
         public void Update() {
-            if (FourteenNumbersContract.LastTransactionStatus == 0) {
+            if (hasError) {
+                info.text = "Failed to publish your score. " + errorMessage;
+                return;
+            }
+
+            if (isProcessing) {
                 DateTime now = DateTime.Now;
                 if ((now - timeOfLastDot).TotalMilliseconds > TIME_PER_DOT) {
                     timeOfLastDot = now;
@@ -42,11 +82,8 @@ namespace FourteenNumbers {
                 }
                 info.text = status;
             }
-            else if (FourteenNumbersSolutionsContract.LastTransactionStatus == FourteenNumbersSolutionsContract.TransactionStatus.Success) {
-                info.text = "Published your high score!";
-            }
             else {
-                info.text = "Failed to publish your score";
+                info.text = "Published your high score!";
             }
         }
     }

@@ -63,9 +63,7 @@ namespace FourteenNumbers {
         }
 
 
-        public async void SubmitBestScore(uint gameDay, string sol1, string sol2, string sol3) {
-            LastTransactionStatus = TransactionStatus.Init;         
-
+        public async Task<bool> SubmitBestScore(uint gameDay, string sol1, string sol2, string sol3) {
             StoreResultsFunction func = new StoreResultsFunction() {
                 GameDay = gameDay,
                 Sol1 = Encoding.UTF8.GetBytes(sol1),
@@ -73,51 +71,16 @@ namespace FourteenNumbers {
                 Sol3 = Encoding.UTF8.GetBytes(sol3),
                 Store = false,
             };
-
-            byte[] abiEncoding = func.GetCallData();
-            Debug.Log("Publish: " + HexDump.Dump(abiEncoding));
-
-            try {
-                TransactionReceiptResponse response = 
-                    await Passport.Instance.ZkEvmSendTransactionWithConfirmation(
-                        new TransactionRequest() {
-                            to = contractAddress,
-                            data = "0x" + BitConverter.ToString(abiEncoding).Replace("-", "").ToLower(),
-                            value = "0"
-                        }
-                    );
-                Debug.Log($"Transaction hash: {response.transactionHash}");
-
-                if (response.status != "1") {
-                    LastTransactionStatus = TransactionStatus.Failed;
-                }
-                else {
-                    LastTransactionStatus = TransactionStatus.Success;
-                }
-            }
-            catch (System.Exception ex) {
-                LastTransactionStatus = TransactionStatus.Failed;
-                throw ex;
-            }
+            var (success, _) = await executeTransaction(func.GetCallData());
+            return success;
         }
 
-        public async void SubmitCheckIn(uint gameDay) {
+        public async Task<bool> SubmitCheckIn(uint gameDay) {
             var func = new CheckInFunction() {
                 GameDay = gameDay,
             };
-
-            byte[] abiEncoding = func.GetCallData();
-            Debug.Log("CheckIn: " + HexDump.Dump(abiEncoding));
-
-            TransactionReceiptResponse response = 
-                await Passport.Instance.ZkEvmSendTransactionWithConfirmation(
-                    new TransactionRequest() {
-                        to = contractAddress,
-                        data = "0x" + BitConverter.ToString(abiEncoding).Replace("-", "").ToLower(),
-                        value = "0"
-                    }
-                );
-            Debug.Log($"Transaction status: {response.status}, hash: {response.transactionHash}");
+            var (success, _) = await executeTransaction(func.GetCallData());
+            return success;
         }
     }
 }
