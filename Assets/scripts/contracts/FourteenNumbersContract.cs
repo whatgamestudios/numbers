@@ -44,6 +44,7 @@ namespace FourteenNumbers {
 
             while (true) {
                 try {
+                    DateTime start = DateTime.Now;
                     TransactionReceiptResponse response = 
                         await Passport.Instance.ZkEvmSendTransactionWithConfirmation(
                             new TransactionRequest() {
@@ -52,7 +53,9 @@ namespace FourteenNumbers {
                                 value = "0"
                             }
                         );
-                    AuditLog.Log($"Transaction status: {response.status}, hash: {response.transactionHash}");
+                    DateTime end = DateTime.Now;
+                    TimeSpan diff = end.Subtract(start);
+                    AuditLog.Log($"Transaction status: {response.status}, time span: {diff.TotalMilliseconds}, hash: {response.transactionHash}");
 
                     if (response.status != "1") {
                         return (false, response);
