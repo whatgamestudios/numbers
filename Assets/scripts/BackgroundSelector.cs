@@ -183,7 +183,7 @@ namespace FourteenNumbers {
             for (int i = 0; i < owned.Length; i++) {
                 SceneInfo sceneInfo = BackgroundsMetadata.GetInfo(owned[i]);
                 if (sceneInfo.resource == null) {
-                    Debug.Log("No resource found for NFT id: " + owned[i]);
+                    AuditLog.Log("No resource found for NFT id: " + owned[i]);
                     continue;
                 }
                 string buttonId = "button_" + sceneInfo.series + "_" + owned[i];

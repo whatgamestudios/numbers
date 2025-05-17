@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using System.Collections;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+using System;
 
 namespace FourteenNumbers {
 
@@ -12,10 +14,14 @@ namespace FourteenNumbers {
 
         private GameObject[] panelAvailableNfts;
         private ScrollRect scrollRect;
+        private List<ClaimableTokenDTO> claimableNfts = new List<ClaimableTokenDTO>();
+        private bool loaded = false;
+        private bool displayed = false;
 
         private FourteenNumbersClaimContract fourteenNumbersClaimContracts = new FourteenNumbersClaimContract();
 
-        private Coroutine loadRoutineDaysPlayed;
+        private Coroutine claimableNftsRoutine;
+        public TextMeshProUGUI loadingText;
 
         public void Start() {
             AuditLog.Log("Claim Probabilities screen");
@@ -26,15 +32,9 @@ namespace FourteenNumbers {
                 return;
             }
 
-            drawAvailablePanel();
-        }
-
-        public void OnEnable() {
             StartLoaders();
         }
 
-        public void OnDisable() {
-        }
 
         public void OnButtonClick(string buttonText) {
             if (buttonText == "Back") {
@@ -45,9 +45,17 @@ namespace FourteenNumbers {
             }
         }
 
+        public void Update() {
+            if (loaded && !displayed) {
+                displayed = true;
+                loadingText.gameObject.SetActive(false);
+                drawAvailablePanel();
+            }
+        }
+
         private void drawAvailablePanel() {
-            // Get the owned backgrounds
-            int[] owned = ScreenBackground.GetOwned();
+            int numClaimable = claimableNfts.Count;
+            int height = 280;
             
             // Clear existing panels if any
             if (panelAvailableNfts != null) {
@@ -63,18 +71,21 @@ namespace FourteenNumbers {
             
             // Resize panelOwned based on number of NFTs
             RectTransform panelOwnedRect = panelOwned.GetComponent<RectTransform>();
-            int topOfScreen = 220 + 20;
-            float panelHeight = topOfScreen + (owned.Length * 220) + 20; // 225 initial offset + (220 per panel) + 20 padding at bottom
+            int topOfScreen = 180;
+            float panelHeight = topOfScreen + (numClaimable * height) + 20; // 225 initial offset + (220 per panel) + 20 padding at bottom
             panelOwnedRect.sizeDelta = new Vector2(panelOwnedRect.sizeDelta.x, panelHeight);
             
             // Create new array for panels
-            panelAvailableNfts = new GameObject[owned.Length];
+            panelAvailableNfts = new GameObject[numClaimable];
             
-            // Create panels for each owned background
-            for (int i = 0; i < owned.Length; i++) {
-                SceneInfo sceneInfo = BackgroundsMetadata.GetInfo(owned[i]);
+            // Create panels for each background
+            bool isFirstDefault = true;
+            int i = 0;
+            foreach (var nft in claimableNfts) {
+                int tokenId = (int) nft.TokenId;
+                SceneInfo sceneInfo = BackgroundsMetadata.GetInfo(tokenId);
                 if (sceneInfo.resource == null) {
-                    Debug.Log("No resource found for NFT id: " + owned[i]);
+                    AuditLog.Log("No resource found for NFT id: " + tokenId);
                     continue;
                 }
 
@@ -86,8 +97,8 @@ namespace FourteenNumbers {
                 RectTransform buttonRect = holderContainer.AddComponent<RectTransform>();
                 buttonRect.anchorMin = new Vector2(0.5f, 1f);
                 buttonRect.anchorMax = new Vector2(0.5f, 1f);
-                buttonRect.anchoredPosition = new Vector2(0, -topOfScreen - (i * 220));
-                buttonRect.sizeDelta = new Vector2(750, 210); // Width of parent less a bit
+                buttonRect.anchoredPosition = new Vector2(0, -topOfScreen - (i * height));
+                buttonRect.sizeDelta = new Vector2(750, height - 10); // Width of parent less a bit
  
                 // Add Image component for background
                 Image buttonImage = holderContainer.AddComponent<Image>();
@@ -95,7 +106,7 @@ namespace FourteenNumbers {
                 buttonImage.sprite = Resources.Load<Sprite>("UI/Sprites/UI_Background");
 
                 // Create button container (left side)
-                GameObject imageContainer = new GameObject($"imageContainer_{i}");
+                GameObject imageContainer = new GameObject();
                 imageContainer.transform.SetParent(holderContainer.transform, false);
 
                 // Add RectTransform to button container
@@ -106,7 +117,7 @@ namespace FourteenNumbers {
                 imageContainerRect.sizeDelta = new Vector2(210, 210);
 
                 // Create button
-                GameObject button = new GameObject($"OwnedButton_{i}");
+                GameObject button = new GameObject();
                 button.transform.SetParent(imageContainer.transform, false);
                 
                 // Add RectTransform to button
@@ -129,7 +140,7 @@ namespace FourteenNumbers {
                 imageImage.sprite = s;
                                 
                 // Create text container (right side)
-                GameObject textContainer = new GameObject($"TextContainer_{i}");
+                GameObject textContainer = new GameObject();
                 textContainer.transform.SetParent(holderContainer.transform, false);
 
                 // Add RectTransform to text container
@@ -145,80 +156,62 @@ namespace FourteenNumbers {
                 textMesh.alignment = TextAlignmentOptions.Left;
                 textMesh.color = Color.white;
                 textMesh.textWrappingMode = TextWrappingModes.Normal;
+                int available = (int) nft.Balance;
+                double dropRate = ((double) nft.Percentage) / 100.0;
+                if (isFirstDefault && dropRate == 0.0) {
+                    isFirstDefault = false;
+                    dropRate = calcResidual();
+                }
+
                 string text = sceneInfo.name + "\n" +
                                 sceneInfo.series + " " + sceneInfo.rarity + "\n" +
-                                sceneInfo.artist;
-                if (sceneInfo.artist == "Unknown") {
-                    text = text + " Artist";
-                }
+                                "Artist: " + sceneInfo.artist + "\n" +
+                                "Available: " + available + "\n" + 
+                                "Drop Rate: " + dropRate + "%";
                 textMesh.text = text;
                 
                 // Store panel reference
                 panelAvailableNfts[i] = holderContainer;
+                i++;
             }
         }
 
         private void StartLoaders() {
-            // Only load the days played once per day.
-            // uint statsGameDay = (uint) Stats.GetLastGameDay();
-            // uint gameDay = (uint) Timeline.GameDay();
-            // if (statsGameDay == gameDay) {
-            //     int daysPlayed = Stats.GetDaysPlayed();
-            //     int daysClaimed = Stats.GetDaysClaimed();
-            //     daysPlayedLoaded(daysPlayed, daysClaimed);
-            // }
-            // else {
-                AuditLog.Log("Scene Screen: Loading days played and days claimed");
-                loadRoutineDaysPlayed = StartCoroutine(LoadRoutineDaysPlayed());
-            // }
+            AuditLog.Log("Claim Probabilities Screen: Loading");
+            claimableNftsRoutine = StartCoroutine(LoadClaimableNfts());
         }
 
-        IEnumerator LoadRoutineDaysPlayed() {
-            FetchDaysPlayed();
+        IEnumerator LoadClaimableNfts() {
+            FetchClaimableNfts();
             yield return new WaitForSeconds(0.1f);
         }
 
-        private async void FetchDaysPlayed() {
-            // string account = PassportStore.GetPassportAccount();
-            // if (account == null || account == "") {
-            //     return;
-            // }
-            // DaysPlayed = (int) (await fourteenNumbersContracts.GetDaysPlayed(account));
-            // Stats.SetDaysPlayed(DaysPlayed);
-            // if (DaysClaimed != NOT_SET) {
-            //     daysPlayedLoaded(DaysPlayed, DaysClaimed);
-            // } 
-            // else {
-            //     AuditLog.Log("DaysPlayed loaded before DaysClaimed");
-            // }
+        private async void FetchClaimableNfts() {
+            try {
+                claimableNfts = await fourteenNumbersClaimContracts.GetClaimableNfts();
+                AuditLog.Log($"Fetched {claimableNfts.Count} claimable NFTs");
+                loaded = true;
+                
+                // // Log details of each NFT for debugging
+                // foreach (var nft in claimableNfts) {
+                //     AuditLog.Log($"NFT Contract: {nft.Erc1155Contract}");
+                //     AuditLog.Log($"Token ID: {nft.TokenId}");
+                //     AuditLog.Log($"Balance: {nft.Balance}");
+                //     AuditLog.Log($"Percentage: {nft.Percentage / 100.0}%");
+                // }
+            }
+            catch (Exception ex) {
+                AuditLog.Log($"Error fetching claimable NFTs: {ex.Message}");
+                claimableNfts = new List<ClaimableTokenDTO>();
+            }
         }
 
-        // private async void FetchDaysClaimed() {
-        //     string account = PassportStore.GetPassportAccount();
-        //     DaysClaimed = (int) (await fourteenNumbersClaimContracts.GetDaysClaimed(account));
-        //     Stats.SetDaysClaimed(DaysClaimed);
-        //     if (DaysPlayed != NOT_SET) {
-        //         daysPlayedLoaded(DaysPlayed, DaysClaimed);
-        //     } 
-        //     else {
-        //         AuditLog.Log("DaysClaimed loaded before DaysPlayed");
-        //     }
-        // }
-
-        // public void daysPlayedLoaded(int daysPlayed, int daysClaimed) {
-        //     AuditLog.Log("Days played: " + daysPlayed.ToString() + ", days claimed: " + daysClaimed.ToString());
-        //     if (daysClaimed > daysPlayed) {
-        //         AuditLog.Log("Days claimed greater than days played");
-        //     }
-        //     int net = daysPlayed - daysClaimed;
-
-        //     if (net >= 30) {
-        //         claimButton.interactable = true;
-        //     }
-        //     else {
-        //         int daysBeforeClaim = 30 - net;
-        //         claimButtonText.text = daysBeforeClaim.ToString() + " days until claim";
-        //         claimButtonText.fontSize = 60;
-        //     }
+        private double calcResidual() {
+            int total = 0;
+            foreach (var nft in claimableNfts) {
+                total += (int) nft.Percentage;
+            }
+            return (double)(10000 - total) / 100.0;
+        }
     }
 }
