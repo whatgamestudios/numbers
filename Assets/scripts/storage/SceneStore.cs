@@ -72,6 +72,17 @@ namespace FourteenNumbers {
             return Array.ConvertAll(balancesString.Split(','), int.Parse);
         }
 
+        public static int GetBalanceFor(int tokenId) {
+            int[] owned = GetOwned();
+            int[] balances = GetBalances();
+            for (int i = 0; i < owned.Length; i++) {
+                if (owned[i] == tokenId) {
+                    return balances[i];
+                }
+            }
+            return 0;
+        }
+
         /**
          * Determine whether the NFTs owned by the player has been checked recently.
          * 
