@@ -390,6 +390,7 @@ MonoBehaviour:
   panelFreeType1: {fileID: 1006544629}
   panelFreeType2: {fileID: 766114826}
   panelFreeType3: {fileID: 867711701}
+  panelOwnedContent: {fileID: 561248789}
   panelOwned: {fileID: 1077693922}
   claimButton: {fileID: 922979054}
   claimButtonText: {fileID: 2001123691}
@@ -601,7 +602,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000102427126}
+  m_AnchoredPosition: {x: 0, y: 0.000115553004}
   m_SizeDelta: {x: 0, y: 1300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &565246598
@@ -2357,7 +2358,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 683857165}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9997675
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

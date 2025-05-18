@@ -32,8 +32,8 @@ namespace FourteenNumbers {
         }
 
         public static int[] GetAllOwnedNftIds() {
-            return new int[5] { 200, 201, 202, 203, 204};
-//            return new int[9] { 100, 101, 102, 103, 200, 201, 202, 203, 204};
+//            return new int[5] { 200, 201, 202, 203, 204, 205};
+            return new int[11] { 100, 101, 102, 103, 200, 201, 202, 203, 204, 205, 206};
 //            return new int[4] { 100, 101, 102, 103};
         }
 
@@ -103,19 +103,27 @@ namespace FourteenNumbers {
                     break;
                 case 1:
                     info = new SceneInfo("scenes/gen2/gen2-type1-circuit", UnityEngine.Color.white, UnityEngine.Color.black);
-                    info.SetMetadata("Circuit1", "Gen2", "Legendary", 25, "Burbura");
+                    info.SetMetadata("Circuit", "Gen2", "Legendary", 25, "Burbura");
                     break;
                 case 2:
-                    info = new SceneInfo("scenes/gen2/gen2-type2-circuit", UnityEngine.Color.black, UnityEngine.Color.black);
-                    info.SetMetadata("Circuit2", "Gen2", "Epic", 100, "Elen Lane");
+                    info = new SceneInfo("scenes/gen2/gen2-type2-tea", UnityEngine.Color.white, UnityEngine.Color.white);
+                    info.SetMetadata("Tea", "Gen2", "Epic", 100, "Elen Lane");
                     break;
                 case 3:
-                    info = new SceneInfo("scenes/gen2/gen2-type3-cats", UnityEngine.Color.black, UnityEngine.Color.black);
+                    info = new SceneInfo("scenes/gen2/gen2-type3-cats", UnityEngine.Color.white, UnityEngine.Color.white);
                     info.SetMetadata("Cats", "Gen2", "Common", 1000, "Unknown");
                     break;
                 case 4:
-                    info = new SceneInfo("scenes/gen2/gen2-type4-butterflies", UnityEngine.Color.black, UnityEngine.Color.black);
-                    info.SetMetadata("Butterflies", "Gen2", "Common", 1000, "Unknown");
+                    info = new SceneInfo("scenes/gen2/gen2-type4-garden", UnityEngine.Color.black, UnityEngine.Color.black);
+                    info.SetMetadata("Garden", "Gen2", "Common", 1000, "Unknown");
+                    break;
+                case 5:
+                    info = new SceneInfo("scenes/gen2/gen2-type5-space", UnityEngine.Color.white, UnityEngine.Color.white);
+                    info.SetMetadata("Space", "Gen2", "Common", 1000, "Unknown");
+                    break;
+                case 6:
+                    info = new SceneInfo("scenes/gen2/gen2-type6-wild-tea", UnityEngine.Color.white, UnityEngine.Color.white);
+                    info.SetMetadata("Wild Tea", "Gen2", "Common", 1000, "Unknown");
                     break;
                 default:
                     Debug.Log("Unknown gen1 type: " + type);
@@ -162,6 +170,12 @@ namespace FourteenNumbers {
             }
             else if (buttonText == "gen2_4") {
                 return 204;
+            }
+            else if (buttonText == "gen2_5") {
+                return 205;
+            }
+            else if (buttonText == "gen2_6") {
+                return 206;
             }
             else {
                 // Default

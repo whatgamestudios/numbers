@@ -16,8 +16,13 @@ namespace FourteenNumbers {
                 return;
             }
 
-            int option = SceneStore.GetBackground();
-            SceneInfo sceneInfo = BackgroundsMetadata.GetInfo(option);
+            // Get the current selected background. If due to asset sync, that background is no longer
+            // owned, switch to the default background.
+            int tokenId = SceneStore.GetBackground();
+            if (!ScreenBackground.IsOwned(tokenId)) {
+                tokenId = SceneStore.BG_DEFAULT;
+            }
+            SceneInfo sceneInfo = BackgroundsMetadata.GetInfo(tokenId);
 
             // Set the background image.
             Texture2D tex = Resources.Load<Texture2D>(sceneInfo.resource);

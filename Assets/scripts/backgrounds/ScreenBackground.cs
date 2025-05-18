@@ -25,6 +25,18 @@ namespace FourteenNumbers {
             return SceneStore.GetOwned();
         }
 
+        public static bool IsOwned(int tokenId) {
+            if (FakeOwnership) {
+                return true;
+            }
+            int[] owned = SceneStore.GetOwned();
+            foreach (int tokenIdOwned in owned) {
+                if (tokenIdOwned == tokenId) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         /**
          * Call the FetchImmutableNfts function and process the response.

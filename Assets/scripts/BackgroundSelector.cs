@@ -14,6 +14,8 @@ namespace FourteenNumbers {
         public GameObject panelFreeType2;
         public GameObject panelFreeType3;
 
+        public GameObject panelOwnedContent;
+
         public GameObject panelOwned;
 
         // Claim button
@@ -178,6 +180,9 @@ namespace FourteenNumbers {
             int topOfScreen = 225+220+20;
             float panelHeight = topOfScreen + (owned.Length * 220) + 20; // 225 initial offset + (220 per panel) + 20 padding at bottom
             panelOwnedRect.sizeDelta = new Vector2(panelOwnedRect.sizeDelta.x, panelHeight);
+
+            RectTransform panelOwnedContentRect = panelOwnedContent.GetComponent<RectTransform>();
+            panelOwnedContentRect.sizeDelta = new Vector2(panelOwnedContentRect.sizeDelta.x, panelHeight);
             
             // Create new array for panels
             panelOwnedNfts = new GameObject[owned.Length];
