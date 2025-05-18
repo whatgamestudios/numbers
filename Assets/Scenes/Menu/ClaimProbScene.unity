@@ -532,6 +532,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panelOwned: {fileID: 1077693922}
+  panelOwnedContent: {fileID: 561248789}
   loadingText: {fileID: 135703817}
 --- !u!1 &294060456
 GameObject:

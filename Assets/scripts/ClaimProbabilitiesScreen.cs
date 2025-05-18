@@ -11,6 +11,7 @@ namespace FourteenNumbers {
 
     public class ClaimProbabilitiesScreen : MonoBehaviour {
         public GameObject panelOwned;
+        public GameObject panelOwnedContent;
 
         private GameObject[] panelAvailableNfts;
         private ScrollRect scrollRect;
@@ -74,7 +75,10 @@ namespace FourteenNumbers {
             int topOfScreen = 180;
             float panelHeight = topOfScreen + (numClaimable * height) + 20; // 225 initial offset + (220 per panel) + 20 padding at bottom
             panelOwnedRect.sizeDelta = new Vector2(panelOwnedRect.sizeDelta.x, panelHeight);
-            
+
+            RectTransform panelOwnedContentRect = panelOwnedContent.GetComponent<RectTransform>();
+            panelOwnedContentRect.sizeDelta = new Vector2(panelOwnedContentRect.sizeDelta.x, panelHeight);
+
             // Create new array for panels
             panelAvailableNfts = new GameObject[numClaimable];
             
