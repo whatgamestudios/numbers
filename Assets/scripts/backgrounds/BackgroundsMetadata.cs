@@ -99,31 +99,31 @@ namespace FourteenNumbers {
             switch (type) {
                 case 0:
                     info = new SceneInfo("scenes/gen2/gen2-type0-clocks", UnityEngine.Color.white, UnityEngine.Color.black);
-                    info.SetMetadata("Clocks", "Gen2", "Mythical", 10, "Natata");
+                    info.SetMetadata("Clocks", "Gen2", "Mythical", 20, "Usova Olga");
                     break;
                 case 1:
                     info = new SceneInfo("scenes/gen2/gen2-type1-circuit", UnityEngine.Color.white, UnityEngine.Color.black);
-                    info.SetMetadata("Circuit", "Gen2", "Legendary", 25, "Burbura");
+                    info.SetMetadata("Circuit", "Gen2", "Epic", 100, "Amgun");
                     break;
                 case 2:
                     info = new SceneInfo("scenes/gen2/gen2-type2-tea", UnityEngine.Color.white, UnityEngine.Color.white);
-                    info.SetMetadata("Tea", "Gen2", "Epic", 100, "Elen Lane");
+                    info.SetMetadata("Tea", "Gen2", "Epic", 100, "Olka Kostenko");
                     break;
                 case 3:
                     info = new SceneInfo("scenes/gen2/gen2-type3-cats", UnityEngine.Color.white, UnityEngine.Color.white);
-                    info.SetMetadata("Cats", "Gen2", "Common", 1000, "Unknown");
+                    info.SetMetadata("Cats", "Gen2", "Legendary", 50, "Natalia Zagory");
                     break;
                 case 4:
                     info = new SceneInfo("scenes/gen2/gen2-type4-garden", UnityEngine.Color.black, UnityEngine.Color.black);
-                    info.SetMetadata("Garden", "Gen2", "Common", 1000, "Unknown");
+                    info.SetMetadata("Garden", "Gen2", "Common", 1000, "Burbura");
                     break;
                 case 5:
                     info = new SceneInfo("scenes/gen2/gen2-type5-space", UnityEngine.Color.white, UnityEngine.Color.white);
-                    info.SetMetadata("Space", "Gen2", "Common", 1000, "Unknown");
+                    info.SetMetadata("Space", "Gen2", "Common", 1000, "Hatcha");
                     break;
                 case 6:
                     info = new SceneInfo("scenes/gen2/gen2-type6-wild-tea", UnityEngine.Color.white, UnityEngine.Color.white);
-                    info.SetMetadata("Wild Tea", "Gen2", "Common", 1000, "Unknown");
+                    info.SetMetadata("Wild Tea", "Gen2", "Rare", 400, "Olka Kostenko");
                     break;
                 default:
                     Debug.Log("Unknown gen1 type: " + type);
