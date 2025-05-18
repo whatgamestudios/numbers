@@ -49,11 +49,20 @@ namespace FourteenNumbers {
             int selected = SceneStore.GetBackground();
             setSelected(selected);
 
-            claimButton.interactable = false;
+            if (PassportStore.IsLoggedIn()) {
+                claimButton.interactable = false;
+            }
+            else {
+                claimButtonText.text = "Sign in to Claim";
+                claimButtonText.fontSize = 80;
+            }
+
         }
 
         public void OnEnable() {
-            StartLoaders();
+            if (PassportStore.IsLoggedIn()) {
+                StartLoaders();
+            }
         }
 
         public void OnDisable() {
@@ -63,7 +72,12 @@ namespace FourteenNumbers {
 
         public void OnButtonClick(string buttonText) {
             if (buttonText == "Claim") {
-                SceneManager.LoadScene("ClaimScene", LoadSceneMode.Additive);
+                if (PassportStore.IsLoggedIn()) {
+                    SceneManager.LoadScene("ClaimScene", LoadSceneMode.Additive);
+                }
+                else {
+                    SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
+                }
             }
             else if (buttonText == "Prob") {
                 SceneManager.LoadScene("ClaimProbScene", LoadSceneMode.Additive);

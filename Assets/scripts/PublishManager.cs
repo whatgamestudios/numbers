@@ -13,7 +13,12 @@ namespace FourteenNumbers {
             if (buttonText == "Publish") {
                 AuditLog.Log("Publish");
                 panelPublish.SetActive(false);
-                SceneManager.LoadScene("PublishScene", LoadSceneMode.Additive);
+                if (PassportStore.IsLoggedIn()) {
+                    SceneManager.LoadScene("PublishScene", LoadSceneMode.Additive);
+                }
+                else {
+                    SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
+                }
             }
             else {
                 AuditLog.Log("PublishManager: Unknown button: " + buttonText);
