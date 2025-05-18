@@ -63,8 +63,7 @@ namespace FourteenNumbers {
         public Button buttonLeft;
         public Button buttonRight;
 
-        public Button buttonShare;
-        public Button buttonPublish;
+        public TextMeshProUGUI buttonPublishText;
 
         public GameObject panelShare;
         public GameObject panelPublish;
@@ -875,9 +874,13 @@ namespace FourteenNumbers {
         // from the on click handler once the third equals sign has been pressed.
         private void activatePublishButton() {
             uint pointsToday = (uint) pointsEarnedTotalToday();
-            if (playerState == PlayerState.Done && PassportStore.IsLoggedIn() &&
+            if (playerState == PlayerState.Done &&
                 LoadedBestScore && pointsToday > BestScore) {
                 panelPublish.SetActive(true);
+                if (!PassportStore.IsLoggedIn()) {
+                    buttonPublishText.text = "Sign in to Publish";
+                    buttonPublishText.fontSize = 50;
+                }
            }
         }
     }

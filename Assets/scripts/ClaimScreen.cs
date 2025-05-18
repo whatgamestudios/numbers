@@ -14,7 +14,7 @@ namespace FourteenNumbers {
         public TextMeshProUGUI info;
                     
         private const int TIME_PER_DOT = 1000;
-        DateTime timeOfLastDot = DateTime.Now;
+        DateTime timeOfLastDot;
 
         FourteenNumbersClaimContract claimContract;
 
@@ -26,8 +26,9 @@ namespace FourteenNumbers {
 
         public void Start() {
             AuditLog.Log("Claim screen");
-            status = "Claiming";
+            status = "Claiming ";
             claimContract = new FourteenNumbersClaimContract();
+            timeOfLastDot = DateTime.Now;
             StartClaimProcess();
         }
 
@@ -61,14 +62,14 @@ namespace FourteenNumbers {
             }
         }
 
-        public async void OnButtonClick(string buttonText) {
+        public void OnButtonClick(string buttonText) {
             if (buttonText == "Back") {
                 // Rather than unload the scene, jump to the scene. 
                 // This will force an asset reload.
-                SceneManager.LoadScene("SolutionsScene", LoadSceneMode.Single);
+                SceneManager.LoadScene("BackgroundsScene", LoadSceneMode.Single);
             }
             else {
-                Debug.Log("Claim screen: Unknown button: " + buttonText);
+                AuditLog.Log("Claim screen: Unknown button: " + buttonText);
             }
         }
 

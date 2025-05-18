@@ -1,6 +1,7 @@
 // Copyright (c) Whatgame Studios 2024 - 2025
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Linq;
@@ -37,6 +38,19 @@ namespace FourteenNumbers {
                 return (uint) claimedDaysObj.DaysClaimed;
             }
         }
+
+        public async Task<List<ClaimableTokenDTO>> GetClaimableNfts() {
+            try {
+                var func = new GetClaimableNftsFunction();
+                var result = await service.GetClaimableNftsQueryAsync(func);
+                return result.ClaimableTokens;
+            }
+            catch (Exception ex) {
+                AuditLog.Log($"Error getting claimable NFTs: {ex.Message}");
+                return new List<ClaimableTokenDTO>();
+            }
+        }
+
 
         // This function is no longer used in the claim contract.
         public async Task<bool> PrepareForClaim(int salt) {

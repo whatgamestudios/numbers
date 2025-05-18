@@ -22,7 +22,7 @@ namespace FourteenNumbers {
             errorText.text = msg;
             countDownText.text = (WAIT_TIME_MS / 1000 + 1).ToString();
             start = DateTime.Now;
-            AuditLog.Log("Game play error: " + msg);
+            AuditLog.Log("Info Popup: " + msg);
         }
 
 

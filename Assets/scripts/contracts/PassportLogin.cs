@@ -68,7 +68,9 @@ namespace FourteenNumbers {
                 // Set up wallet (includes creating a wallet for new players)
                 List<string> accounts = await Immutable.Passport.Passport.Instance.ZkEvmRequestAccounts();
                 if (accounts.Count !=0) {
-                    PassportStore.SetPassportAccount(accounts[0]);
+                    string account = accounts[0];
+                    PassportStore.SetPassportAccount(account);
+                    AuditLog.Log($"Logged in as {account} of {accounts.Count} accounts");
                 }
             }
         }

@@ -16,16 +16,21 @@ namespace FourteenNumbers {
 
 
         public void Start() {
-            int option = SceneStore.GetBackground();
-            AuditLog.Log("Scene detail screen: " + option.ToString());
-            SceneInfo sceneInfo = BackgroundsMetadata.GetInfo(option);
+            int tokenId = SceneStore.GetBackground();
+            AuditLog.Log("Scene detail screen: " + tokenId.ToString());
+            SceneInfo sceneInfo = BackgroundsMetadata.GetInfo(tokenId);
             string maxSupply = sceneInfo.maxSupply == 0 ? "Infinite" : sceneInfo.maxSupply.ToString();
             sceneName.text = sceneInfo.name;
+            int balance = SceneStore.GetBalanceFor(tokenId);
+            if (sceneInfo.series == "Free") {
+                balance = 1;
+            }
             sceneMetadata.text = 
                 sceneInfo.series + "\n" +
                 sceneInfo.rarity + "\n" +
                 maxSupply + "\n" + 
-                sceneInfo.artist;
+                sceneInfo.artist + "\n" +
+                balance;
         }
 
         public async void OnButtonClick(string buttonText) {
@@ -33,7 +38,7 @@ namespace FourteenNumbers {
                 await SceneManager.UnloadSceneAsync("SceneDetailScene");
             }
             else {
-                Debug.Log("SceneDetailScreen: Unknown button");
+                AuditLog.Log("SceneDetailScreen: Unknown button");
             }
         }
     }

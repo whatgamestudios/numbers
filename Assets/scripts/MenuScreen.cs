@@ -37,12 +37,11 @@ namespace FourteenNumbers {
                     loggedIn.text = "Logged In";
                 }
                 else {
+                    string account = accounts[0];
                     loggedIn.text = "Logged In (" + 
                                     DeepLinkManager.Instance.LoginPath + 
                                     ") as\n" + 
-                                    accounts[0];
-                    Debug.Log("Account count was: " + accounts.Count);
-                    PassportStore.SetPassportAccount(accounts[0]);
+                                    account;
                 }
             }
             else {
@@ -72,7 +71,7 @@ namespace FourteenNumbers {
                 SceneManager.LoadScene("OtherMenuScene", LoadSceneMode.Single);
             }
             else {
-                Debug.Log("Unknown button");
+                AuditLog.Log($"Menu: Unknown button {buttonText}");
             }
         }
     }

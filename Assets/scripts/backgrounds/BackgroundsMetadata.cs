@@ -23,6 +23,8 @@ namespace FourteenNumbers {
                     return getFreeInfo(type);
                 case 1:
                     return getGen1Info(type);
+                case 2:
+                    return getGen2Info(type);
                 default:
                     Debug.Log("Unknown generation: " + generation);
                     return getDefaultInfo();
@@ -30,7 +32,9 @@ namespace FourteenNumbers {
         }
 
         public static int[] GetAllOwnedNftIds() {
-            return new int[4] { 100, 101, 102, 103};
+//            return new int[5] { 200, 201, 202, 203, 204, 205};
+            return new int[11] { 100, 101, 102, 103, 200, 201, 202, 203, 204, 205, 206};
+//            return new int[4] { 100, 101, 102, 103};
         }
 
 
@@ -89,30 +93,46 @@ namespace FourteenNumbers {
             }
             return info;
         }
-        // public static SceneInfo getGen2MaybeInfo(int type) {
-        //     SceneInfo info;
-        //     switch (type) {
-        //         case 1:
-        //         case 2:
-        //         case 3:
-        //             return new SceneInfo("scenes/gen2/gen2-type3-wetdogs", UnityEngine.Color.black, UnityEngine.Color.black);
-        //         case 4:
-        //             return new SceneInfo("scenes/gen2/gen2-type4-honeycomb", UnityEngine.Color.black, UnityEngine.Color.red);
-        //         case 5:
-        //         case 6:
-        //             return new SceneInfo("scenes/gen2/gen2-type6-chineselandscape", UnityEngine.Color.black, UnityEngine.Color.black);
-        //         case 7:
-        //         case 8:
-        //             return new SceneInfo("scenes/gen2/gen2-type8-witch", UnityEngine.Color.white, UnityEngine.Color.black);
-        //         case 9:
-        //             return new SceneInfo("scenes/gen2/gen2-type9-blackcat", UnityEngine.Color.white, UnityEngine.Color.black);
-        //         default:
-        //             Debug.Log("Unknown gen2 type: " + type);
-        //             info = getDefaultInfo();
-        //             break;
-        //     }
-        //     return info;
-        // }
+
+        public static SceneInfo getGen2Info(int type) {
+            SceneInfo info;
+            switch (type) {
+                case 0:
+                    info = new SceneInfo("scenes/gen2/gen2-type0-clocks", UnityEngine.Color.white, UnityEngine.Color.black);
+                    info.SetMetadata("Clocks", "Gen2", "Mythical", 20, "Usova Olga");
+                    break;
+                case 1:
+                    info = new SceneInfo("scenes/gen2/gen2-type1-circuit", UnityEngine.Color.white, UnityEngine.Color.black);
+                    info.SetMetadata("Circuit", "Gen2", "Epic", 100, "Amgun");
+                    break;
+                case 2:
+                    info = new SceneInfo("scenes/gen2/gen2-type2-tea", UnityEngine.Color.white, UnityEngine.Color.white);
+                    info.SetMetadata("Tea", "Gen2", "Epic", 100, "Olka Kostenko");
+                    break;
+                case 3:
+                    info = new SceneInfo("scenes/gen2/gen2-type3-cats", UnityEngine.Color.white, UnityEngine.Color.white);
+                    info.SetMetadata("Cats", "Gen2", "Legendary", 50, "Natalia Zagory");
+                    break;
+                case 4:
+                    info = new SceneInfo("scenes/gen2/gen2-type4-garden", UnityEngine.Color.black, UnityEngine.Color.black);
+                    info.SetMetadata("Garden", "Gen2", "Common", 1000, "Burbura");
+                    break;
+                case 5:
+                    info = new SceneInfo("scenes/gen2/gen2-type5-space", UnityEngine.Color.white, UnityEngine.Color.white);
+                    info.SetMetadata("Space", "Gen2", "Common", 1000, "Hatcha");
+                    break;
+                case 6:
+                    info = new SceneInfo("scenes/gen2/gen2-type6-wild-tea", UnityEngine.Color.white, UnityEngine.Color.white);
+                    info.SetMetadata("Wild Tea", "Gen2", "Rare", 400, "Olka Kostenko");
+                    break;
+                default:
+                    Debug.Log("Unknown gen1 type: " + type);
+                    info = getDefaultInfo();
+                    break;
+            }
+            return info;
+        }
+
 
         public static int ButtonTextToOption(string buttonText) {
             if (buttonText == "free1") {
@@ -124,36 +144,42 @@ namespace FourteenNumbers {
             else if (buttonText == "free3") {
                 return 3;
             }
-            else if (buttonText == "gen1_100") {
+            else if (buttonText == "gen1_0") {
                 return 100;
             }
-            else if (buttonText == "gen1_101") {
+            else if (buttonText == "gen1_1") {
                 return 101;
             }
-            else if (buttonText == "gen1_102") {
+            else if (buttonText == "gen1_2") {
                 return 102;
             }
-            else if (buttonText == "gen1_103") {
+            else if (buttonText == "gen1_3") {
                 return 103;
             }
-            // else if (buttonText == "gen1_105") {
-            //     return 105;
-            // }
-            // else if (buttonText == "gen1_106") {
-            //     return 106;
-            // }
-            // else if (buttonText == "gen1_107") {
-            //     return 107;
-            // }
-            // else if (buttonText == "gen1_108") {
-            //     return 108;
-            // }
-            // else if (buttonText == "gen1_109") {
-            //     return 109;
-            // }
+            else if (buttonText == "gen2_0") {
+                return 200;
+            }
+            else if (buttonText == "gen2_1") {
+                return 201;
+            }
+            else if (buttonText == "gen2_2") {
+                return 202;
+            }
+            else if (buttonText == "gen2_3") {
+                return 203;
+            }
+            else if (buttonText == "gen2_4") {
+                return 204;
+            }
+            else if (buttonText == "gen2_5") {
+                return 205;
+            }
+            else if (buttonText == "gen2_6") {
+                return 206;
+            }
             else {
                 // Default
-                Debug.Log("Unknown button: " + buttonText);
+                AuditLog.Log("Background Meta: Unknown button: " + buttonText);
                 return 1;
             }
 

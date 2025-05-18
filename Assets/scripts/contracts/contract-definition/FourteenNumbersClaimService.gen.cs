@@ -33,6 +33,12 @@ namespace FourteenNumbers {
             return ContractHandler.QueryAsync<ClaimedDayFunction, ClaimedDayOutputDTO>(claimedDayFunction, blockParameter);
         }
 
+        public virtual Task<GetClaimableNftsOutputDTO> GetClaimableNftsQueryAsync(GetClaimableNftsFunction getClaimableNftsFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<GetClaimableNftsFunction, GetClaimableNftsOutputDTO>(getClaimableNftsFunction, blockParameter);
+        }
+
+
 
         public override List<Type> GetAllFunctionTypes()
         {
@@ -119,5 +125,36 @@ namespace FourteenNumbers {
 
         [Parameter("uint256", "_claimedSoFar", 5, false)]
         public virtual BigInteger ClaimedSoFar { get; set; }
+    }
+
+    public partial class GetClaimableNftsFunction : GetClaimableNftsFunctionBase { }
+
+    [Function("getClaimableNfts", typeof(GetClaimableNftsOutputDTO))]
+    public class GetClaimableNftsFunctionBase : FunctionMessage
+    {
+    }
+
+    public partial class GetClaimableNftsOutputDTO : GetClaimableNftsOutputDTOBase { }
+
+    [FunctionOutput]
+    public class GetClaimableNftsOutputDTOBase : IFunctionOutputDTO 
+    {
+        [Parameter("tuple[]", "", 1)]
+        public virtual List<ClaimableTokenDTO> ClaimableTokens { get; set; }
+    }
+
+    public class ClaimableTokenDTO
+    {
+        [Parameter("address", "erc1155Contract", 1)]
+        public virtual string Erc1155Contract { get; set; }
+
+        [Parameter("uint256", "tokenId", 2)]
+        public virtual BigInteger TokenId { get; set; }
+
+        [Parameter("uint256", "balance", 3)]
+        public virtual BigInteger Balance { get; set; }
+
+        [Parameter("uint256", "percentage", 4)]
+        public virtual BigInteger Percentage { get; set; }
     }
 } 

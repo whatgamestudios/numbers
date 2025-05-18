@@ -14,6 +14,8 @@ namespace FourteenNumbers {
         public GameObject panelFreeType2;
         public GameObject panelFreeType3;
 
+        public GameObject panelOwnedContent;
+
         public GameObject panelOwned;
 
         // Claim button
@@ -47,11 +49,20 @@ namespace FourteenNumbers {
             int selected = SceneStore.GetBackground();
             setSelected(selected);
 
-            claimButton.interactable = false;
+            if (PassportStore.IsLoggedIn()) {
+                claimButton.interactable = false;
+            }
+            else {
+                claimButtonText.text = "Sign in to Claim";
+                claimButtonText.fontSize = 80;
+            }
+
         }
 
         public void OnEnable() {
-            StartLoaders();
+            if (PassportStore.IsLoggedIn()) {
+                StartLoaders();
+            }
         }
 
         public void OnDisable() {
@@ -61,7 +72,15 @@ namespace FourteenNumbers {
 
         public void OnButtonClick(string buttonText) {
             if (buttonText == "Claim") {
-                SceneManager.LoadScene("ClaimScene", LoadSceneMode.Additive);
+                if (PassportStore.IsLoggedIn()) {
+                    SceneManager.LoadScene("ClaimScene", LoadSceneMode.Additive);
+                }
+                else {
+                    SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
+                }
+            }
+            else if (buttonText == "Prob") {
+                SceneManager.LoadScene("ClaimProbScene", LoadSceneMode.Additive);
             }
             else {
                 // One of the image buttons has been pressed.
@@ -115,13 +134,16 @@ namespace FourteenNumbers {
                         img3.color = UnityEngine.Color.red;
                         break;
                 }
-            } else if (selected >= 100 && selected <= 103) {
+            } else if (selected >= 100) {
                 // Find the owned NFT panel with this ID
                 if (panelOwnedNfts != null) {
                     foreach (GameObject panel in panelOwnedNfts) {
                         if (panel != null) {
                             Button button = panel.GetComponentInChildren<Button>();
-                            if (button != null && button.name == $"button_Gen1_{selected}") {
+                            if (button != null && 
+                                (button.name == $"button_Gen1_{selected}") ||
+                                (button.name == $"button_Gen2_{selected}")
+                            ){
                                 Image panelImage = panel.GetComponent<Image>();
                                 if (panelImage != null) {
                                     panelImage.color = UnityEngine.Color.red;
@@ -169,9 +191,12 @@ namespace FourteenNumbers {
             
             // Resize panelOwned based on number of NFTs
             RectTransform panelOwnedRect = panelOwned.GetComponent<RectTransform>();
-            int topOfScreen = 247+220+20;
-            float panelHeight = topOfScreen + (owned.Length * 220) + 20; // 247 initial offset + (220 per panel) + 20 padding at bottom
+            int topOfScreen = 225+220+20;
+            float panelHeight = topOfScreen + (owned.Length * 220) + 20; // 225 initial offset + (220 per panel) + 20 padding at bottom
             panelOwnedRect.sizeDelta = new Vector2(panelOwnedRect.sizeDelta.x, panelHeight);
+
+            RectTransform panelOwnedContentRect = panelOwnedContent.GetComponent<RectTransform>();
+            panelOwnedContentRect.sizeDelta = new Vector2(panelOwnedContentRect.sizeDelta.x, panelHeight);
             
             // Create new array for panels
             panelOwnedNfts = new GameObject[owned.Length];
@@ -180,7 +205,7 @@ namespace FourteenNumbers {
             for (int i = 0; i < owned.Length; i++) {
                 SceneInfo sceneInfo = BackgroundsMetadata.GetInfo(owned[i]);
                 if (sceneInfo.resource == null) {
-                    Debug.Log("No resource found for NFT id: " + owned[i]);
+                    AuditLog.Log("No resource found for NFT id: " + owned[i]);
                     continue;
                 }
                 string buttonId = "button_" + sceneInfo.series + "_" + owned[i];
@@ -238,7 +263,9 @@ namespace FourteenNumbers {
                 // Add Button component
                 Button buttonComponent = buttonContainer.AddComponent<Button>();
                 
-                button.name = $"gen1_{owned[i]}"; // Set the button name to match the format
+                int offset = BackgroundsMetadata.OptionToType(owned[i]);
+                int gen = BackgroundsMetadata.OptionToGeneration(owned[i]);
+                button.name = $"gen{gen}_{offset}"; // Set the button name to match the format
                 buttonComponent.onClick.AddListener(() => OnButtonClick(button.name));
                 
                 // Create text container (right side)
