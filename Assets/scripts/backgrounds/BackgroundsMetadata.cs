@@ -182,7 +182,6 @@ namespace FourteenNumbers {
                 AuditLog.Log("Background Meta: Unknown button: " + buttonText);
                 return 1;
             }
-
         }
     }
 }
