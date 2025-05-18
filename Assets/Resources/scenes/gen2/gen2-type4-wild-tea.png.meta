@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7bd92576f2075423b91989b7c2638e4a
+guid: 7842223ef5226408bbe65c54b576fa78
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6513485428812731577
-    second: gen2-type4-garden_0
+      213: 891140913128113895
+    second: gen2-type4-wild-tea_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,7 +126,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: gen2-type4-garden_0
+      name: gen2-type4-wild-tea_0
       rect:
         serializedVersion: 2
         x: 0
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9b4d012dc7c846a50800000000000000
-      internalID: 6513485428812731577
+      spriteID: 7e681d360f7fd5c00800000000000000
+      internalID: 891140913128113895
       vertices: []
       indices: 
       edges: []
