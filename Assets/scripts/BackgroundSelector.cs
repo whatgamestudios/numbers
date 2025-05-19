@@ -169,7 +169,7 @@ namespace FourteenNumbers {
                     }
                 }
             } else {
-                AuditLogLog("Background Selector: Unknown option: " + selected);
+                AuditLog.Log("Background Selector: Unknown option: " + selected);
             }
         }
 
