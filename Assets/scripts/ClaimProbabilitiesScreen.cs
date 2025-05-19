@@ -29,7 +29,7 @@ namespace FourteenNumbers {
             // Get the ScrollRect component
             scrollRect = panelOwned.GetComponentInParent<ScrollRect>();
             if (scrollRect == null) {
-                Debug.LogError("No ScrollRect found in parent of panelOwned");
+                AuditLog.Log("ERROR: No ScrollRect found in parent of panelOwned");
                 return;
             }
 
@@ -136,7 +136,7 @@ namespace FourteenNumbers {
 
                 Texture2D tex = Resources.Load<Texture2D>(sceneInfo.resource);
                 if (tex == null) {
-                    Debug.Log("Resource not found: " + sceneInfo.resource);
+                    AuditLog.Log("Resource not found: " + sceneInfo.resource);
                 }
                 Rect size = new Rect(0.0f, 0.0f, tex.width, tex.height);
                 Vector2 pivot = new Vector2(0.0f, 0.0f);

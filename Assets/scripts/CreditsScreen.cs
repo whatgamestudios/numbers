@@ -18,7 +18,7 @@ namespace FourteenNumbers {
                 Application.OpenURL("https://whatgamestudios.com/14numbers");
             }
             else {
-                Debug.Log("Credits screen: Unknown button: " + buttonText);
+                AuditLog.Log("Credits screen: Unknown button: " + buttonText);
             }
         }
 

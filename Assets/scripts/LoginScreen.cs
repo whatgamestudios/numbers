@@ -49,9 +49,8 @@ namespace FourteenNumbers {
                     Vector2 pivot = new Vector2(0.0f, 0.0f);
                     Sprite s = Sprite.Create(initialTex, size, pivot);
                     buttonImage.sprite = s;
-                    Debug.Log($"Set initial button sprite: {initialResource}");
                 } else {
-                    Debug.LogError($"Failed to load initial button texture: {initialResource}");
+                    AuditLog.Log($"ERROR: Failed to load initial button texture: {initialResource}");
                 }
 
                 buttonAnimationRoutine = StartCoroutine(ButtonAnimationRoutine());
@@ -75,9 +74,8 @@ namespace FourteenNumbers {
                     Vector2 pivot = new Vector2(0.0f, 0.0f);
                     Sprite s = Sprite.Create(tex, size, pivot);
                     buttonImage.sprite = s;
-                    Debug.Log($"Set button sprite: {resource}");
                 } else {
-                    Debug.LogError($"Failed to load button texture: {resource}");
+                    AuditLog.Log($"ERROR: Failed to load button texture: {resource}");
                 }
 
                 // Increment frame counter and reset if needed
@@ -97,20 +95,20 @@ namespace FourteenNumbers {
                 SceneManager.LoadScene("HelpContextScene", LoadSceneMode.Additive);
             }
             else if (buttonText == "Login") {
-                Debug.Log("LoginPKCE start");
+                //Debug.Log("LoginPKCE start");
 #if (UNITY_ANDROID && !UNITY_EDITOR_WIN) || (UNITY_IPHONE && !UNITY_EDITOR_WIN) || UNITY_STANDALONE_OSX
                 await Passport.Instance.LoginPKCE();
 #else
                 await Passport.Instance.Login();
 #endif
-                Debug.Log("LoginPKCE done");
+                //Debug.Log("LoginPKCE done");
             }
             else if (buttonText == "Skip") {
                 DeepLinkManager.Instance.LoginPath = DeepLinkManager.LOGIN_SKIP;
                 SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
             }
             else {
-                Debug.Log("Unknown button");
+                AuditLog.Log("Login Screen: Unknown button");
             }
         }
 
@@ -137,7 +135,7 @@ namespace FourteenNumbers {
 
         private async void CheckLogin() {
             bool loggedIn = await Passport.Instance.HasCredentialsSaved();
-            Debug.Log("CheckLogin: Loggedin: " + loggedIn);
+            AuditLog.Log("CheckLogin: Loggedin: " + loggedIn);
             if (loggedIn) {
                 PassportStore.SetLoggedIn(true);
                 PassportStore.SetLoggedInChecked();

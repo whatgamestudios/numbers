@@ -15,7 +15,7 @@ namespace FourteenNumbers {
                 SceneManager.LoadScene("OtherMenuScene", LoadSceneMode.Single);
             }
             else {
-                Debug.Log("Unknown button");
+                AuditLog.Log($"OtherBackButtonHandler: Unknown button: {buttonText}");
             }
         }
     }

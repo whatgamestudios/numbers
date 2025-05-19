@@ -43,10 +43,10 @@ namespace FourteenNumbers {
          */
         public static void FetchAndProcessNfts(MonoBehaviour mono) {
             if (Syncing) {
-                Debug.Log("Already syncing");
+                AuditLog.Log("Already syncing");
                 return;
             }
-            Debug.Log("Sync started");
+            AuditLog.Log("Sync started");
 
             // Kick off the syncing process.
             string accountAddress = PassportStore.GetPassportAccount();
@@ -65,7 +65,7 @@ namespace FourteenNumbers {
         public static IEnumerator FetchImmutableNfts(string accountAddress, string contractAddress, System.Action<string> callback) {
             Syncing = true;
             string url = $"https://api.immutable.com/v1/chains/imtbl-zkevm-mainnet/accounts/{accountAddress}/nfts?contract_address={contractAddress}";
-            Debug.Log("url: " + url);
+            //Debug.Log("url: " + url);
             using (UnityEngine.Networking.UnityWebRequest request = UnityEngine.Networking.UnityWebRequest.Get(url)) {
                 request.SetRequestHeader("Accept", "application/json");
                 yield return request.SendWebRequest();
@@ -73,7 +73,7 @@ namespace FourteenNumbers {
                 if (request.result == UnityEngine.Networking.UnityWebRequest.Result.Success) {
                     callback?.Invoke(request.downloadHandler.text);
                 } else {
-                    Debug.LogError($"Error fetching NFTs: {request.error}");
+                    AuditLog.Log($"ERROR: Error fetching NFTs: {request.error}");
                     callback?.Invoke(null);
                 }
             }
@@ -85,15 +85,15 @@ namespace FourteenNumbers {
          * @param json The JSON response string.
          */
         public static void ProcessNftResponse(string json) {
-            Debug.Log("json response: " + json);
+            //Debug.Log("json response: " + json);
             if (json != null) {
                 try {
                     var nftData = JsonUtility.FromJson<NftResponse>(json);
                     if (nftData == null) {
-                        Debug.Log("NFT data null");
+                        AuditLog.Log("ERROR: NFT data null");
                     }
                     else if (nftData.result == null) {
-                        Debug.Log("nftData.result null");
+                        AuditLog.Log("ERROR: nftData.result null");
                     }
                     else {
                         var tokenIds = new int[nftData.result.Length];
@@ -101,13 +101,13 @@ namespace FourteenNumbers {
                         for (int i = 0; i < nftData.result.Length; i++) {
                             tokenIds[i] = Int32.Parse(nftData.result[i].token_id);
                             balances[i] = Int32.Parse(nftData.result[i].balance);
-                            Debug.Log($"NFT ID: {tokenIds[i]}, Balance: {balances[i]}");
+                            //Debug.Log($"NFT ID: {tokenIds[i]}, Balance: {balances[i]}");
                         }
                         SceneStore.SetOwned(tokenIds, balances);
-                        Debug.Log("Token IDs: " + string.Join(", ", tokenIds));
+                        //Debug.Log("Token IDs: " + string.Join(", ", tokenIds));
                     }
                 } catch (Exception e) {
-                    Debug.LogError($"Error parsing NFT data: {e.Message}");
+                    AuditLog.Log($"ERROR: Error parsing NFT data: {e.Message}");
                 }
                 SceneStore.SetNftsSynced();
                 AuditLog.Log("Synced NFT collection");

@@ -77,7 +77,7 @@ namespace FourteenNumbers {
                 show(newDay);
             }
             else {
-                Debug.Log("Unknown button: " + buttonText);
+                AuditLog.Log($"Unknown button: {buttonText}");
             }
         }
 

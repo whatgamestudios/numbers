@@ -33,11 +33,11 @@ namespace FourteenNumbers {
                     format(sol2, (uint) result2, points2) + "\n" +
                     format(sol3, (uint) result3, points3) + "\n" +
                     "Total: " + total + " points";
-                Debug.Log("Share: \n" + msg);
+                AuditLog.Log("Share: \n" + msg);
                 SunShineNativeShare.instance.ShareText(msg, msg);
             }
             else {
-                Debug.Log("Unknown button");
+                AuditLog.Log($"Share Manager: Unknown button: {buttonText}");
             }
         }
 

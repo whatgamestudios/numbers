@@ -30,7 +30,7 @@ namespace FourteenNumbers {
             ClaimedDayOutputDTO claimedDaysObj = await service.ClaimedDayQueryAsync(address);
             BigInteger daysClaimedInt = claimedDaysObj.DaysClaimed;
             if (daysClaimedInt < 0 || daysClaimedInt > uint.MaxValue) {
-                Debug.LogError($"DaysClaimedInt {daysClaimedInt} is outside uint range");
+                AuditLog.Log($"ERROR: DaysClaimedInt {daysClaimedInt} is outside uint range");
                 // Use 7 to indicate an error.
                 return 7;
             }
@@ -46,7 +46,7 @@ namespace FourteenNumbers {
                 return result.ClaimableTokens;
             }
             catch (Exception ex) {
-                AuditLog.Log($"Error getting claimable NFTs: {ex.Message}");
+                AuditLog.Log($"ERROR: Error getting claimable NFTs: {ex.Message}");
                 return new List<ClaimableTokenDTO>();
             }
         }

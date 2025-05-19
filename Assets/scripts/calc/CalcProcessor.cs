@@ -45,7 +45,6 @@ namespace FourteenNumbers {
 
 
         public (int, int) Calc(string input) {
-            //Debug.Log("Input: " + input);
             int error = Parse(input);
             if (error != ERR_NO_ERROR) {
                 return (0, error);
@@ -129,7 +128,7 @@ namespace FourteenNumbers {
                         s = "100";
                         break;
                     default:
-                        Debug.Log("Unknown symbol");
+                        AuditLog.Log("Unknown symbol");
                         break;
                 }
                 strs[i] = s;
@@ -186,7 +185,6 @@ namespace FourteenNumbers {
                         }
                         if (inNumber) {
                             if (!isValidNumber(currentNumber)) {
-                                //Debug.Log("Invalid number 1: " + currentNumber);
                                 return ERR_INVALID_NUMBER1;
                             }
                             tokens[index++] = currentNumber;
@@ -283,9 +281,7 @@ namespace FourteenNumbers {
 
 
         private (int, int) process(int startOfs, int endOfs) {
-            //Debug.Log("process start: " + startOfs + " endOfs:" + endOfs);
             (int leftVal, int newStart, int error) = getVal(startOfs, endOfs);
-            //Debug.Log("getVal leftVal: " + leftVal + " newStart:" + newStart);
             if (error != ERR_NO_ERROR) {
                 return (0, error);
             }
@@ -296,7 +292,6 @@ namespace FourteenNumbers {
                 int operation = getOp(newStart);
                 int rightVal;
                 (rightVal, newStart, error) = getVal(newStart + 1, endOfs);
-                //Debug.Log("getVal rightVal: " + rightVal + " newStart:" + newStart);
                 if (error != ERR_NO_ERROR) {
                     return (0, error);
                 }
@@ -313,7 +308,6 @@ namespace FourteenNumbers {
                         }
                         int nextRightVal;
                         (nextRightVal, newStart, error) = getVal(newStart + 1, endOfs);
-                        //Debug.Log("getVal nextRightVal: " + rightVal + " newStart:" + newStart);
                         if (error != ERR_NO_ERROR) {
                             return (0, error);
                         }
@@ -338,7 +332,6 @@ namespace FourteenNumbers {
         }
 
         private (int, int, int) getVal(int startOfs, int endOfs) {
-            //Debug.Log("getVal: " + startOfs + " endOfs:" + endOfs);
             int result;
             int error;
             if (tokens[startOfs] == TOKEN_LEFT) {
@@ -347,9 +340,7 @@ namespace FourteenNumbers {
                 if (error != ERR_NO_ERROR) {
                     return (0, 0, error);
                 }
-                //Debug.Log("if left ofsright: " + ofsRight);
                 (result, error) = process(startOfs+1, ofsRight - 1);
-                //Debug.Log("process result: " + result);
                 if (error != ERR_NO_ERROR) {
                     return (0, 0, error);
                 }
@@ -363,17 +354,13 @@ namespace FourteenNumbers {
 
 
         private (int, int) scanForMatchingRight(int startOfs, int endOfs) {
-            //Debug.Log("scan start: " + startOfs + " len: " + tokens.Length);
             int ofs = startOfs;
             int leftRightCount = 0;
             for (ofs = startOfs; ofs <= endOfs; ofs++) {
-                //Debug.Log("scan at ofs: " + ofs);
                 if (tokens[ofs] == TOKEN_LEFT) {
-                    //Debug.Log("scan left found");
                     leftRightCount++;
                 }
                 if (tokens[ofs] == TOKEN_RIGHT) {
-                    //Debug.Log("scan right found");
                     if (leftRightCount == 0) {
                         break;
                     }

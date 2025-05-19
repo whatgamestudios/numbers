@@ -91,7 +91,7 @@ namespace FourteenNumbers {
                 SceneManager.LoadScene("HelpContextScene", LoadSceneMode.Additive);
             }
             else {
-                Debug.Log("Unknown button");
+                AuditLog.Log($"Show Stats: Unknown button: {buttonText}");
             }
         }
 

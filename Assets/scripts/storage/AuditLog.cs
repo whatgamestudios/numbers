@@ -7,7 +7,7 @@ namespace FourteenNumbers {
     public class AuditLog {
         public const string AUDIT_NEXT = "AUDIT_NEXT";
         public const string AUDIT_ENTRY = "AUDIT_ENTRY";
-        public const uint LOG_SIZE = 100;
+        public const uint LOG_SIZE = 300;
 
         public static void Log(string entry) {
             string timestamp = DateTime.Now.ToString("yyyyMMdd: HHmmss");

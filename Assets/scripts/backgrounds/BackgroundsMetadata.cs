@@ -26,7 +26,7 @@ namespace FourteenNumbers {
                 case 2:
                     return getGen2Info(type);
                 default:
-                    Debug.Log("Unknown generation: " + generation);
+                    AuditLog.Log($"Unknown generation: {generation}");
                     return getDefaultInfo();
             }
         }
@@ -60,7 +60,7 @@ namespace FourteenNumbers {
                     info.SetMetadata("Koi", "Free", "Common", 0, "Olga Graholskaya");
                     break;
                 default:
-                    Debug.Log("BackgroundMetadata: Unknown free type: " + type);
+                    AuditLog.Log($"BackgroundMetadata: Unknown free type: {type}");
                     info = getDefaultInfo();
                     break;
             }
@@ -87,7 +87,7 @@ namespace FourteenNumbers {
                     info.SetMetadata("Yellow Flowers", "Gen1", "Common", 1000, "Unknown");
                     break;
                 default:
-                    Debug.Log("Unknown gen1 type: " + type);
+                    AuditLog.Log($"Unknown gen1 type: {type}");
                     info = getDefaultInfo();
                     break;
             }
@@ -126,7 +126,7 @@ namespace FourteenNumbers {
                     info.SetMetadata("Garden", "Gen2", "Common", 1000, "Burbura");
                     break;
                 default:
-                    Debug.Log("Unknown gen1 type: " + type);
+                    AuditLog.Log($"Unknown gen2 type: {type}");
                     info = getDefaultInfo();
                     break;
             }

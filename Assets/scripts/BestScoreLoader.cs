@@ -39,12 +39,10 @@ namespace FourteenNumbers {
                 BestScore = (uint) Stats.GetBestPointsToday();
                 if (BestScore == 210) {
                     LoadedBestScore = true;
-                    Debug.Log("Best Solution Today loaded from cache");
                 }
             }
 
             if (!LoadedBestScore) {
-                Debug.Log("Loading Best Solution Today");
                 loadRoutine = StartCoroutine(LoadRoutine());
             }
         }
@@ -59,7 +57,7 @@ namespace FourteenNumbers {
             BestScore = await fourteenNumbersContracts.GetBestScore(gameDay);
             LoadedBestScore = true;
             Stats.SetBestPointsToday((int) BestScore);
-            Debug.Log("Best Solution Today: " + BestScore);
+            AuditLog.Log("Best Solution Today: " + BestScore);
             BestScoreLoaded();
         }
 

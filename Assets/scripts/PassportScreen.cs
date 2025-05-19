@@ -62,7 +62,7 @@ namespace FourteenNumbers {
                 }
             }
             else {
-                Debug.Log("Passport: Unknown button: " + buttonText);
+                AuditLog.Log("Passport: Unknown button: " + buttonText);
             }
         }
 

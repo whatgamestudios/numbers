@@ -64,7 +64,6 @@ namespace FourteenNumbers {
             DateTime now = getTimeNow();
             DateTime startOfDay = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
             TimeSpan diff = now.Subtract(startOfDay);
-            Debug.Log("time span: " + diff.ToString());
             string format = "{0,2:D2}:{1,2:D2}:{2,2:D2}";
             return string.Format(format, diff.Hours, diff.Minutes, diff.Seconds);
         }

@@ -40,8 +40,6 @@ namespace FourteenNumbers {
         }
 
         public async Task<(bool success, TransactionReceiptResponse receipt)> executeTransaction(byte[] abiEncoding) {
-            // Debug.Log("ExeTx: " + HexDump.Dump(abiEncoding));
-
             while (true) {
                 try {
                     DateTime start = DateTime.Now;

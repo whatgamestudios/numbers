@@ -36,7 +36,7 @@ namespace FourteenNumbers {
                 SceneManager.LoadScene("CreditsScene", LoadSceneMode.Single);
             }
             else {
-                Debug.Log("Other Menu: Unknown button" + buttonText);
+                AuditLog.Log("Other Menu: Unknown button" + buttonText);
             }
         }
     }

@@ -17,7 +17,6 @@ namespace FourteenNumbers {
             uint val = 0;
             do {
                 val = SeedGen.GetNextValue(seed, count++, high);
-                Debug.Log("Seed value: count: " + count + ", val: " + val);
             } while (val < low);
             return val;
         }

@@ -138,7 +138,7 @@ namespace FourteenNumbers {
                     await PassportLogin.Login();
                 }
                 uint gameDayNow = Timeline.GameDay();
-                Debug.Log("Game Day: Existing: " + gameDayInt + " Now: " + gameDayNow);
+                AuditLog.Log("Game Day: Existing: " + gameDayInt + " Now: " + gameDayNow);
                 if (gameDayNow != gameDayInt) {
                     gameDayInt = gameDayNow;
                     startANewDay(gameDayInt);
@@ -299,7 +299,7 @@ namespace FourteenNumbers {
             }
             catch (System.Exception ex) {
                 MessagePass.SetErrorMsg("Err: " + ex.Message);
-                Debug.Log("Err: " + ex.Message);
+                AuditLog.Log("Error: " + ex.Message);
                 SceneManager.LoadScene("ErrorScene", LoadSceneMode.Additive);
                 return false;
             }
@@ -360,7 +360,7 @@ namespace FourteenNumbers {
         }
 
         private void startANewDay(uint todaysGameDay) {
-            Debug.Log("Starting new game day: " + todaysGameDay);
+            AuditLog.Log("Starting new game day: " + todaysGameDay);
             panelShare.SetActive(false);
             panelPublish.SetActive(false);
 
@@ -677,7 +677,7 @@ namespace FourteenNumbers {
                     input3.text = val;
                     break;
                 default:
-                    Debug.Log("Attempt not supported2");
+                    AuditLog.Log("ERROR: Attempt not supported2: {attempt}");
                     break;
             }
         }
@@ -694,7 +694,7 @@ namespace FourteenNumbers {
                     calculated3.text = val;
                     break;
                 default:
-                    Debug.Log("Attempt not supported3");
+                    AuditLog.Log("ERROR: Attempt not supported3: {attempt}");
                     break;
             }
         }
@@ -712,7 +712,7 @@ namespace FourteenNumbers {
                     pointsEarned3 = pointsEarned;
                     break;
                 default:
-                    Debug.Log("Attempt not supported3");
+                    AuditLog.Log("ERROR: Attempt not supported3: {attempt}");
                     break;
             }
         }
@@ -742,7 +742,7 @@ namespace FourteenNumbers {
                     Stats.SetSolution3(gameDayInt, solution, (int)points);
                     break;
                 default:
-                    Debug.Log("Attempt not supported4");
+                    AuditLog.Log("ERROR: Attempt not supported4: {attempt}");
                     break;
             }
         }
@@ -753,7 +753,6 @@ namespace FourteenNumbers {
         * Process all solutions.
         */
         private void reprocessSolutions() {
-            Debug.Log("Reprocessing solutions");
             string solution1;
             string solution2;
             string solution3;
@@ -761,7 +760,7 @@ namespace FourteenNumbers {
             if (solution1.Length == 0) {
                 // This shouldn't happen, because the first solution should have been submitted
                 // to register the new game day.
-                Debug.Log("Unexpectedly, solution1 has zero length");
+                AuditLog.Log("Unexpectedly, solution1 has zero length");
                 return;
             }
             reprocessSingleSolution(solution1);
@@ -776,12 +775,11 @@ namespace FourteenNumbers {
         }
 
         private void reprocessSingleSolution(string solution) {
-            Debug.Log("Reprocessing solution: " + solution);
             CalcProcessor processor = new CalcProcessor();
             int errorCode = processor.Parse(solution);
             if (errorCode != CalcProcessor.ERR_NO_ERROR) {
                 // This shouldn't happen as the input should be valid coming from storage.
-                Debug.Log("Reprocessing solution error: " + errorCode);
+                AuditLog.Log("Reprocessing solution error: " + errorCode);
                 return;
             }
             string[] buttonPresses = processor.GetTokensAsStrings();
@@ -860,7 +858,6 @@ namespace FourteenNumbers {
             }
             else {
                 helpScreenMessage = "Well done";
-                Debug.Log("ShowEndResult with: " + pointsEarnedTotal);
             }
         }
 

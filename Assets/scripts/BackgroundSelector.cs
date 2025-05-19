@@ -40,7 +40,7 @@ namespace FourteenNumbers {
             // Get the ScrollRect component
             scrollRect = panelOwned.GetComponentInParent<ScrollRect>();
             if (scrollRect == null) {
-                Debug.LogError("No ScrollRect found in parent of panelOwned");
+                AuditLog.Log("ERROR: No ScrollRect found in parent of panelOwned");
                 return;
             }
 
@@ -98,7 +98,7 @@ namespace FourteenNumbers {
         }
 
         private void setSelected(int selected) {
-            Debug.Log("Background Selector: select: " + selected);
+            AuditLog.Log("Background Selector: select: " + selected);
 
             // Handle free panels
             Image img1 = panelFreeType1.GetComponent<Image>();
@@ -149,13 +149,13 @@ namespace FourteenNumbers {
                                     panelImage.color = UnityEngine.Color.red;
                                 }
                                 else {
-                                    Debug.Log("Background Selector: Panel image is null");
+                                    AuditLog.Log("Background Selector: Panel image is null");
                                 }
                                 break;
                             }
                             else {
                                 if (button == null) {
-                                    Debug.Log("Background Selector: Button is null");
+                                    AuditLog.Log("Background Selector: Button is null");
                                 }
                                 else {
                                     // This is expected - no need to log
@@ -164,12 +164,12 @@ namespace FourteenNumbers {
                             }
                         }
                         else {
-                            Debug.Log("Background Selector: Panel is null");
+                            AuditLog.Log("Background Selector: Panel is null");
                         }
                     }
                 }
             } else {
-                Debug.Log("Background Selector: Unknown option: " + selected);
+                AuditLogLog("Background Selector: Unknown option: " + selected);
             }
         }
 
@@ -253,7 +253,7 @@ namespace FourteenNumbers {
 
                 Texture2D tex = Resources.Load<Texture2D>(sceneInfo.resource);
                 if (tex == null) {
-                    Debug.Log("Resource not found: " + sceneInfo.resource);
+                    AuditLog.Log("ERROR: Resource not found: " + sceneInfo.resource);
                 }
                 Rect size = new Rect(0.0f, 0.0f, tex.width, tex.height);
                 Vector2 pivot = new Vector2(0.0f, 0.0f);

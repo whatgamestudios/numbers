@@ -20,7 +20,7 @@ namespace FourteenNumbers {
                 Instance = this;
                 // Register the deep link handler.
                 Application.deepLinkActivated += onDeepLinkActivated;
-                Debug.Log("Deep link handler registered");
+                AuditLog.Log("Deep link handler registered");
 
                 if (!string.IsNullOrEmpty(Application.absoluteURL)) {
                     // Cold start and Application.absoluteURL not null so process Deep Link.
@@ -45,17 +45,17 @@ namespace FourteenNumbers {
 
             if (url == PassportLogin.RedirectUri) {
                 PassportStore.SetLoggedIn(true);
-                Debug.Log("Deep link is login");
+                AuditLog.Log("Deep link is login");
                 LoginPath = DEEP_LINK;
                 SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
             }
             else if (url == PassportLogin.LogoutUri) {
                 PassportStore.SetLoggedIn(false);
-                Debug.Log("Deep link is logout");
+                AuditLog.Log("Deep link is logout");
                 SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
             }
             else {
-                Debug.LogWarning("Unknown deeplink: " + url);
+                AuditLog.Log("ERROR: Unknown deeplink: " + url);
             }
         }
     }
