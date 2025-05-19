@@ -55,6 +55,7 @@ namespace FourteenNumbers {
         }
 
         private void drawAvailablePanel() {
+            limitClaimableNftsTo100Percent();
             int numClaimable = claimableNfts.Count;
             int height = 280;
             
@@ -83,7 +84,6 @@ namespace FourteenNumbers {
             panelAvailableNfts = new GameObject[numClaimable];
             
             // Create panels for each background
-            bool isFirstDefault = true;
             int i = 0;
             foreach (var nft in claimableNfts) {
                 int tokenId = (int) nft.TokenId;
@@ -162,10 +162,6 @@ namespace FourteenNumbers {
                 textMesh.textWrappingMode = TextWrappingModes.Normal;
                 int available = (int) nft.Balance;
                 double dropRate = ((double) nft.Percentage) / 100.0;
-                if (isFirstDefault && dropRate == 0.0) {
-                    isFirstDefault = false;
-                    dropRate = calcResidual();
-                }
 
                 string text = sceneInfo.name + "\n" +
                                 sceneInfo.series + " " + sceneInfo.rarity + "\n" +
@@ -210,12 +206,43 @@ namespace FourteenNumbers {
             }
         }
 
-        private double calcResidual() {
-            int total = 0;
+
+        private void limitClaimableNftsTo100Percent() {
+            List<ClaimableTokenDTO> claimableNftsLimited = new List<ClaimableTokenDTO>();
+
+            int numClaimable = claimableNfts.Count;
+            double totalPercentage = 0.0;
+            int defaultOffset = -1;
+            int i = 0;
             foreach (var nft in claimableNfts) {
-                total += (int) nft.Percentage;
+                double dropRate = ((double) nft.Percentage) / 100.0;
+                if (dropRate == 0.0) {
+                    // This is a default token
+                    if (defaultOffset == -1) {
+                        defaultOffset = i;
+                    }
+                }
+                else if (totalPercentage < 100.0) {
+                    double newTotal = totalPercentage + dropRate;
+                    if (newTotal > 100) {
+                        dropRate = 100 - totalPercentage;
+                        nft.Percentage = (uint) dropRate * 100;
+                        // Assign 100.0 rather than totalPercentage + dropRate just in case there is a rounding / quantaization issue.
+                        totalPercentage = 100.0; 
+                    }
+                    else {
+                        totalPercentage = newTotal;
+                    }
+                    claimableNftsLimited.Add(nft);
+                }
+                i++;
             }
-            return (double)(10000 - total) / 100.0;
+
+            if (totalPercentage < 100.0 && defaultOffset != -1) {
+                claimableNfts[defaultOffset].Percentage = (uint)((100.0 - totalPercentage) * 100.0);
+                claimableNftsLimited.Add(claimableNfts[defaultOffset]);
+            }
+            claimableNfts = claimableNftsLimited;
         }
     }
 }
