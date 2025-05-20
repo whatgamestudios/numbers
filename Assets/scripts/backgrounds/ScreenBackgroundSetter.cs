@@ -12,14 +12,14 @@ namespace FourteenNumbers {
         public static void SetPanelBackground(GameObject panel) {
             Image img = panel.GetComponent<Image>();
             if (img == null) {
-                Debug.Log("No raw image");
+                AuditLog.Log("ERROR: No raw image");
                 return;
             }
 
             // Get the current selected background. If due to asset sync, that background is no longer
             // owned, switch to the default background.
             int tokenId = SceneStore.GetBackground();
-            if (!ScreenBackground.IsOwned(tokenId)) {
+            if (!ScreenBackground.IsOwned(tokenId) && tokenId > 10) {
                 tokenId = SceneStore.BG_DEFAULT;
             }
             SceneInfo sceneInfo = BackgroundsMetadata.GetInfo(tokenId);
@@ -27,7 +27,7 @@ namespace FourteenNumbers {
             // Set the background image.
             Texture2D tex = Resources.Load<Texture2D>(sceneInfo.resource);
             if (tex == null) {
-                Debug.Log("Resource not found: " + sceneInfo.resource);
+                AuditLog.Log("ERROR: Resource not found: " + sceneInfo.resource);
             }
             Rect size = new Rect(0.0f, 0.0f, tex.width, tex.height);
             Vector2 pivot = new Vector2(0.0f, 0.0f);

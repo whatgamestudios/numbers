@@ -62,7 +62,7 @@ namespace FourteenNumbers {
                 code = "";
             }
             else {
-                Debug.Log("CheatCode: Unknown button: " + buttonText);
+                AuditLog.Log("CheatCode: Unknown button: " + buttonText);
             }
 
             cheatCodeText.text = translate(code);
@@ -85,20 +85,20 @@ namespace FourteenNumbers {
         }
 
         private async void executeCheatCode(string cheatCode) {
-            Debug.Log("CheatCode: " + cheatCode);
+            AuditLog.Log("CheatCode: " + cheatCode);
             if (cheatCode == "AAAA") {
-                Debug.Log("CheatCode: Logout start");
+                AuditLog.Log("CheatCode: Logout start");
                 await Passport.Instance.Logout();
                 PassportStore.SetLoggedIn(false);
-                Debug.Log("CheatCode: Logout done");
+                AuditLog.Log("CheatCode: Logout done");
                 SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
             }
             else if (cheatCode == "BBBB") {
-                Debug.Log("CheatCode: FakeOwnership start");
+                AuditLog.Log("CheatCode: FakeOwnership start");
                 ScreenBackground.FakeOwnership = true;
             }
             else if (cheatCode == "CCCC") {
-                Debug.Log("CheatCode: FakeOwnership stop");
+                AuditLog.Log("CheatCode: FakeOwnership stop");
                 ScreenBackground.FakeOwnership = false;
             }
 

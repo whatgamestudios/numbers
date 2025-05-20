@@ -27,7 +27,7 @@ namespace FourteenNumbers {
                 Application.OpenURL("https://x.com/14_numbers");
             }
             else {
-                Debug.Log("Unknown button " + buttonText);
+                AuditLog.Log($"Socials Screen: Unknown button: {buttonText}");
             }
         }
     }

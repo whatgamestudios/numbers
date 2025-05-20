@@ -43,7 +43,7 @@ namespace FourteenNumbers {
             // Check login
             bool isLoggedIn = PassportStore.IsLoggedIn();
             bool recentlyCheckedLogin = PassportStore.WasLoggedInRecently();
-            Debug.Log("isloggedIn: " + isLoggedIn + ", recentlyCheckedLogin: " + recentlyCheckedLogin);
+            AuditLog.Log("isloggedIn: " + isLoggedIn + ", recentlyCheckedLogin: " + recentlyCheckedLogin);
             
             if (isLoggedIn) {
                 if (!recentlyCheckedLogin) {

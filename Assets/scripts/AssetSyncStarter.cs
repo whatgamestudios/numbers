@@ -13,9 +13,7 @@ namespace FourteenNumbers {
     public class AssetSyncStarter : MonoBehaviour {
 
         public void Start() {
-            Debug.Log("AssetSync starter");
-            Debug.Log("DoINeedToCheckOwnedNfts: " + SceneStore.DoINeedToCheckOwnedNfts());
-
+            AuditLog.Log("AssetSync started: DoINeedToCheckOwnedNfts: " + SceneStore.DoINeedToCheckOwnedNfts());
             if (SceneStore.DoINeedToCheckOwnedNfts()) {
                 ScreenBackground.FetchAndProcessNfts(this);
             }

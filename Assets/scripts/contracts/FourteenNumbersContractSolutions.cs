@@ -35,7 +35,7 @@ namespace FourteenNumbers {
             SolutionsOutputDTO solution = await service.SolutionsQueryAsync(gameDay);
             BigInteger bestScoreBigInt = solution.Points;
             if (bestScoreBigInt < 0 || bestScoreBigInt > uint.MaxValue) {
-                Debug.LogError($"Number {bestScoreBigInt} is outside uint range");
+                AuditLog.Log($"ERROR: Number {bestScoreBigInt} is outside uint range");
                 // Use 7 to indicate an error.
                 return 7;
             }
@@ -53,7 +53,7 @@ namespace FourteenNumbers {
             StatsOutputDTO stats = await service.StatsQueryAsync(address);
             BigInteger daysPlayedInt = stats.DaysPlayed;
             if (daysPlayedInt < 0 || daysPlayedInt > uint.MaxValue) {
-                Debug.LogError($"Number {daysPlayedInt} is outside uint range");
+                AuditLog.Log($"ERROR: Number {daysPlayedInt} is outside uint range");
                 // Use 7 to indicate an error.
                 return 7;
             }

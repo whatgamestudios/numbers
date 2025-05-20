@@ -29,7 +29,7 @@ namespace FourteenNumbers {
             switch (currentStorageVersion) {
                 case STORAGE_VERSION_0:
                     // Upgrade from 0 to latest.
-                    Debug.Log("Upgrading storage from " + STORAGE_VERSION_0 + " to " + STORAGE_VERSION_1);
+                    AuditLog.Log("Upgrading storage from " + STORAGE_VERSION_0 + " to " + STORAGE_VERSION_1);
                     PlayerPrefs.SetInt(STORAGE_VERSION, STORAGE_VERSION_1);
 
                     int back = SceneStore.GetBackground();
@@ -40,7 +40,7 @@ namespace FourteenNumbers {
                     PlayerPrefs.Save();
                     break;
                 default:
-                    Debug.Log("Unknown storage version: " + currentStorageVersion);
+                    AuditLog.Log("Unknown storage version: " + currentStorageVersion);
                     break;            
             }
         }

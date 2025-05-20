@@ -129,10 +129,10 @@ TextureImporter:
       name: gen2-type3-circuit_0
       rect:
         serializedVersion: 2
-        x: 216
+        x: 0
         y: 0
-        width: 1065
-        height: 1061
+        width: 1500
+        height: 1499
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

@@ -15,10 +15,10 @@ namespace FourteenNumbers {
 
         public void OnButtonClick(string buttonText) {
             if (buttonText == "Website") {
-                Application.OpenURL("https://whatgamestudios.com/");
+                Application.OpenURL("https://whatgamestudios.com/14numbers");
             }
             else {
-                Debug.Log("Credits screen: Unknown button: " + buttonText);
+                AuditLog.Log("Credits screen: Unknown button: " + buttonText);
             }
         }
 
