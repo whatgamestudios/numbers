@@ -17,7 +17,12 @@ namespace FourteenNumbers {
             if (buttonText == "Website") {
                 Application.OpenURL("https://whatgamestudios.com/14numbers");
             }
-            else {
+            else if (buttonText == "Privacy") {
+                Application.OpenURL("https://whatgamestudios.com/14numbers/privacy-policy/");
+            }
+
+            else
+            {
                 AuditLog.Log("Credits screen: Unknown button: " + buttonText);
             }
         }
