@@ -63,20 +63,13 @@ namespace FourteenNumbers {
                     }
                 }
                 catch (System.Exception ex) {
-                    string errorMessage = $"Tx exception: {ex.Message}\nStack: {ex.StackTrace}";
-                    if (errorMessage.IndexOf("TimeoutException:") != -1) {
-                        if (retryCount == MAX_RETRIES) {
-                            AuditLog.Log($"Transaction: Timed out: Too many retries: {retryCount}");
-                            return (false, null);
-                        }
-                        else {
-                            AuditLog.Log($"Transaction: Timed out: Retry count: {retryCount}");
-                            retryCount++;
-                        }
+                    if (retryCount == MAX_RETRIES) {
+                        AuditLog.Log($"ERROR TxExp: Retry: {retryCount} too many, Exception: {ex.Message}\nStack: {ex.StackTrace}"); 
+                        return (false, null);
                     }
                     else {
-                        AuditLog.Log(errorMessage);
-                        return (false, null);
+                        AuditLog.Log($"ERROR TxExp: Retry: {retryCount}, Exception: {ex.Message}"); 
+                        retryCount++;
                     }
                 }
             }
