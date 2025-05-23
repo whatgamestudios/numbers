@@ -46,8 +46,8 @@ namespace FourteenNumbers {
                     AuditLog.Log("Checkin transaction");
                     var checkInSuccess = await contract.SubmitCheckIn(gameDay);
                     AuditLog.Log("Checkin: " + checkInSuccess.ToString());
-                }
-                else {
+                    CheckInStore.DoCheckIn(gameDay);
+                } else {
                     AuditLog.Log("Checked in today already");
                 }
             }
