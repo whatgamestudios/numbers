@@ -5,10 +5,3 @@ TextScriptImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 127249
-  packageName: Native Share For Android And iOS
-  packageVersion: 3.0
-  assetPath: Assets/Plugins/Android/AndroidManifest.xml
-  uploadId: 725019

@@ -25,7 +25,7 @@
 
  <provider
           android:name="androidx.core.content.FileProvider"
-          android:authorities="com.SmileSoft.unityplugin"
+          android:authorities="com.whatgamestudios.numbers.unityplugin"
           android:exported="false"
           android:grantUriPermissions="true">
         <meta-data
