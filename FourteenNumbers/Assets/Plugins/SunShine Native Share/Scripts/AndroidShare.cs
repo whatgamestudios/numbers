@@ -14,9 +14,9 @@ public class AndroidShare : MonoBehaviour, INativeShare
 
     private static void SetUpShare()
     {
-        if (_share == null)
-        {
+        if (_share == null) {
             _share = new AndroidJavaObject("com.SmileSoft.unityplugin.Share.ShareFragment");
+//            _share = new AndroidJavaObject("com.whatgamestudios.numbers.unityplugin.Share.ShareFragment");
             _share.Call("SetUp", SunShineNativeShare.fileProviderName, "NativeShare", "ShareCallback");
         }
 

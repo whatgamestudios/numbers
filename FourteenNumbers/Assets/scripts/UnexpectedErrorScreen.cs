@@ -14,9 +14,17 @@ namespace FourteenNumbers {
             AuditLog.Log("Unexpected Error screen");
         }
 
-        public void OnButtonClick(string _unusedButton) {
+        public void OnButtonClick(string buttonText) {
+            if (buttonText == "Share") {
                 string msg = AuditLog.GetLogs();
                 SunShineNativeShare.instance.ShareText(msg, msg);
+            }
+            else if (buttonText == "GoToGame") {
+                SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
+            }
+            else {
+                AuditLog.Log($"Unexpected E Screen: Unknwon Button: {buttonText}");
+            }
         }
     }
 }
