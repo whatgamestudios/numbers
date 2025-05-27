@@ -61,6 +61,9 @@ namespace FourteenNumbers {
                     SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
                 }
             }
+            else if (buttonText == "Warning") {
+                Application.OpenURL("https://whatgamestudios.com/14numbers/investor-warning/");
+            }
             else {
                 AuditLog.Log("Passport: Unknown button: " + buttonText);
             }
