@@ -10,15 +10,17 @@ using Immutable.Passport;
 using System.Threading.Tasks;
 
 namespace FourteenNumbers {
-    public class WelcomeScreen : MonoBehaviour {
-        public async Task Start() {
+    public class WelcomeScreen : MonoBehaviour
+    {
+        public async Task Start()
+        {
             AuditLog.Log("Welcome screen");
             try
             {
                 await PassportLogin.Init();
 
                 // If the player is already logged in, then skip the login screen
-                if (PassportStore.IsLoggedIn() || await Passport.Instance.HasCredentialsSaved())
+                if (await Passport.Instance.HasCredentialsSaved())
                 {
                     // Try to log in using saved credentials
                     bool success = await Passport.Instance.Login(useCachedSession: true);
@@ -40,8 +42,9 @@ namespace FourteenNumbers {
                     SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
                 }
             }
-            catch (Exception ex) {
-                AuditLog.Log($"ERROR during start-up: {ex.Message}\nStack: {ex.StackTrace}"); 
+            catch (Exception ex)
+            {
+                AuditLog.Log($"ERROR during start-up: {ex.Message}\nStack: {ex.StackTrace}");
                 SceneManager.LoadScene("UnexpectedErrorScene", LoadSceneMode.Single);
             }
         }

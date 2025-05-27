@@ -12,7 +12,11 @@ using Immutable.Passport.Model;
 
 namespace FourteenNumbers {
 
-    public class PassportLogin {
+
+    // Work in progress move towards having a Passport service
+
+    public class PassportLoginFuture
+    {
 
         public static string RedirectUri = "fourteennumbers://callback";
         public static string LogoutUri = "fourteennumbers://logout";
@@ -23,42 +27,93 @@ namespace FourteenNumbers {
         public static string ClientId = "N5pi7DdS7xCeGFoQKFinU6sEY8f8NPuh";
 
 
-        public static async Task Init() {
+        private static PassportLogin instance = null;
+
+        public static PassportLogin Instance()
+        {
+            if (instance == null)
+            {
+                instance = new PassportLogin();
+            }
+            return instance;
+        }
+
+        // public PassportLogin()
+        // {
+
+        // }
+
+
+        private async Task init()
+        {
             string redirectUri = null;
             string logoutUri = null;
-            #if (UNITY_ANDROID && !UNITY_EDITOR_WIN) || (UNITY_IPHONE && !UNITY_EDITOR_WIN) || UNITY_STANDALONE_OSX
+#if (UNITY_ANDROID && !UNITY_EDITOR_WIN) || (UNITY_IPHONE && !UNITY_EDITOR_WIN) || UNITY_STANDALONE_OSX
                     redirectUri = RedirectUri;
                     logoutUri = LogoutUri;
-            #endif
-            
+#endif
+
             // Set the environment to SANDBOX for testing or PRODUCTION for production
             string environment = Immutable.Passport.Model.Environment.PRODUCTION;
 
-            if (Immutable.Passport.Passport.Instance == null) {
+            if (Immutable.Passport.Passport.Instance == null)
+            {
                 await Immutable.Passport.Passport.Init(ClientId, environment, redirectUri, logoutUri);
             }
         }
 
-        public static async Task Login() {
+        public async Task<bool> LoginUsingCachedCredentials()
+        {
+            await init();
+            if (PassportStore.IsLoggedIn() || await Passport.Instance.HasCredentialsSaved())
+            {
+                // Try to log in using saved credentials
+                bool success = await Passport.Instance.Login(useCachedSession: true);
+                PassportStore.SetLoggedIn(success);
+                if (success)
+                {
+                    PassportStore.SetLoggedInChecked();
+                }
+                return success;
+            }
+            else
+            {
+                PassportStore.SetLoggedIn(false);
+
+                return false;
+            }
+        }
+
+
+
+
+        public static async Task Login()
+        {
             // Check login
             bool isLoggedIn = PassportStore.IsLoggedIn();
             bool recentlyCheckedLogin = PassportStore.WasLoggedInRecently();
             AuditLog.Log("isloggedIn: " + isLoggedIn + ", recentlyCheckedLogin: " + recentlyCheckedLogin);
-            
-            if (isLoggedIn) {
-                if (!recentlyCheckedLogin) {
-                    if (await Immutable.Passport.Passport.Instance.HasCredentialsSaved()) {
+
+            if (isLoggedIn)
+            {
+                if (!recentlyCheckedLogin)
+                {
+                    if (await Immutable.Passport.Passport.Instance.HasCredentialsSaved())
+                    {
                         // Try to log in using saved credentials
                         bool success = await Immutable.Passport.Passport.Instance.Login(useCachedSession: true);
-                        if (success) {
+                        if (success)
+                        {
                             PassportStore.SetLoggedInChecked();
                         }
-                        else {
+                        else
+                        {
                             AuditLog.Log("PassportLogin: Login using cached credentials failed. Going to login screen");
                             SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
                         }
                     }
-                    else {
+                    else
+                    {
                         AuditLog.Log("PassportLogin: Does not have cached credentials. Going to login screen");
                         SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
                     }
@@ -67,7 +122,8 @@ namespace FourteenNumbers {
                 await Immutable.Passport.Passport.Instance.ConnectEvm();
                 // Set up wallet (includes creating a wallet for new players)
                 List<string> accounts = await Immutable.Passport.Passport.Instance.ZkEvmRequestAccounts();
-                if (accounts.Count !=0) {
+                if (accounts.Count != 0)
+                {
                     string account = accounts[0];
                     PassportStore.SetPassportAccount(account);
                     AuditLog.Log($"Logged in as {account} of {accounts.Count} accounts");
@@ -77,3 +133,6 @@ namespace FourteenNumbers {
 
     }
 }
+
+
+

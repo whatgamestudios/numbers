@@ -8,14 +8,14 @@
       "hash": "f213ff497e4ff462a77319cf677cf20cc0860ca9"
     },
     "com.immutable.passport": {
-      "version": "https://github.com/immutable/unity-immutable-sdk.git?path=/src/Packages/Passport#fix/android-looper",
+      "version": "https://github.com/immutable/unity-immutable-sdk.git?path=/src/Packages/Passport",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.nuget.newtonsoft-json": "3.2.0",
         "com.cysharp.unitask": "2.3.3"
       },
-      "hash": "c256e935c01584b732739b53bfbf2b79defd7f81"
+      "hash": "6ff003bb1663c21f750cbc8feee0b5efa6f3cffb"
     },
     "com.nethereum.unity": {
       "version": "4.29.0",
