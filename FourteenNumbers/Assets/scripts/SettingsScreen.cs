@@ -39,31 +39,43 @@ namespace FourteenNumbers {
                 string msg = AuditLog.GetLogs();
                 SunShineNativeShare.instance.ShareText(msg, msg);
             }
-            else if (buttonText == "HiddenA") {
-                if ((state & 1) == 0) {
+            else if (buttonText == "Delete") {
+                Application.OpenURL("https://whatgamestudios.com/14numbers/account-deletion/");
+            }
+            else if (buttonText == "HiddenA")
+            {
+                if ((state & 1) == 0)
+                {
                     state++;
                     AuditLog.Log($"Settings A: {state}");
-                } 
-                else {
+                }
+                else
+                {
                     AuditLog.Log($"Settings A: Reseting");
                     state = 0;
                 }
             }
-            else if (buttonText == "HiddenB") {
-                if ((state & 1) == 1) {
+            else if (buttonText == "HiddenB")
+            {
+                if ((state & 1) == 1)
+                {
                     state++;
                     AuditLog.Log($"Settings B: {state}");
-                    if (state > DONE) {
+                    if (state > DONE)
+                    {
                         DemoModePanel.SetActive(true);
                     }
                 }
-                else {
+                else
+                {
                     AuditLog.Log($"Settings A: Reseting");
                     state = 0;
                 }
             }
-            else if (buttonText == "Local" || buttonText == "Kiribati") {
-                if (buttonText == "Local") {
+            else if (buttonText == "Local" || buttonText == "Kiribati")
+            {
+                if (buttonText == "Local")
+                {
                     AuditLog.Log("Settings: Set timezone to local");
                     TimezoneStore.SetTimeZone(true);
                     LocalTimezoneButton.GetComponent<Image>().sprite = Resources.Load<Sprite>("buttons/radio_selected");
@@ -71,7 +83,8 @@ namespace FourteenNumbers {
                     LocalTimezoneButton.interactable = false;
                     KiribatiTimezoneButton.interactable = true;
                 }
-                else {
+                else
+                {
                     AuditLog.Log("Settings: Set timezone to Kiribati");
                     TimezoneStore.SetTimeZone(false);
                     LocalTimezoneButton.GetComponent<Image>().sprite = Resources.Load<Sprite>("buttons/radio-not-selected");
@@ -83,7 +96,8 @@ namespace FourteenNumbers {
                 MessagePass.SetErrorMsg("Time of day now\n" + now);
                 SceneManager.LoadScene("ErrorScene", LoadSceneMode.Additive);
             }
-            else {
+            else
+            {
                 AuditLog.Log("Settings: Unknown button: " + buttonText);
             }
         }
