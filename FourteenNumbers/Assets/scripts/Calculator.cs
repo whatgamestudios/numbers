@@ -156,13 +156,25 @@ namespace FourteenNumbers {
             if (buttonText == "Help") {
                 MessagePass.SetMsg(help);
                 SceneManager.LoadScene("HelpContextScene", LoadSceneMode.Additive);
+                return;
             }
-            else if (buttonText == "C") {
+
+            // Don't react to any buttons except for help once the three solutions have been entered.
+            if (attempt >= NUM_ATTEMPTS)
+            {
+                return;
+            }
+
+
+            if (buttonText == "C")
+            {
                 clearUsedButtons(true);
                 clearCurrentAttempt();
             }
-            else if (buttonText == "B") {
-                if (currentInput.Length == 0) {
+            else if (buttonText == "B")
+            {
+                if (currentInput.Length == 0)
+                {
                     // Ignore backspace when there is no text.
                     return;
                 }
@@ -170,13 +182,16 @@ namespace FourteenNumbers {
                 updateUsed(lastChars, false);
 
                 // Decrease the bracket counts if necessary.
-                if (isLeftBracket(lastChars)) {
+                if (isLeftBracket(lastChars))
+                {
                     leftBracketCount--;
                 }
-                if (isRightBracket(lastChars)) {
+                if (isRightBracket(lastChars))
+                {
                     rightBracketCount--;
                 }
-                if (isNumber(lastChars)) {
+                if (isNumber(lastChars))
+                {
                     numberCount--;
                 }
 
@@ -184,19 +199,24 @@ namespace FourteenNumbers {
                 // Remove the character(s) from the input string.
                 currentInput = currentInput.Substring(0, currentInput.Length - lastChars.Length);
 
-                if (currentInput.Length == 0) {
+                if (currentInput.Length == 0)
+                {
                     clearCurrentAttempt();
                 }
-                else {
+                else
+                {
                     lastChars = determineLastSymbol();
                     enableButtons(lastChars);
                 }
             }
-            else if (buttonText == "=") {
+            else if (buttonText == "=")
+            {
                 bool success = calculateResult(updateStats);
-                if (success) {
-                attempt++;
-                    switch (attempt) {
+                if (success)
+                {
+                    attempt++;
+                    switch (attempt)
+                    {
                         case 1:
                             playerState = PlayerState.Playing;
                             break;
@@ -210,22 +230,27 @@ namespace FourteenNumbers {
                             setEndResult();
                             break;
                     }
-                    if (attempt < NUM_ATTEMPTS) {
+                    if (attempt < NUM_ATTEMPTS)
+                    {
                         clearCurrentAttempt();
                     }
                 }
                 return;
             }
-            else {
-                if (isLeftBracket(buttonText)) {
+            else
+            {
+                if (isLeftBracket(buttonText))
+                {
                     leftBracketCount++;
                 }
-                else if (isRightBracket(buttonText)) {
+                else if (isRightBracket(buttonText))
+                {
                     rightBracketCount++;
                 }
                 currentInput += buttonText;
                 updateUsed(buttonText, true);
-                if (isNumber(buttonText)) {
+                if (isNumber(buttonText))
+                {
                     usedThisAttemptStack.Push(buttonText);
                     numberCount++;
                 }
