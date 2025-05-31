@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Immutable.Passport;
@@ -42,7 +43,7 @@ namespace FourteenNumbers {
                 }
                 
                 // Set initial sprite
-                string initialResource = "animated_button1";
+                string initialResource = $"buttons/animated_button5";
                 Texture2D initialTex = Resources.Load<Texture2D>(initialResource);
                 if (initialTex != null) {
                     Rect size = new Rect(0.0f, 0.0f, initialTex.width, initialTex.height);
@@ -65,27 +66,41 @@ namespace FourteenNumbers {
         }
 
         IEnumerator ButtonAnimationRoutine() {
-            while (true) {
-                // Load and set the next button frame
-                string resource = $"buttons/animated_button{currentButtonFrame}";
-                Texture2D tex = Resources.Load<Texture2D>(resource);
-                if (tex != null) {
-                    Rect size = new Rect(0.0f, 0.0f, tex.width, tex.height);
-                    Vector2 pivot = new Vector2(0.0f, 0.0f);
-                    Sprite s = Sprite.Create(tex, size, pivot);
-                    buttonImage.sprite = s;
-                } else {
-                    AuditLog.Log($"ERROR: Failed to load button texture: {resource}");
+            while (true)
+            {
+                try
+                {
+                    // Load and set the next button frame
+                    string resource = $"buttons/animated_button{currentButtonFrame}";
+                    Texture2D tex = Resources.Load<Texture2D>(resource);
+                    if (tex != null)
+                    {
+                        Rect size = new Rect(0.0f, 0.0f, tex.width, tex.height);
+                        Vector2 pivot = new Vector2(0.0f, 0.0f);
+                        Sprite s = Sprite.Create(tex, size, pivot);
+                        buttonImage.sprite = s;
+                    }
+                    else
+                    {
+                        AuditLog.Log($"ERROR: Failed to load button texture: {resource}");
+                    }
+
+                    // Increment frame counter and reset if needed
+                    currentButtonFrame++;
+                    if (currentButtonFrame > 6)
+                    {
+                        currentButtonFrame = 1;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AuditLog.Log($"Exception during login animation: {ex.Message}");
+                    throw ex;
                 }
 
-                // Increment frame counter and reset if needed
-                currentButtonFrame++;
-                if (currentButtonFrame > 6) {
-                    currentButtonFrame = 1;
-                }
 
                 // Wait for 125ms before next frame
-                yield return new WaitForSeconds(0.125f);
+                    yield return new WaitForSeconds(0.125f);
             }
         }
 
