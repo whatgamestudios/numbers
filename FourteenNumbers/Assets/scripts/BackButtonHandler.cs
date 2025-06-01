@@ -11,35 +11,12 @@ namespace FourteenNumbers {
 
     public class BackButtonHandler : MonoBehaviour
     {
-        private InputAction backAction;
-
-        private void Awake()
-        {
-            // Create and set up the back action
-            backAction = new InputAction("Back", binding: "<Keyboard>/escape");
-            backAction.performed += OnBackPerformed;
-        }
-
-        private void OnEnable()
-        {
-            backAction.Enable();
-        }
-
-        private void OnDisable()
-        {
-            backAction.Disable();
-        }
-
-        private void OnBackPerformed(InputAction.CallbackContext context)
-        {
-                goBack();
-        }
 
         public void OnButtonClick(string buttonText)
         {
             if (buttonText == "Back")
             {
-                goBack();
+                GoBack();
             }
             else
             {
@@ -47,9 +24,14 @@ namespace FourteenNumbers {
             }
         }
 
-        private void goBack() {
+        public static void GoBack() {
             var previousScene = SceneStack.Instance().PopScene();
-            AuditLog.Log($"Back detected: switching to scene {previousScene}");
+            var currentScene = SceneManager.GetActiveScene().buildIndex;
+            // If menu scene, then quit the app
+            if (currentScene == SceneStack.MENU_SCENE) {
+                Application.Quit();
+            }
+            AuditLog.Log($"Back: switching from scene {currentScene} to scene {previousScene}");
             SceneManager.LoadScene(previousScene, LoadSceneMode.Single);
         }
     }

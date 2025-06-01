@@ -11,6 +11,7 @@ namespace FourteenNumbers {
 
     public class SceneStack
     {
+        public const int MENU_SCENE = 2;
         private Stack<int> sceneStack = new Stack<int>();
 
         private static SceneStack instance;
@@ -26,12 +27,24 @@ namespace FourteenNumbers {
 
         public void PushScene() {
             int sceneId = SceneManager.GetActiveScene().buildIndex;
+            if (sceneStack.Count > 0)
+            {
+                int topOfStack = sceneStack.Peek();
+                if (topOfStack == sceneId)
+                {
+                    AuditLog.Log($"ERROR: pushing scene {sceneId} twice");
+                    return;                    
+                }
+            }
             //AuditLog.Log($"Push: {sceneId}");
             sceneStack.Push(sceneId);
         }
-        public void Reset() {
+
+        public void Reset()
+        {
             //AuditLog.Log($"Resetting scene stack");
-            while (sceneStack.Count > 0) {
+            while (sceneStack.Count > 0)
+            {
                 sceneStack.Pop();
             }
         }
@@ -43,7 +56,7 @@ namespace FourteenNumbers {
             }
             else
             {
-                return 2; // Menu scene
+                return MENU_SCENE;
             }
         }
     }

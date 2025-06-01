@@ -160,7 +160,7 @@ namespace FourteenNumbers {
                 return;
             }
 
-            // Don't react to any buttons except for help once the three solutions have been entered.
+            // No more button presses after the game is done.
             if (attempt >= NUM_ATTEMPTS)
             {
                 return;
