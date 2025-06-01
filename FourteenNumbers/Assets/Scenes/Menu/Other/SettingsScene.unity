@@ -1285,9 +1285,9 @@ GameObject:
   - component: {fileID: 289835294}
   - component: {fileID: 289835293}
   - component: {fileID: 289835296}
-  - component: {fileID: 289835297}
   - component: {fileID: 289835298}
   - component: {fileID: 289835299}
+  - component: {fileID: 289835300}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -1369,19 +1369,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panel: {fileID: 289835290}
---- !u!114 &289835297
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 289835290}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 205689b170034402e87170b9f0e96eee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  buttonBack: {fileID: 1301609206}
 --- !u!114 &289835298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1410,6 +1397,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cheatCodeText: {fileID: 1112619158}
+--- !u!114 &289835300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 289835290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b80ae247f79d2467e87c55e65aa4cf7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &294060456
 GameObject:
   m_ObjectHideFlags: 0
@@ -4024,8 +4023,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 289835297}
-        m_TargetAssemblyTypeName: FourteenNumbers.BackButtonHandlerOther, Assembly-CSharp
+      - m_Target: {fileID: 289835300}
+        m_TargetAssemblyTypeName: FourteenNumbers.BackButtonHandler, Assembly-CSharp
         m_MethodName: OnButtonClick
         m_Mode: 5
         m_Arguments:
@@ -4033,7 +4032,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Menu
+          m_StringArgument: Back
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1301609207

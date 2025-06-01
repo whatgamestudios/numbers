@@ -50,28 +50,42 @@ namespace FourteenNumbers {
         }
 
 
-        public void OnButtonClick(string buttonText) {
-            if (buttonText == "Play") {
-                // Only specifying the sceneName or sceneBuildIndex will load the Scene with the Single mode
+        public void OnButtonClick(string buttonText)
+        {
+            if (buttonText == "Play")
+            {
+                SceneStack.Instance().PushScene();
                 SceneManager.LoadScene("GamePlayScene", LoadSceneMode.Single);
             }
-            else if (buttonText == "Stats") {
+            else if (buttonText == "Stats")
+            {
+                SceneStack.Instance().PushScene();
                 SceneManager.LoadScene("StatsScene", LoadSceneMode.Single);
             }
-            else if (buttonText == "Solutions") {
+            else if (buttonText == "Solutions")
+            {
+                SceneStack.Instance().PushScene();
                 SceneManager.LoadScene("SolutionsScene", LoadSceneMode.Single);
             }
-            else if (buttonText == "Backgrounds") {
+            else if (buttonText == "Backgrounds")
+            {
+                SceneStack.Instance().PushScene();
                 SceneManager.LoadScene("BackgroundsScene", LoadSceneMode.Single);
             }
-            else if (buttonText == "Help") {
+            else if (buttonText == "Help")
+            {
+                SceneStack.Instance().PushScene();
                 SceneManager.LoadScene("HelpScene", LoadSceneMode.Single);
             }
-            else if (buttonText == "Other") {
+            else if (buttonText == "Other")
+            {
+                SceneStack.Instance().PushScene();
                 SceneManager.LoadScene("OtherMenuScene", LoadSceneMode.Single);
             }
-            else {
+            else
+            {
                 AuditLog.Log($"Menu: Unknown button {buttonText}");
+                return;
             }
         }
     }

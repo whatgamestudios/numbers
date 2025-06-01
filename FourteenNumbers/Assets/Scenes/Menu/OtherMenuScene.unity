@@ -227,7 +227,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b80ae247f79d2467e87c55e65aa4cf7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonBack: {fileID: 525072016}
 --- !u!114 &289835298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -240,11 +239,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577077041fc7048a8964b60d2013fd4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonPassport: {fileID: 351483540}
-  buttonSocials: {fileID: 2118890615}
-  buttonSettings: {fileID: 1094195605}
-  buttonCredits: {fileID: 304409953}
-  buttonRoadmap: {fileID: 0}
 --- !u!1 &294060456
 GameObject:
   m_ObjectHideFlags: 0
@@ -836,7 +830,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b80ae247f79d2467e87c55e65aa4cf7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonBack: {fileID: 525072016}
 --- !u!114 &525072016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -890,7 +883,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Menu
+          m_StringArgument: Back
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &525072017

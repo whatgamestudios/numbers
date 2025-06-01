@@ -20,9 +20,5 @@ namespace FourteenNumbers {
             }
             helpText.text = msg;
         }
-
-        public async void OnButtonClick(string buttonText) {
-            await SceneManager.UnloadSceneAsync("HelpContextScene");
-        }
     }
 }

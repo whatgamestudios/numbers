@@ -59,15 +59,6 @@ namespace FourteenNumbers {
             }
         }
 
-        public async void OnButtonClick(string buttonText) {
-            if (buttonText == "Back") {
-                await SceneManager.UnloadSceneAsync("PublishScene");
-            }
-            else {
-                AuditLog.Log("Publishing Screen: Unknown button: " + buttonText);
-            }
-        }
-
         public void Update() {
             if (hasError) {
                 info.text = "Failed to publish your score. " + errorMessage;

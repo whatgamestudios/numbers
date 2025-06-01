@@ -32,14 +32,5 @@ namespace FourteenNumbers {
                 sceneInfo.artist + "\n" +
                 balance;
         }
-
-        public async void OnButtonClick(string buttonText) {
-            if (buttonText == "Back") {
-                await SceneManager.UnloadSceneAsync("SceneDetailScene");
-            }
-            else {
-                AuditLog.Log("SceneDetailScreen: Unknown button");
-            }
-        }
     }
 }

@@ -1565,7 +1565,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b80ae247f79d2467e87c55e65aa4cf7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonBack: {fileID: 1301609206}
 --- !u!114 &289835299
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4977,7 +4976,7 @@ GameObject:
   - component: {fileID: 1301609207}
   - component: {fileID: 1301609206}
   m_Layer: 5
-  m_Name: MenuButton
+  m_Name: BackButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5056,7 +5055,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Menu
+          m_StringArgument: Back
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1301609207

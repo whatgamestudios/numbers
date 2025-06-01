@@ -155,6 +155,7 @@ namespace FourteenNumbers {
         public void OnButtonClickInternal(string buttonText, bool updateStats) {
             if (buttonText == "Help") {
                 MessagePass.SetMsg(help);
+                SceneStack.Instance().PushScene();
                 SceneManager.LoadScene("HelpContextScene", LoadSceneMode.Additive);
                 return;
             }
