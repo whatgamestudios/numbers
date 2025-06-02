@@ -739,7 +739,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 289835298}
+      - m_Target: {fileID: 289835302}
         m_TargetAssemblyTypeName: FourteenNumbers.SettingsScreen, Assembly-CSharp
         m_MethodName: OnButtonClick
         m_Mode: 5
@@ -1285,10 +1285,10 @@ GameObject:
   - component: {fileID: 289835294}
   - component: {fileID: 289835293}
   - component: {fileID: 289835296}
-  - component: {fileID: 289835298}
   - component: {fileID: 289835299}
   - component: {fileID: 289835300}
   - component: {fileID: 289835301}
+  - component: {fileID: 289835302}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -1370,21 +1370,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panel: {fileID: 289835290}
---- !u!114 &289835298
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 289835290}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ecea973ce558d4ceeab5338222f11776, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  LocalTimezoneButton: {fileID: 685183967}
-  KiribatiTimezoneButton: {fileID: 155725618}
-  DemoModePanel: {fileID: 1098820744}
 --- !u!114 &289835299
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1422,6 +1407,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92364c9aafa234359ad1e4c2039c8190, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &289835302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 289835290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c581c3e2469e94102aacf47bd0bc4016, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LocalTimezoneButton: {fileID: 685183967}
+  KiribatiTimezoneButton: {fileID: 155725618}
+  DemoModePanel: {fileID: 1098820744}
 --- !u!1 &294060456
 GameObject:
   m_ObjectHideFlags: 0
@@ -2528,7 +2528,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 289835298}
+      - m_Target: {fileID: 289835302}
         m_TargetAssemblyTypeName: FourteenNumbers.SettingsScreen, Assembly-CSharp
         m_MethodName: OnButtonClick
         m_Mode: 5
@@ -3274,7 +3274,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 289835298}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: FourteenNumbers.SettingsScreen, Assembly-CSharp
         m_MethodName: OnButtonClick
         m_Mode: 5
@@ -3903,7 +3903,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 289835298}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: FourteenNumbers.SettingsScreen, Assembly-CSharp
         m_MethodName: OnButtonClick
         m_Mode: 5
@@ -5132,7 +5132,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 289835298}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: FourteenNumbers.SettingsScreen, Assembly-CSharp
         m_MethodName: OnButtonClick
         m_Mode: 5
@@ -5265,7 +5265,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 289835298}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: FourteenNumbers.SettingsScreen, Assembly-CSharp
         m_MethodName: OnButtonClick
         m_Mode: 5
