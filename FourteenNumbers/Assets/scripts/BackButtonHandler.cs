@@ -1,22 +1,38 @@
 // Copyright (c) Whatgame Studios 2024 - 2025
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
 
-
 namespace FourteenNumbers {
 
-    public class BackButtonHandler : MonoBehaviour {
-        public Button buttonBack;
+    public class BackButtonHandler : MonoBehaviour
+    {
 
-        public void OnButtonClick(string buttonText) {
-            if (buttonText == "Menu") {
-                SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
+        public void OnButtonClick(string buttonText)
+        {
+            if (buttonText == "Back")
+            {
+                GoBack();
             }
-            else {
+            else
+            {
                 AuditLog.Log($"BackButton: Unknown button: {buttonText}");
             }
+        }
+
+        public static void GoBack() {
+            var previousScene = SceneStack.Instance().PopScene();
+            var currentScene = SceneManager.GetActiveScene().buildIndex;
+            // If menu scene, then quit the app
+            if (currentScene == SceneStack.MENU_SCENE) {
+                Application.Quit();
+            }
+            AuditLog.Log($"Back: switching from scene {currentScene} to scene {previousScene}");
+            SceneManager.LoadScene(previousScene, LoadSceneMode.Single);
         }
     }
 }

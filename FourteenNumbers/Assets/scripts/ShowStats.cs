@@ -88,6 +88,7 @@ namespace FourteenNumbers {
         public void OnButtonClick(string buttonText) {
             if (buttonText == "Help") {
                 MessagePass.SetMsg(help);
+                SceneStack.Instance().PushScene();
                 SceneManager.LoadScene("HelpContextScene", LoadSceneMode.Additive);
             }
             else {

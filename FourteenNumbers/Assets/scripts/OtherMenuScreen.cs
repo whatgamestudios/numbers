@@ -11,28 +11,26 @@ namespace FourteenNumbers {
 
     public class OtherMenuScreen : MonoBehaviour {
 
-        public Button buttonPassport;
-        public Button buttonSocials;
-        public Button buttonSettings;
-        public Button buttonCredits;
-        public Button buttonRoadmap;
-
-        public void Start() {
+        public void Start()
+        {
             AuditLog.Log("Menu (secondary) screen");
         }
 
         public void OnButtonClick(string buttonText) {
             if (buttonText == "Passport") {
-                // Only specifying the sceneName or sceneBuildIndex will load the Scene with the Single mode
+                SceneStack.Instance().PushScene();
                 SceneManager.LoadScene("PassportScene", LoadSceneMode.Single);
             }
             else if (buttonText == "Socials") {
+                SceneStack.Instance().PushScene();
                 SceneManager.LoadScene("SocialsScene", LoadSceneMode.Single);
             }
             else if (buttonText == "Settings") {
+                SceneStack.Instance().PushScene();
                 SceneManager.LoadScene("SettingsScene", LoadSceneMode.Single);
             }
             else if (buttonText == "Credits") {
+                SceneStack.Instance().PushScene();
                 SceneManager.LoadScene("CreditsScene", LoadSceneMode.Single);
             }
             else {

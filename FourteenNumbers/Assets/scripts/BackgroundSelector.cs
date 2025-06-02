@@ -73,6 +73,7 @@ namespace FourteenNumbers {
         public void OnButtonClick(string buttonText) {
             if (buttonText == "Claim") {
                 if (PassportStore.IsLoggedIn()) {
+                    SceneStack.Instance().PushScene();
                     SceneManager.LoadScene("ClaimScene", LoadSceneMode.Additive);
                 }
                 else {
@@ -80,6 +81,7 @@ namespace FourteenNumbers {
                 }
             }
             else if (buttonText == "Prob") {
+                SceneStack.Instance().PushScene();
                 SceneManager.LoadScene("ClaimProbScene", LoadSceneMode.Additive);
             }
             else {
@@ -87,6 +89,7 @@ namespace FourteenNumbers {
                 int option = BackgroundsMetadata.ButtonTextToOption(buttonText);
                 int alreadySelectedOption = SceneStore.GetBackground();
                 if (option == alreadySelectedOption) {
+                    SceneStack.Instance().PushScene();
                     SceneManager.LoadScene("SceneDetailScene", LoadSceneMode.Additive);
                 }
                 else {

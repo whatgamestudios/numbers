@@ -24,6 +24,7 @@ namespace FourteenNumbers {
 
         public async Task Start() {
             AuditLog.Log("Login screen");
+            SceneStack.Instance().Reset();
             await PassportLogin.Init();
             startCoroutine();
             startButtonAnimation();
@@ -107,6 +108,7 @@ namespace FourteenNumbers {
         public async void OnButtonClick(string buttonText) {
             if (buttonText == "Help") {
                 MessagePass.SetMsg(help);
+                SceneStack.Instance().PushScene();
                 SceneManager.LoadScene("HelpContextScene", LoadSceneMode.Additive);
             }
             else if (buttonText == "Login") {

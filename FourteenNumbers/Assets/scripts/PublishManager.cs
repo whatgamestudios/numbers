@@ -14,6 +14,7 @@ namespace FourteenNumbers {
                 AuditLog.Log("Publish");
                 panelPublish.SetActive(false);
                 if (PassportStore.IsLoggedIn()) {
+                    SceneStack.Instance().PushScene();
                     SceneManager.LoadScene("PublishScene", LoadSceneMode.Additive);
                 }
                 else {

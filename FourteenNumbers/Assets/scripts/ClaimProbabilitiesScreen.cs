@@ -36,16 +36,6 @@ namespace FourteenNumbers {
             StartLoaders();
         }
 
-
-        public void OnButtonClick(string buttonText) {
-            if (buttonText == "Back") {
-                SceneManager.LoadScene("BackgroundsScene", LoadSceneMode.Single);
-            }
-            else {
-                AuditLog.Log($"Claim Probabilities Screen: Unknown button: {buttonText}");
-            }
-        }
-
         public void Update() {
             if (loaded && !displayed) {
                 displayed = true;
