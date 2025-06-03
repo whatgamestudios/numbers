@@ -55,10 +55,20 @@ namespace FourteenNumbers {
                 code = code + "J";
             }
             else if (buttonText == "CheatCode") {
-                AuditLog.Log("CheatCode: " + code);
-                await Task.Run(() => {
-                    executeCheatCode(code);
-                });
+                AuditLog.Log($"Demo Code: {code}");
+                if (code == "A")
+                {
+                    AuditLog.Log("Demo Code: Logout start");
+                    PassportStore.SetLoggedIn(false);
+                    await Passport.Instance.Logout();
+                    AuditLog.Log("Demo Code: Logout done");
+                    SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
+                }
+
+
+                // await Task.Run(() => {
+                //                    await executeCheatCode(code);
+                // });
                 code = "";
             }
             else {
@@ -84,24 +94,27 @@ namespace FourteenNumbers {
             return output;
         }
 
-        private async void executeCheatCode(string cheatCode) {
-            AuditLog.Log("CheatCode: " + cheatCode);
-            if (cheatCode == "AAAA") {
-                AuditLog.Log("CheatCode: Logout start");
-                await Passport.Instance.Logout();
+        private async void executeCheatCode(string cheatCode)
+        {
+            AuditLog.Log($"Demo Code: {cheatCode}");
+            if (cheatCode == "A")
+            {
+               AuditLog.Log("Demo Code: Logout start");
                 PassportStore.SetLoggedIn(false);
-                AuditLog.Log("CheatCode: Logout done");
+                await Passport.Instance.Logout();
+                AuditLog.Log("Demo Code: Logout done");
                 SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
             }
-            else if (cheatCode == "BBBB") {
+            else if (cheatCode == "B")
+            {
                 AuditLog.Log("CheatCode: FakeOwnership start");
                 ScreenBackground.FakeOwnership = true;
             }
-            else if (cheatCode == "CCCC") {
-                AuditLog.Log("CheatCode: FakeOwnership stop");
+            else if (cheatCode == "C")
+            {
+                AuditLog.Log("Demo Code: FakeOwnership stop");
                 ScreenBackground.FakeOwnership = false;
             }
-
         }
 
 
