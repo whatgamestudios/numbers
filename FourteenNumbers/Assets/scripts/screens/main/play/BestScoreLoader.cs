@@ -7,13 +7,12 @@ using System.Numerics;
 
 namespace FourteenNumbers {
 
-    // Connect this script to an empty game object that is on the first scene.
     public class BestScoreLoader : MonoBehaviour {
 
         // The best score so far today.
-        public uint BestScore { get; private set; }
+        public static uint BestScore { get; private set; }
 
-        public bool LoadedBestScore { get; private set; }
+        public static bool LoadedBestScore { get; private set; }
 
         private FourteenNumbersSolutionsContract fourteenNumbersContracts = new FourteenNumbersSolutionsContract();
         private Coroutine loadRoutine;
@@ -57,12 +56,6 @@ namespace FourteenNumbers {
             BestScore = await fourteenNumbersContracts.GetBestScore(gameDay);
             LoadedBestScore = true;
             Stats.SetBestPointsToday((int) BestScore);
-            AuditLog.Log("Best Solution Today: " + BestScore);
-            BestScoreLoaded();
-        }
-
-        public virtual void BestScoreLoaded() {
-
         }
     }
 }

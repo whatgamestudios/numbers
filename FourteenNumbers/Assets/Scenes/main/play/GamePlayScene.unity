@@ -764,7 +764,7 @@ GameObject:
   - component: {fileID: 118117788}
   - component: {fileID: 118117787}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: PublicButtonText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2484,7 +2484,7 @@ GameObject:
   - component: {fileID: 374796562}
   - component: {fileID: 374796561}
   m_Layer: 5
-  m_Name: HelpDisplay
+  m_Name: HelpDisplayText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11199,6 +11199,9 @@ GameObject:
   - component: {fileID: 2063394980}
   - component: {fileID: 2063394981}
   - component: {fileID: 2063394982}
+  - component: {fileID: 2063394983}
+  - component: {fileID: 2063394984}
+  - component: {fileID: 2063394985}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -11271,7 +11274,6 @@ MonoBehaviour:
   calculated3: {fileID: 2098514135}
   points3: {fileID: 958715941}
   pointsTotal: {fileID: 932515188}
-  helpTextMesh: {fileID: 374796561}
   button1: {fileID: 1302877216}
   button2: {fileID: 17738734}
   button3: {fileID: 1259110711}
@@ -11292,9 +11294,6 @@ MonoBehaviour:
   buttonDivide: {fileID: 364580788}
   buttonLeft: {fileID: 1024584816}
   buttonRight: {fileID: 1106210583}
-  buttonPublishText: {fileID: 118117787}
-  panelShare: {fileID: 565725363}
-  panelPublish: {fileID: 95944143}
 --- !u!114 &2063394973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11370,7 +11369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058d574a9b2fe44d0b94cd1acb37ccca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonShare: {fileID: 1685460110}
+  panelShare: {fileID: 565725363}
 --- !u!114 &2063394979
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11384,6 +11383,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panelPublish: {fileID: 95944143}
+  buttonPublishText: {fileID: 118117787}
 --- !u!114 &2063394980
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11421,6 +11421,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92364c9aafa234359ad1e4c2039c8190, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2063394983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2063394970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 739a41dd2ac104292b2af072a344db42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2063394984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2063394970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bce720abde654226b2d2a0981750dc4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2063394985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2063394970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e37059ae3d53474393ee15d24d14594, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  helpTextMesh: {fileID: 374796561}
 --- !u!1 &2077577273
 GameObject:
   m_ObjectHideFlags: 0

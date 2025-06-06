@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FourteenNumbers {
 
-    public class Calculator : BestScoreLoader {
+    public class Calculator : MonoBehaviour {
         // Maximum number of numbers in a solution
         private const int MAX_NUMBERS = CalcProcessor.MAX_NUMBERS;
 
@@ -19,12 +19,8 @@ namespace FourteenNumbers {
 
         private const int NUM_ATTEMPTS = 3;
 
+        private const string help = "Use each number once to find three equations for the target number";
 
-        public enum PlayerState {
-            Init = 0,
-            Playing = 1,
-            Done = 3
-        }
 
         public TextMeshProUGUI target;
         public TextMeshProUGUI timeToNext;
@@ -40,7 +36,6 @@ namespace FourteenNumbers {
         public TextMeshProUGUI calculated3;
         public TextMeshProUGUI points3;
         public TextMeshProUGUI pointsTotal;
-        public TextMeshProUGUI helpTextMesh;
 
         public Button button1;
         public Button button2;
@@ -63,10 +58,7 @@ namespace FourteenNumbers {
         public Button buttonLeft;
         public Button buttonRight;
 
-        public TextMeshProUGUI buttonPublishText;
 
-        public GameObject panelShare;
-        public GameObject panelPublish;
         private string currentInput = "";
 
         private uint targetValue = 0;
@@ -100,8 +92,6 @@ namespace FourteenNumbers {
 
         uint attempt;
 
-        string helpScreenMessage;
-
         // Int representing which game day is being played.
         // Stored here to detect when the game was loaded into memory, switch focus away and then 
         // back to the game, but the game day had changed.
@@ -111,44 +101,49 @@ namespace FourteenNumbers {
         DateTime timeOfLastFlash = DateTime.Now;
         bool cursorOn = false;
 
-        // True if the player is new to the game.
-        bool newPlayer;
 
-        PlayerState playerState;
-
-        string help = "Use each number once to find three equations for the target number";
 
         public void Start() {
-            AuditLog.Log("Game Play screen start");
-            int daysPlayed = Stats.GetNumDaysPlayed();
-            newPlayer = daysPlayed < 2;
-            gameDayInt = Timeline.GameDay();
+            uint todaysGameDay = Timeline.GameDay();
+            gameDayInt = todaysGameDay;
+            AuditLog.Log($"Game Play screen for day {todaysGameDay}");
+            startANewDay(todaysGameDay);
+            setGameState(todaysGameDay);
+        }
+        
 
-            startANewDay(gameDayInt);
+        public void OnDisable()
+        {
+            GameState.Instance().SetPlayerState(GameState.PlayerState.Unknown);
         }
 
-        public async Task OnApplicationFocus(bool hasFocus) {
+        private void setGameState(uint todaysGameDay) {
+            GameState gameState = GameState.Instance();
+            gameState.SetGameDayBeingPlayed(todaysGameDay);
+            gameState.SetPointsEarnedTotal(pointsEarnedTotalToday());
+            if (gameState.IsPlayerStateUnknown())
+            {
+                gameState.SetPlayerState(GameState.PlayerState.Playing);
+            }
+        }
+
+        public async Task OnApplicationFocus(bool hasFocus)
+        {
             AuditLog.Log("Game Play screen has focus: " + hasFocus);
-            if (hasFocus) {
+            if (hasFocus)
+            {
                 // Check network connectivity
-                bool hasNetwork =  Application.internetReachability != NetworkReachability.NotReachable;
+                bool hasNetwork = Application.internetReachability != NetworkReachability.NotReachable;
                 bool isLoggedIn = PassportStore.IsLoggedIn();
-                if (isLoggedIn && hasNetwork) {
+                if (isLoggedIn && hasNetwork)
+                {
                     await PassportLogin.Init();
                     await PassportLogin.Login();
                 }
-                uint gameDayNow = Timeline.GameDay();
-                AuditLog.Log("Game Day: Existing: " + gameDayInt + " Now: " + gameDayNow);
-                if (gameDayNow != gameDayInt) {
-                    gameDayInt = gameDayNow;
-                    startANewDay(gameDayInt);
-                }
             }
-
         }
 
         public void OnButtonClick(string buttonText) {
-            playerState = PlayerState.Playing;
             OnButtonClickInternal(buttonText, true);
         }
 
@@ -216,25 +211,12 @@ namespace FourteenNumbers {
                 if (success)
                 {
                     attempt++;
-                    switch (attempt)
+                    if (attempt == NUM_ATTEMPTS)
                     {
-                        case 1:
-                            playerState = PlayerState.Playing;
-                            break;
-                        case 2:
-                            playerState = PlayerState.Playing;
-                            break;
-                        case 3:
-                            playerState = PlayerState.Done;
-                            panelShare.SetActive(true);
-                            activatePublishButton();
-                            setEndResult();
-                            break;
+                        GameState.Instance().SetPlayerState(GameState.PlayerState.Done);
+                        return;
                     }
-                    if (attempt < NUM_ATTEMPTS)
-                    {
-                        clearCurrentAttempt();
-                    }
+                    clearCurrentAttempt();
                 }
                 return;
             }
@@ -362,34 +344,9 @@ namespace FourteenNumbers {
                     }
                 }
             }
-            else {
-                // Flash the colour of the publish panel.
-                // Note: the publish panel may not be active.
-                DateTime now = DateTime.Now;
-                if ((now - timeOfLastFlash).TotalMilliseconds > TIME_PER_FLASH) {
-                    timeOfLastFlash = now;
-
-                    Image img = panelPublish.GetComponent<Image>();
-                    if (cursorOn) {
-                        img.color = UnityEngine.Color.green;
-                        cursorOn = false;
-                    }
-                    else {
-                        img.color = UnityEngine.Color.red;
-                        cursorOn = true;
-                    }
-                }
-
-            }
-
-            showHelpMessage();
         }
 
         private void startANewDay(uint todaysGameDay) {
-            AuditLog.Log("Starting new game day: " + todaysGameDay);
-            panelShare.SetActive(false);
-            panelPublish.SetActive(false);
-
             targetValue = TargetValue.GetTarget(todaysGameDay);
             target.text = targetValue.ToString();
 
@@ -426,7 +383,6 @@ namespace FourteenNumbers {
             usedThisAttemptStack = new Stack();
 
             clearCurrentAttempt();
-
             int lastPlayedGameDay = Stats.GetLastGameDay();
             if (lastPlayedGameDay == todaysGameDay) {
                 // The game was knocked out of memory after one or more solutions for today's game.
@@ -435,7 +391,6 @@ namespace FourteenNumbers {
             else {
                 // The game has not been played today yet.
                 Stats.StartNewGameDay();
-                playerState = PlayerState.Init;
             }
         }
 
@@ -748,16 +703,19 @@ namespace FourteenNumbers {
         }
 
 
-        private void updatePointsGui() {
+        private void updatePointsGui()
+        {
             points1.text = pointsEarned1.ToString();
             points2.text = pointsEarned2.ToString();
             points3.text = pointsEarned3.ToString();
             uint total = pointsEarnedTotalToday();
             pointsTotal.text = total.ToString();
+            GameState.Instance().SetPointsEarnedTotal(total);
         }
 
         private void publishStatsThisSolution(string solution, uint points) {
-            switch (attempt) {
+            switch (attempt)
+            {
                 case 0:
                     Stats.SetSolution1(gameDayInt, solution, (int)points);
                     break;
@@ -813,98 +771,6 @@ namespace FourteenNumbers {
                 OnButtonClickInternal(buttonPress, false);
             }
             OnButtonClickInternal("=", false);
-        }
-
-
-
-        private void showHelpMessage() {
-            string text = "";
-
-            uint pointsToday = (uint) pointsEarnedTotalToday();
-            if (playerState == PlayerState.Done) {
-                text = helpScreenMessage + "\n";
-                if (LoadedBestScore) {
-                    if (pointsToday > BestScore) {
-                        text = text + "New high score!\n";
-                    }
-                    else {
-                        text = text + "Best score so far today is " + BestScore + "\n";
-                    }
-                }
-                text = text + "Next game in " + Timeline.TimeToNextDayStrShort();
-            }
-            else {
-                text = "Find three solutions for the target number\n";
-                if (pointsToday < Stats.STATS_SILVER_STREAK_THRESHOLD) {
-                    uint diff = Stats.STATS_SILVER_STREAK_THRESHOLD - pointsToday;
-                    text = text + diff + " points to extend silver streak";
-                }
-                else if (pointsToday < Stats.STATS_GOLD_STREAK_THRESHOLD) {
-                    uint diff = Stats.STATS_GOLD_STREAK_THRESHOLD - pointsToday;
-                    text = text + diff + " points to extend gold streak";
-                }
-                else if (pointsToday < Stats.STATS_DIAMOND_STREAK_THRESHOLD) {
-                    uint diff = Stats.STATS_DIAMOND_STREAK_THRESHOLD - pointsToday;
-                    text = text + diff + " points to extend diamond streak";
-                }
-                else if (pointsToday < Stats.STATS_BDIAMOND_STREAK_THRESHOLD) {
-                    uint diff = Stats.STATS_BDIAMOND_STREAK_THRESHOLD - pointsToday;
-                    text = text + diff + " points to extend blue diamond streak";
-                }
-            }
-
-            helpTextMesh.text = text;
-        }
-
-        private void setEndResult() {
-            uint pointsEarnedTotal = pointsEarnedTotalToday();
-            if (pointsEarnedTotal < 70) {
-                helpScreenMessage = "Practice Makes Perfect.";
-            }
-            else if (pointsEarnedTotal < 120) {
-                helpScreenMessage = "Good work!";
-            }
-            else if (pointsEarnedTotal < 140) {
-                helpScreenMessage = "Well done!";
-            }
-            else if (pointsEarnedTotal < 150) {
-                helpScreenMessage = "Very well done!";
-            }
-            else if (pointsEarnedTotal < 160) {
-                helpScreenMessage = "Awesome day!";
-            }
-            else if (pointsEarnedTotal < 170) {
-                helpScreenMessage = "So close...";
-            }
-            else if (pointsEarnedTotal < 210) {
-                helpScreenMessage = "You are exceptional!";
-            }
-            else if (pointsEarnedTotal == 210) {
-                helpScreenMessage = "Perfect Score Day!!!";
-            }
-            else {
-                helpScreenMessage = "Well done";
-            }
-        }
-
-
-        // Called from the best score loader once the score has been loaded.
-        public override void BestScoreLoaded() {
-            activatePublishButton();
-        }
-
-        // Called from the best score loader once the score has been loaded, or 
-        // from the on click handler once the third equals sign has been pressed.
-        private void activatePublishButton() {
-            uint pointsToday = (uint) pointsEarnedTotalToday();
-            if (playerState == PlayerState.Done &&
-                LoadedBestScore && pointsToday > BestScore) {
-                panelPublish.SetActive(true);
-                if (!PassportStore.IsLoggedIn()) {
-                    buttonPublishText.text = "Sign in to Publish";
-                    buttonPublishText.fontSize = 50;
-                }
-           }
         }
     }
 }
