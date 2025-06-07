@@ -265,8 +265,9 @@ GameObject:
   m_Component:
   - component: {fileID: 117158116}
   - component: {fileID: 117158115}
+  - component: {fileID: 117158117}
   m_Layer: 0
-  m_Name: DeepLinkHolder
+  m_Name: LongTermGameObj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -300,6 +301,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &117158117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 117158114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f427b55ad87c47a493e15b5ed69bbd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &204523972
 GameObject:
   m_ObjectHideFlags: 0

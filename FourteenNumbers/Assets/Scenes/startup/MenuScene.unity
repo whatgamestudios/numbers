@@ -268,7 +268,6 @@ GameObject:
   - component: {fileID: 289835293}
   - component: {fileID: 289835295}
   - component: {fileID: 289835296}
-  - component: {fileID: 289835297}
   - component: {fileID: 289835298}
   m_Layer: 5
   m_Name: Panel
@@ -373,18 +372,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panel: {fileID: 289835290}
---- !u!114 &289835297
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 289835290}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f427b55ad87c47a493e15b5ed69bbd2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &289835298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1566,8 +1553,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1082145845}
   - component: {fileID: 1082145844}
+  - component: {fileID: 1082145846}
   m_Layer: 0
-  m_Name: DeeplinkHolder
+  m_Name: LongTermGameObj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1601,6 +1589,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1082145846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1082145843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f427b55ad87c47a493e15b5ed69bbd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1094195603
 GameObject:
   m_ObjectHideFlags: 0

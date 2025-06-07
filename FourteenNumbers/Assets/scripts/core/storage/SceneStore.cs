@@ -89,15 +89,14 @@ namespace FourteenNumbers {
          * @return true if the NFTs owned by the player should be checked.
          */
         public static bool DoINeedToCheckOwnedNfts() {
-            return true;
-            // DateTime now = DateTime.Now;
-            // int currentTimeInHours = ((now.Year * 12 + now.Month) * 31 + now.Day) * 24 + now.Hour;
+            DateTime now = DateTime.Now;
+            int currentTimeInHours = ((now.Year * 12 + now.Month) * 31 + now.Day) * 24 + now.Hour;
 
-            // int lastChecked = PlayerPrefs.GetInt(BG_LAST_CHECKED, 0);
-            // if (currentTimeInHours > lastChecked + RECHECK_INTERVAL) {
-            //     return true;
-            // }
-            // return false;
+            int lastChecked = PlayerPrefs.GetInt(BG_LAST_CHECKED, 0);
+            if (currentTimeInHours > lastChecked + RECHECK_INTERVAL) {
+                return true;
+            }
+            return false;
         }
 
         /**

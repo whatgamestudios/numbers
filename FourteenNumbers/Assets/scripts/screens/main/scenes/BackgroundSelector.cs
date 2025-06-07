@@ -35,11 +35,17 @@ namespace FourteenNumbers {
         private volatile int DaysPlayed = NOT_SET;
         private volatile int DaysClaimed = NOT_SET;
 
-        public void Start() {
+        public void Start()
+        {
             AuditLog.Log("Scene screen");
+
+            // Force NFT sync now. 
+            AssetSyncManager.Instance.SyncNow();
+
             // Get the ScrollRect component
             scrollRect = panelOwned.GetComponentInParent<ScrollRect>();
-            if (scrollRect == null) {
+            if (scrollRect == null)
+            {
                 AuditLog.Log("ERROR: No ScrollRect found in parent of panelOwned");
                 return;
             }
@@ -49,14 +55,15 @@ namespace FourteenNumbers {
             int selected = SceneStore.GetBackground();
             setSelected(selected);
 
-            if (PassportStore.IsLoggedIn()) {
+            if (PassportStore.IsLoggedIn())
+            {
                 claimButton.interactable = false;
             }
-            else {
+            else
+            {
                 claimButtonText.text = "Sign in to Claim";
                 claimButtonText.fontSize = 80;
             }
-
         }
 
         public void OnEnable() {
@@ -83,6 +90,10 @@ namespace FourteenNumbers {
             else if (buttonText == "Prob") {
                 SceneStack.Instance().PushScene();
                 SceneManager.LoadScene("ClaimProbScene", LoadSceneMode.Additive);
+            }
+            else if (buttonText == "Sync") {
+                // To re-sync the NFT collection, reload this scene. 
+                SceneManager.LoadScene("BackgroundsScene", LoadSceneMode.Single);
             }
             else {
                 // One of the image buttons has been pressed.
