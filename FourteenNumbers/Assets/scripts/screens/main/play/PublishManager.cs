@@ -57,6 +57,7 @@ namespace FourteenNumbers {
             }
 
             uint pointsToday = gameState.PointsEarnedTotal();
+            AuditLog.Log($"PublishManager: pointsToday: {pointsToday}, best score: {BestScoreLoader.BestScore}");
             if (pointsToday <= BestScoreLoader.BestScore)
             {
                 return;

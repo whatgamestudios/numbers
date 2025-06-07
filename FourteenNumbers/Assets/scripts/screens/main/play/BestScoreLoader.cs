@@ -27,7 +27,10 @@ namespace FourteenNumbers {
             StartLoader();
         }
 
-        public void OnDisable() {
+        // Force the best score to be reloaded each time the game screen is entered.
+        public void OnDisable()
+        {
+            LoadedBestScore = false;
         }
 
         public void StartLoader() {

@@ -13,7 +13,7 @@ namespace FourteenNumbers {
 
         string helpScreenMessage;
 
-        private bool gameDone = false;
+        private bool gameDoneMessageGenerated = false;
 
 
         public void Update()
@@ -21,9 +21,9 @@ namespace FourteenNumbers {
             GameState gameState = GameState.Instance();
             bool done = gameState.IsPlayerStateDone();
             uint pointsToday = gameState.PointsEarnedTotal();
-            if (done && !gameDone) {
+            if (done && !gameDoneMessageGenerated) {
                 setEndResult(pointsToday);
-                gameDone = true;
+                gameDoneMessageGenerated = true;
             }
 
             string text = "";
