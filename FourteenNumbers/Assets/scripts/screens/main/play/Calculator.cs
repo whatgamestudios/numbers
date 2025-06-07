@@ -214,7 +214,6 @@ namespace FourteenNumbers {
                     if (attempt == NUM_ATTEMPTS)
                     {
                         GameState.Instance().SetPlayerState(GameState.PlayerState.Done);
-                        return;
                     }
                     clearCurrentAttempt();
                 }
@@ -656,9 +655,6 @@ namespace FourteenNumbers {
                     break;
                 case 2:
                     input3.text = val;
-                    break;
-                default:
-                    AuditLog.Log("ERROR: Attempt not supported2: {attempt}");
                     break;
             }
         }
