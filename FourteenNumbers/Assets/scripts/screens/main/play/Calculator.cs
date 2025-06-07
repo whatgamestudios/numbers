@@ -103,12 +103,14 @@ namespace FourteenNumbers {
 
 
 
-        public void Start() {
+        public async void Start()
+        {
             uint todaysGameDay = Timeline.GameDay();
             gameDayInt = todaysGameDay;
             AuditLog.Log($"Game Play screen for day {todaysGameDay}");
             startANewDay(todaysGameDay);
             setGameState(todaysGameDay);
+            await PassportLogin.InitAndLogin();
         }
         
 
@@ -124,22 +126,6 @@ namespace FourteenNumbers {
             if (gameState.IsPlayerStateUnknown())
             {
                 gameState.SetPlayerState(GameState.PlayerState.Playing);
-            }
-        }
-
-        public async Task OnApplicationFocus(bool hasFocus)
-        {
-            AuditLog.Log("Game Play screen has focus: " + hasFocus);
-            if (hasFocus)
-            {
-                // Check network connectivity
-                bool hasNetwork = Application.internetReachability != NetworkReachability.NotReachable;
-                bool isLoggedIn = PassportStore.IsLoggedIn();
-                if (isLoggedIn && hasNetwork)
-                {
-                    await PassportLogin.Init();
-                    await PassportLogin.Login();
-                }
             }
         }
 

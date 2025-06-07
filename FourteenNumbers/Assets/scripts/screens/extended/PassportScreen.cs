@@ -19,8 +19,7 @@ namespace FourteenNumbers {
 
             bool isLoggedIn = PassportStore.IsLoggedIn();
             if (isLoggedIn) {
-                await PassportLogin.Init();
-                await PassportLogin.Login();
+                await PassportLogin.InitAndLogin();
 
                 // Set up wallet (includes creating a wallet for new players)
                 List<string> accounts = await Passport.Instance.ZkEvmRequestAccounts();

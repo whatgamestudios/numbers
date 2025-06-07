@@ -1,26 +1,25 @@
 // Copyright (c) Whatgame Studios 2024 - 2025
 using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
-using TMPro;
-using UnityEngine.SceneManagement;
 
-namespace FourteenNumbers {
-    public class AssetSyncManager : MonoBehaviour
+namespace FourteenNumbers
+{
+    public class AssetSyncManager
     {
         public static AssetSyncManager Instance { get; private set; }
 
-        public void Start()
+        private MonoBehaviour mono;
+
+        private AssetSyncManager(MonoBehaviour monoBehaviour)
+        {
+            mono = monoBehaviour;
+            SyncIfNeeded();
+        }
+
+        public static void StartInstance(MonoBehaviour monoBehaviour)
         {
             if (Instance == null)
             {
-                Instance = this;
-                SyncIfNeeded();
-                DontDestroyOnLoad(gameObject);
-            }
-            else
-            {
-                Destroy(gameObject);
+                Instance = new AssetSyncManager(monoBehaviour);
             }
         }
 
@@ -30,13 +29,13 @@ namespace FourteenNumbers {
             AuditLog.Log($"AssetSync: Need to sync: {needToSync}");
             if (needToSync)
             {
-                ScreenBackground.FetchAndProcessNfts(this);
+                ScreenBackground.FetchAndProcessNfts(mono);
             }
         }
 
         public void SyncNow()
         {
-            ScreenBackground.FetchAndProcessNfts(this);
+            ScreenBackground.FetchAndProcessNfts(mono);
         }
     }
 }

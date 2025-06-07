@@ -22,6 +22,26 @@ namespace FourteenNumbers {
         // Passport Client ID
         public static string ClientId = "N5pi7DdS7xCeGFoQKFinU6sEY8f8NPuh";
 
+        public static async Task InitAndLogin() {
+            if (Application.internetReachability == NetworkReachability.NotReachable)
+            {
+                AuditLog.Log("Passport login: No Network");
+                return;
+            }
+
+            try
+            {
+                //AuditLog.Log("PassportLogin: Starting InitAndLogin process");
+                await Init();
+                await Login();
+                //AuditLog.Log("PassportLogin: InitAndLogin completed successfully");
+            }
+            catch (Exception e)
+            {
+                AuditLog.Log($"PassportLogin: Error during InitAndLogin: {e.Message}");
+                throw;
+            }
+        }
 
         public static async Task Init() {
             string redirectUri = null;
@@ -74,6 +94,5 @@ namespace FourteenNumbers {
                 }
             }
         }
-
     }
 }

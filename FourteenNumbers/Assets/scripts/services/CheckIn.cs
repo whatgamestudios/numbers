@@ -38,9 +38,7 @@ namespace FourteenNumbers {
             isProcessing = true;
 
             try {
-                await PassportLogin.Init();
-                await PassportLogin.Login();
-
+                await PassportLogin.InitAndLogin();
                 uint gameDay = Timeline.GameDay();
                 if (CheckInStore.DoINeedToCheckIn(gameDay)) {
                     AuditLog.Log("Checkin transaction");

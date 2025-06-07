@@ -16,19 +16,25 @@ namespace FourteenNumbers {
         public int LoginPath = NONE;
 
         public void Start() {
-            if (Instance == null) {
+            if (Instance == null)
+            {
                 Instance = this;
                 // Register the deep link handler.
                 Application.deepLinkActivated += onDeepLinkActivated;
                 AuditLog.Log("Deep link handler registered");
 
-                if (!string.IsNullOrEmpty(Application.absoluteURL)) {
+                if (!string.IsNullOrEmpty(Application.absoluteURL))
+                {
                     // Cold start and Application.absoluteURL not null so process Deep Link.
                     onDeepLinkActivated(Application.absoluteURL);
                 }
                 DontDestroyOnLoad(gameObject);
+                
+                // Start-up other long term services
+                AssetSyncManager.StartInstance(this);
             }
-            else {
+            else
+            {
                 Destroy(gameObject);
             }
         }
