@@ -71,7 +71,7 @@ namespace FourteenNumbers {
                 Sol3 = Encoding.UTF8.GetBytes(sol3),
                 Store = false,
             };
-            var (success, _) = await executeTransaction(func.GetCallData());
+            var (success, _) = await executeTransaction(func.GetCallData(), 1);
             return success;
         }
 

@@ -39,13 +39,23 @@ namespace FourteenNumbers {
             retryCount = 0;
         }
 
-        public async Task<(bool success, TransactionReceiptResponse receipt)> executeTransaction(byte[] abiEncoding) {
-            while (true) {
-                try {
+
+        public async Task<(bool success, TransactionReceiptResponse receipt)> executeTransaction(byte[] abiEncoding)
+        {
+            return await executeTransaction(abiEncoding, MAX_RETRIES);
+        }
+
+        public async Task<(bool success, TransactionReceiptResponse receipt)> executeTransaction(byte[] abiEncoding, uint maxRetries)
+        {
+            while (true)
+            {
+                try
+                {
                     DateTime start = DateTime.Now;
-                    TransactionReceiptResponse response = 
+                    TransactionReceiptResponse response =
                         await Passport.Instance.ZkEvmSendTransactionWithConfirmation(
-                            new TransactionRequest() {
+                            new TransactionRequest()
+                            {
                                 to = contractAddress,
                                 data = "0x" + BitConverter.ToString(abiEncoding).Replace("-", "").ToLower(),
                                 value = "0"
@@ -55,20 +65,25 @@ namespace FourteenNumbers {
                     TimeSpan diff = end.Subtract(start);
                     AuditLog.Log($"Transaction status: {response.status}, time span: {diff.TotalMilliseconds}, hash: {response.transactionHash}");
 
-                    if (response.status != "1") {
+                    if (response.status != "1")
+                    {
                         return (false, response);
                     }
-                    else {
+                    else
+                    {
                         return (true, response);
                     }
                 }
-                catch (System.Exception ex) {
-                    if (retryCount == MAX_RETRIES) {
-                        AuditLog.Log($"ERROR TxExp: Retry: {retryCount} too many, Exception: {ex.Message}\nStack: {ex.StackTrace}"); 
+                catch (System.Exception ex)
+                {
+                    if (retryCount == maxRetries)
+                    {
+                        AuditLog.Log($"ERROR TxExp: Retry: {retryCount} too many, Exception: {ex.Message}\nStack: {ex.StackTrace}");
                         return (false, null);
                     }
-                    else {
-                        AuditLog.Log($"ERROR TxExp: Retry: {retryCount}, Exception: {ex.Message}"); 
+                    else
+                    {
+                        AuditLog.Log($"ERROR TxExp: Retry: {retryCount}, Exception: {ex.Message}");
                         retryCount++;
                     }
                 }

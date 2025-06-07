@@ -41,17 +41,38 @@ namespace FourteenNumbers {
 
             try {
                 AuditLog.Log("Publish transaction");
+                uint pointsToday = GameState.Instance().PointsEarnedTotal();
                 uint gameDay = (uint) Stats.GetLastGameDay();
                 (string sol1, string sol2, string sol3) = Stats.GetSolutions();
-                var publishSuccess = await contract.SubmitBestScore(gameDay, sol1, sol2, sol3);
-                if (!publishSuccess) {
-                    hasError = true;
-                    errorMessage = "Error during publish: type 1";
+                bool publishSuccess = false;
+                uint retry = 0;
+                while (!publishSuccess)
+                {
+                    publishSuccess = await contract.SubmitBestScore(gameDay, sol1, sol2, sol3);
+                    if (!publishSuccess)
+                    {
+                        uint bestScore = await contract.GetBestScore(gameDay);
+                        if (pointsToday <= bestScore)
+                        {
+                            AuditLog.Log($"Someone published first: points: {pointsToday}, best points: {bestScore}");
+                            hasError = true;
+                            errorMessage = "Oh no! Someone published before you";
+                            break;
+                        }
+                        retry++;
+                        if (retry > 3)
+                        {
+                            AuditLog.Log("Failed to publish");
+                            hasError = true;
+                            errorMessage = "Failed to publish. Please try again later";
+                            break;                           
+                        }
+                    }
                 }
             }
             catch (Exception ex) {
                 hasError = true;
-                errorMessage = "Error during publish: type 2";
+                errorMessage = "Error during publish process. Please try again later";
                 AuditLog.Log($"Exception in publish process: {ex.Message}");
             }
             finally {
@@ -61,7 +82,7 @@ namespace FourteenNumbers {
 
         public void Update() {
             if (hasError) {
-                info.text = "Failed to publish your score. " + errorMessage;
+                info.text = errorMessage;
                 return;
             }
 
