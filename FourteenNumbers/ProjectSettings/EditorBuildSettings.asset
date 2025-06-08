@@ -6,64 +6,64 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/WelcomeScene.unity
+    path: Assets/Scenes/startup/WelcomeScene.unity
     guid: 2d0dde90dfaee42fabc8398b0c83abdf
   - enabled: 1
-    path: Assets/Scenes/LoginScene.unity
+    path: Assets/Scenes/startup/LoginScene.unity
     guid: 08cdfacd31a0e4433ac677a771d84d11
   - enabled: 1
-    path: Assets/Scenes/MenuScene.unity
+    path: Assets/Scenes/startup/MenuScene.unity
     guid: eaaf8e1de613d4ee18d72827983aba1d
   - enabled: 1
-    path: Assets/Scenes/Menu/GamePlayScene.unity
+    path: Assets/Scenes/main/play/GamePlayScene.unity
     guid: aa120021a770848f1a3c0e120b013cfa
   - enabled: 1
-    path: Assets/Scenes/Menu/BackgroundsScene.unity
+    path: Assets/Scenes/main/scenes/BackgroundsScene.unity
     guid: b1fe5b878784c4f9aadb9033810e4c15
   - enabled: 1
-    path: Assets/Scenes/Menu/ClaimProbScene.unity
+    path: Assets/Scenes/main/scenes/ClaimProbScene.unity
     guid: 53efe81dedf64404e959c701b3c720fe
   - enabled: 1
-    path: Assets/Scenes/Menu/ClaimScene.unity
+    path: Assets/Scenes/main/scenes/ClaimScene.unity
     guid: daee59be12ab54251a0277a0c708d3a5
   - enabled: 1
-    path: Assets/Scenes/Menu/ErrorScene.unity
+    path: Assets/Scenes/helper/ErrorScene.unity
     guid: eac79308da4834f87aa57869337c0ea2
   - enabled: 1
-    path: Assets/Scenes/Menu/HelpContextScene.unity
+    path: Assets/Scenes/helper/HelpContextScene.unity
     guid: 44dcee3ab3f534b759be11bf23de41ea
   - enabled: 1
-    path: Assets/Scenes/Menu/HelpScene.unity
+    path: Assets/Scenes/main/HelpScene.unity
     guid: 220431b01c09b43a6b541fdaa304fd83
   - enabled: 1
-    path: Assets/Scenes/Menu/OtherMenuScene.unity
+    path: Assets/Scenes/main/OtherMenuScene.unity
     guid: 6b405d23e32f1413387c286b4e4e6e94
   - enabled: 1
-    path: Assets/Scenes/Menu/PublishScene.unity
+    path: Assets/Scenes/main/play/PublishScene.unity
     guid: 271d3dea384a34d4fb01a68e3097bce1
   - enabled: 1
-    path: Assets/Scenes/Menu/SceneDetailScene.unity
+    path: Assets/Scenes/main/scenes/SceneDetailScene.unity
     guid: 137a2c07ffdbb4ae296d999512db3671
   - enabled: 1
-    path: Assets/Scenes/Menu/SolutionsScene.unity
+    path: Assets/Scenes/main/SolutionsScene.unity
     guid: dcd6c6ee23e3243a68af8c41c881214b
   - enabled: 1
-    path: Assets/Scenes/Menu/StatsScene.unity
+    path: Assets/Scenes/main/StatsScene.unity
     guid: f953498547c5044bbb541295359c46a4
   - enabled: 1
-    path: Assets/Scenes/Menu/Other/CreditsScene.unity
+    path: Assets/Scenes/extended/CreditsScene.unity
     guid: 66868c81a852c46068d6a42458554b07
   - enabled: 1
-    path: Assets/Scenes/Menu/Other/PassportScene.unity
+    path: Assets/Scenes/extended/PassportScene.unity
     guid: 21348430f8c374f5a8fad07f80464ca1
   - enabled: 1
-    path: Assets/Scenes/Menu/Other/SettingsScene.unity
+    path: Assets/Scenes/extended/SettingsScene.unity
     guid: de9eaa6750b204153a4c81c647f22b41
   - enabled: 1
-    path: Assets/Scenes/Menu/Other/SocialsScene.unity
+    path: Assets/Scenes/extended/SocialsScene.unity
     guid: db98fdafa26864719b097fc4b628e5cb
   - enabled: 1
-    path: Assets/Scenes/UnexpectedErrorScene.unity
+    path: Assets/Scenes/startup/UnexpectedErrorScene.unity
     guid: ff079dda48e5647509d8ba9e2ec2a201
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
