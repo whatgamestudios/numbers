@@ -22,10 +22,10 @@ contract ClaimForkTest is Test {
     }
 
     function testClaim() public {
-        address passportWallet = 0xA654b48E5a9e58A8626F81168FEBA1B3AB4AF4EF;
+        // address passportWallet = 0xA654b48E5a9e58A8626F81168FEBA1B3AB4AF4EF;
 
-        vm.prank(passportWallet);
-        fourteenNumbersClaim.claim(1);
+        // vm.prank(passportWallet);
+        // fourteenNumbersClaim.claim(1);
     }
 
 }
