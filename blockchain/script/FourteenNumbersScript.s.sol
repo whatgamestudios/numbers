@@ -40,7 +40,7 @@ contract FourteenNumbersScript is Script {
         console.logAddress(address(v2Impl));
     }
 
-    function upgradeToV2() public {
+    function upgradeToV32() public {
         address proxyDeployedAddress = 0xe2E762770156FfE253C49Da6E008b4bECCCf2812;
         address v2Address = 0x3B6378DDa9037F3a98C685fec3990100ee7Cf4Ff;
 
@@ -52,6 +52,27 @@ contract FourteenNumbersScript is Script {
 
         console.logString("Done");
     }
+
+    function deployV3() public {
+        vm.broadcast();
+        FourteenNumbersSolutionsV3 v3Impl = new FourteenNumbersSolutionsV3();
+        console.logString("Deployed v3");
+        console.logAddress(address(v3Impl));
+    }
+
+    function upgradeToV3() public {
+        address proxyDeployedAddress = 0xe2E762770156FfE253C49Da6E008b4bECCCf2812;
+        address v3Address = 0x3B6378DDa9037F3a98C685fec3990100ee7Cf4Ff;
+
+        FourteenNumbersSolutions fourteenNumbersSolutions = FourteenNumbersSolutions(proxyDeployedAddress);
+        bytes memory initData = abi.encodeWithSelector(FourteenNumbersSolutions.upgradeStorage.selector, bytes(""));
+
+        vm.broadcast();
+        fourteenNumbersSolutions.upgradeToAndCall(v3Address, initData);
+
+        console.logString("Done");
+    }
+
 
     // Transfer all tokens owned by one account to another account.
     function transferAllTokens() public {
