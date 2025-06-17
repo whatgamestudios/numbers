@@ -6,6 +6,7 @@ import "forge-std/Script.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {FourteenNumbersSolutions} from "../src/FourteenNumbersSolutions.sol";
 import {FourteenNumbersSolutionsV2} from "../src/FourteenNumbersSolutionsV2.sol";
+import {FourteenNumbersSolutionsV3} from "../src/FourteenNumbersSolutionsV3.sol";
 import {FourteenNumbersClaim} from "../src/FourteenNumbersClaim.sol";
 import {FourteenNumbersClaimV2} from "../src/FourteenNumbersClaimV2.sol";
 import {FourteenNumbersClaimV3} from "../src/FourteenNumbersClaimV3.sol";
@@ -62,7 +63,7 @@ contract FourteenNumbersScript is Script {
 
     function upgradeToV3() public {
         address proxyDeployedAddress = 0xe2E762770156FfE253C49Da6E008b4bECCCf2812;
-        address v3Address = 0x3B6378DDa9037F3a98C685fec3990100ee7Cf4Ff;
+        address v3Address = 0x209B622Bc3482aaCFA64eC7cC192F6e4Dce7a61C;
 
         FourteenNumbersSolutions fourteenNumbersSolutions = FourteenNumbersSolutions(proxyDeployedAddress);
         bytes memory initData = abi.encodeWithSelector(FourteenNumbersSolutions.upgradeStorage.selector, bytes(""));
