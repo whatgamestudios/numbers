@@ -26,7 +26,7 @@ abstract contract FourteenNumbersSolutionsOperationalTest is FourteenNumbersSolu
         fourteenNumbersSolutions.checkIn(36);
     }
 
-    function testStoreBestScore() public {
+    function testStoreBestScore() public virtual {
         // 	Sat Jan 04 2025 13:00:00 GMT+0000
         vm.warp(1735995600);
         // Min game day is 34, max is 35
@@ -53,7 +53,7 @@ abstract contract FourteenNumbersSolutionsOperationalTest is FourteenNumbersSolu
         assertEq(player, player1, "player");
     }
 
-    function testStoreResultsBetterResult() public {
+    function testStoreResultsBetterResult() public virtual {
         // 	Sat Jan 04 2025 13:00:00 GMT+0000
         vm.warp(1735995600);
         // Min game day is 34, max is 35
@@ -89,7 +89,7 @@ abstract contract FourteenNumbersSolutionsOperationalTest is FourteenNumbersSolu
         assertEq(player, player2, "player");
     }
 
-    function testStoreResultsNotBetterResult() public {
+    function testStoreResultsNotBetterResult() public virtual {
         // 	Sat Jan 04 2025 13:00:00 GMT+0000
         vm.warp(1735995600);
         // Min game day is 34, max is 35
