@@ -121,8 +121,8 @@ namespace FourteenNumbers {
                 //Debug.Log("LoginPKCE done");
             }
             else if (buttonText == "Skip") {
-                DeepLinkManager.Instance.LoginPath = DeepLinkManager.LOGIN_SKIP;
-                SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
+                SceneStack.Instance().PushScene();
+                SceneManager.LoadScene("SkipSigninScene", LoadSceneMode.Additive);
             }
             else {
                 AuditLog.Log("Login Screen: Unknown button");

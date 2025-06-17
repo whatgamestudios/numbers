@@ -12,36 +12,15 @@ namespace FourteenNumbers {
                     
         private const int TIME_PER_CHANGE = 1500;
         private DateTime changeTime;
-        private UnityEngine.Color textFaceColour;
         private GameObject floatingImage;
-        private TextMeshProUGUI infoText;
         private Image floatingImageComponent;
 
-        private uint state = 0;
+        private uint state = 1;
         private uint lastImageState = 0;
         private float animationProgress = 0f;
-        private const string text1 = "Sign In\nto earn\nTradable\nScenes";
 
         public void Start() {
-            textFaceColour = UnityEngine.Color.black;
-
-
             changeTime = DateTime.Now;
-            
-            // Create and setup the text
-            GameObject textObj = new GameObject("test");
-            textObj.transform.SetParent(advertPanel.transform, false);
-            
-            RectTransform textRect = textObj.AddComponent<RectTransform>();
-            textRect.anchorMin = new Vector2(0.5f, 0.5f);
-            textRect.anchorMax = new Vector2(0.5f, 0.5f);
-            textRect.anchoredPosition = Vector2.zero;
-            textRect.sizeDelta = new Vector2(700, 400);
-            
-            infoText = textObj.AddComponent<TextMeshProUGUI>();
-            infoText.fontSize = 150;
-            infoText.alignment = TextAlignmentOptions.Center;
-            infoText.color = textFaceColour;
             
             // Create the floating image object (but don't show it yet)
             floatingImage = new GameObject("FloatingImage");
@@ -65,75 +44,39 @@ namespace FourteenNumbers {
 
             if (msSinceChange > TIME_PER_CHANGE) {
                 state++;
+                if (state == 5)
+                {
+                    state = 1;
+                }
                 changeTime = now;
                 animationProgress = 0f;
             }
-            switch (state) {
-                default:
-                case 0:
-                    // Set state to 0 if is 4.
-                    state = 0;
-                    infoText.gameObject.SetActive(true);
-                    floatingImage.SetActive(false);                    
-                    infoText.text = text1;
-                    break;
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                    setImage();
-                    infoText.gameObject.SetActive(false);
-                    floatingImage.SetActive(true);
 
-                    // Calculate animation progress
-                    animationProgress = (float)(msSinceChange / TIME_PER_CHANGE);
-                    RectTransform imageRect = floatingImage.GetComponent<RectTransform>();
-                    float panelWidth = advertPanel.GetComponent<RectTransform>().rect.width;
-                    float panelHeight = advertPanel.GetComponent<RectTransform>().rect.height;
+            setImage();
+            // infoText.gameObject.SetActive(false);
+            floatingImage.SetActive(true);
 
-                    // Keep the image centered during size changes
-                    imageRect.anchoredPosition = Vector2.zero;
+            // Calculate animation progress
+            animationProgress = (float)(msSinceChange / TIME_PER_CHANGE);
+            RectTransform imageRect = floatingImage.GetComponent<RectTransform>();
+            float panelWidth = advertPanel.GetComponent<RectTransform>().rect.width;
+            float panelHeight = advertPanel.GetComponent<RectTransform>().rect.height;
 
-                    float endGetLarge = 0.6f;
-                    // float endGetSmall = 1.0f;
+            // Keep the image centered during size changes
+            imageRect.anchoredPosition = Vector2.zero;
 
-                    if (animationProgress < endGetLarge) {
-                        // Grow from 300 to 500 pixels
-                        float size = Mathf.Lerp(300, 600, animationProgress * 4);
-                        imageRect.sizeDelta = new Vector2(size, size);
-                    }
-                    else {//if (animationProgress < endGetSmall) {
-                        // Shrink from 400 to 100 pixels
-                        float size = Mathf.Lerp(600, 0, (animationProgress - endGetLarge) * 4);
-                        imageRect.sizeDelta = new Vector2(size, size);
-                    }
-                    // else {
-                    //     float xPos, yPos;
-                    //     switch (state) {
-                    //         case 3:
-                    //             // Fly diagonally to top left
-                    //             xPos = Mathf.Lerp(0, -panelWidth, (animationProgress - endGetSmall) * 2);
-                    //             yPos = Mathf.Lerp(0, panelHeight, (animationProgress - endGetSmall) * 2);
-                    //             break;
-                    //         case 4:
-                    //             // Fly diagonally to top right
-                    //             xPos = Mathf.Lerp(0, panelWidth, (animationProgress - endGetSmall) * 2);
-                    //             yPos = Mathf.Lerp(0, panelHeight, (animationProgress - endGetSmall) * 2);
-                    //             break;
-                    //         case 5:
-                    //             // Fly diagonally to bottom right
-                    //             xPos = Mathf.Lerp(0, panelWidth, (animationProgress - endGetSmall) * 2);
-                    //             yPos = Mathf.Lerp(0, -panelHeight, (animationProgress - endGetSmall) * 2);
-                    //             break;
-                    //         default:
-                    //             // Fly diagonally to bottom left
-                    //             xPos = Mathf.Lerp(0, -panelWidth, (animationProgress - endGetSmall) * 2);
-                    //             yPos = Mathf.Lerp(0, -panelHeight, (animationProgress - endGetSmall) * 2);
-                    //             break;
-                    //     }
-                    //     imageRect.anchoredPosition = new Vector2(xPos, yPos);
-                    //}
-                    break;
+            float endGetLarge = 0.6f;
+            // float endGetSmall = 1.0f;
+
+            if (animationProgress < endGetLarge) {
+                // Grow from 300 to 500 pixels
+                float size = Mathf.Lerp(300, 600, animationProgress * 4);
+                imageRect.sizeDelta = new Vector2(size, size);
+            }
+            else {//if (animationProgress < endGetSmall) {
+                // Shrink from 400 to 100 pixels
+                float size = Mathf.Lerp(600, 0, (animationProgress - endGetLarge) * 4);
+                imageRect.sizeDelta = new Vector2(size, size);
             }
         }
 
