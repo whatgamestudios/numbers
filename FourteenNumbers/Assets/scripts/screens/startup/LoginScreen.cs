@@ -14,25 +14,53 @@ namespace FourteenNumbers {
     public class LoginScreen : MonoBehaviour {
 
         public Button loginButton;
+
+        public Button skipButton;
         private Coroutine loginCheckRoutine;
         private Coroutine buttonAnimationRoutine;
+        private Coroutine skipButtonRoutine;
         private bool isRunning = false;
         private Image buttonImage;
         private int currentButtonFrame = 1;
 
-        private string help = "Sign In to qualify for rewards and enable best score publishing";
+        private string help = "Sign in to claim Scenes and publish best scores.\n\n" +
+            "14Numbers uses Passport which uses Google, Apple, Facebook or email to sign in";
 
         public async Task Start() {
             AuditLog.Log("Login screen");
             SceneStack.Instance().Reset();
             await PassportLogin.Init();
+            
+            // Hide skip button initially
+            skipButton.gameObject.SetActive(false);
+            
             startCoroutine();
             startButtonAnimation();
+            startSkipButtonTimer();
         }
 
         public void OnDisable() {
             stopCoroutine();
             stopButtonAnimation();
+            stopSkipButtonTimer();
+        }
+
+        private void startSkipButtonTimer() {
+            if (skipButtonRoutine == null) {
+                skipButtonRoutine = StartCoroutine(SkipButtonTimerRoutine());
+            }
+        }
+
+        private void stopSkipButtonTimer() {
+            if (skipButtonRoutine != null) {
+                StopCoroutine(skipButtonRoutine);
+                skipButtonRoutine = null;
+            }
+        }
+
+        IEnumerator SkipButtonTimerRoutine() {
+            yield return new WaitForSeconds(2f);
+            skipButton.gameObject.SetActive(true);
         }
 
         private void startButtonAnimation() {
@@ -109,7 +137,7 @@ namespace FourteenNumbers {
             if (buttonText == "Help") {
                 MessagePass.SetMsg(help);
                 SceneStack.Instance().PushScene();
-                SceneManager.LoadScene("HelpContextScene", LoadSceneMode.Additive);
+                SceneManager.LoadScene("BigHelpContextScene", LoadSceneMode.Additive);
             }
             else if (buttonText == "Login") {
                 //Debug.Log("LoginPKCE start");
