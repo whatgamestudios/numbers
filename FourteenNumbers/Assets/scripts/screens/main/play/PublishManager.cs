@@ -22,7 +22,7 @@ namespace FourteenNumbers {
 
         public void Start()
         {
-            panelPublish.SetActive(false);
+            //panelPublish.SetActive(false);
         }
 
         public void OnButtonClick(string buttonText)
