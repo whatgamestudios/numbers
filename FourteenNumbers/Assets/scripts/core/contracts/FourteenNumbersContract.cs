@@ -63,7 +63,7 @@ namespace FourteenNumbers {
                         );
                     DateTime end = DateTime.Now;
                     TimeSpan diff = end.Subtract(start);
-                    AuditLog.Log($"Transaction status: {response.status}, time span: {diff.TotalMilliseconds}, hash: {response.transactionHash}");
+                    AuditLog.Log($"Transaction status: {response.status}, time span: {diff.TotalMilliseconds}, hash: {response.hash}");
 
                     if (response.status != "1")
                     {

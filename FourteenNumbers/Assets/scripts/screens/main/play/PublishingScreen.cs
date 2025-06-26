@@ -13,6 +13,8 @@ namespace FourteenNumbers {
 
     public class PublishingScreen : MonoBehaviour {
         public Canvas backgroundCanvas;
+
+        public Button backButton;
                     
         private const int TIME_PER_DOT = 1000;
         DateTime timeOfLastDot = DateTime.Now;
@@ -54,6 +56,11 @@ namespace FourteenNumbers {
             StartPublishProcess();
             InitializeFallingNumbers();
             InitializeInfo();
+
+            // Move backButton to be definitely on top of the background.
+            if (backButton != null) {
+                backButton.transform.SetParent(backgroundCanvas.transform, false);
+            }
         }
 
         private void InitializeFallingNumbers()

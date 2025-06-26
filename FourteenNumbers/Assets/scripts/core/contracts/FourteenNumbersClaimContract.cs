@@ -88,7 +88,7 @@ namespace FourteenNumbers {
 
             try {
                 var web3 = new Web3(RPC_URL);
-                var fetchedReceipt = await web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(response.transactionHash);
+                var fetchedReceipt = await web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(response.hash);
                 
                 if (fetchedReceipt == null) {
                     AuditLog.Log("Failed to fetch transaction receipt from RPC");

@@ -28,6 +28,7 @@ namespace FourteenNumbers {
 
         public async Task Start() {
             AuditLog.Log("Login screen");
+            PassportStore.SetLoggedIn(false);
             SceneStack.Instance().Reset();
             await PassportLogin.Init();
             
