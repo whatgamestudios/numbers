@@ -9,8 +9,12 @@ namespace FourteenNumbers {
 
     public class CreditsScreen : MonoBehaviour {
 
-        public void Start() {
+        public TextMeshProUGUI VersionText;
+
+        public void Start()
+        {
             AuditLog.Log("Credits screen");
+            VersionText.text = Application.version;
         }
 
         public void OnButtonClick(string buttonText) {
