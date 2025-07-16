@@ -21,12 +21,7 @@ contract FourteenNumbersSolutionsV2a is FourteenNumbersSolutions {
 contract FourteenNumbersSolutionsConfigV1Test is FourteenNumbersSolutionsConfigTest {
     function setUp() public virtual override {
         super.setUp();
-
-        FourteenNumbersSolutions impl = new FourteenNumbersSolutions();
-        bytes memory initData = abi.encodeWithSelector(
-            FourteenNumbersSolutions.initialize.selector, roleAdmin, owner, upgradeAdmin);
-        proxy = new ERC1967Proxy(address(impl), initData);
-        fourteenNumbersSolutions = FourteenNumbersSolutions(address(proxy));
+        deployV1();
     }
 
 
