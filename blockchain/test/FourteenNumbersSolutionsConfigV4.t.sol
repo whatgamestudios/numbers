@@ -10,67 +10,77 @@ import {FourteenNumbersSolutionsConfigTest} from "./FourteenNumbersSolutionsConf
 import {FourteenNumbersSolutions} from "../src/FourteenNumbersSolutions.sol";
 import {FourteenNumbersSolutionsV2} from "../src/FourteenNumbersSolutionsV2.sol";
 import {FourteenNumbersSolutionsV3} from "../src/FourteenNumbersSolutionsV3.sol";
+import {FourteenNumbersSolutionsV4} from "../src/FourteenNumbersSolutionsV4.sol";
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
-contract FourteenNumbersSolutionsV4a is FourteenNumbersSolutionsV3 {
+contract FourteenNumbersSolutionsV5a is FourteenNumbersSolutionsV4 {
     function upgradeStorage(bytes memory /* _data */) external override {
-        version = 4;
+        version = 5;
     }
 }
 
 
 
-contract FourteenNumbersSolutionsConfigV2Test is FourteenNumbersSolutionsConfigTest {
+contract FourteenNumbersSolutionsConfigV4Test is FourteenNumbersSolutionsConfigTest {
     function setUp() public virtual override {
         super.setUp();
-        deployV3();
+        deployV4();
     }
 
-    function testNonUpgradeDeployV3() public {
-        FourteenNumbersSolutionsV3 impl = new FourteenNumbersSolutionsV3();
+    function testNonUpgradeDeployV4() public {
+        FourteenNumbersSolutionsV4 impl = new FourteenNumbersSolutionsV4();
         bytes memory initData = abi.encodeWithSelector(
-            FourteenNumbersSolutionsV3.initialize.selector, roleAdmin, owner, upgradeAdmin);
+            FourteenNumbersSolutionsV4.initialize.selector, roleAdmin, owner, upgradeAdmin);
         proxy = new ERC1967Proxy(address(impl), initData);
         fourteenNumbersSolutions = FourteenNumbersSolutions(address(proxy));
 
         uint256 ver = fourteenNumbersSolutions.version();
-        assertEq(ver, 3, "Wrong version");
+        assertEq(ver, 4, "Wrong version");
     }
 
-    // Make sure that it is possible to upgrade from V2 to V3.
-    function testUpgradeToV4() public {
-        FourteenNumbersSolutionsV4a newImpl = new FourteenNumbersSolutionsV4a();
+    // Make sure that it is possible to upgrade from V4 to V5.
+    function testUpgradeToV5() public {
+        FourteenNumbersSolutionsV5a newImpl = new FourteenNumbersSolutionsV5a();
         bytes memory initData = abi.encodeWithSelector(FourteenNumbersSolutions.upgradeStorage.selector, bytes(""));
         vm.prank(upgradeAdmin);
         fourteenNumbersSolutions.upgradeToAndCall(address(newImpl), initData);
 
         uint256 ver = fourteenNumbersSolutions.version();
-        assertEq(ver, 4, "Upgrade did not upgrade version");
+        assertEq(ver, 5, "Upgrade did not upgrade version");
     }
 
-    function testNonUpgradeToV3() public {
-        FourteenNumbersSolutionsV3 notNewImpl = new FourteenNumbersSolutionsV3();
+    function testNonUpgradeToV4() public {
+        FourteenNumbersSolutionsV4 notNewImpl = new FourteenNumbersSolutionsV4();
         bytes memory initData = abi.encodeWithSelector(FourteenNumbersSolutions.upgradeStorage.selector, bytes(""));
-        vm.expectRevert(abi.encodeWithSelector(FourteenNumbersSolutions.CanNotUpgradeToLowerOrSameVersion.selector, 3));
+        vm.expectRevert(abi.encodeWithSelector(FourteenNumbersSolutions.CanNotUpgradeToLowerOrSameVersion.selector, 4));
         vm.prank(upgradeAdmin);
         fourteenNumbersSolutions.upgradeToAndCall(address(notNewImpl), initData);
     }
 
-    function testDowngradeV3ToV0() public {
-        // Attempt to downgrade from V3 to V0.
+    function testDowngradeV4ToV0() public {
+        // Attempt to downgrade from V4 to V0.
         FourteenNumbersSolutions v1Impl = new FourteenNumbersSolutions();
         bytes memory initData = abi.encodeWithSelector(FourteenNumbersSolutions.upgradeStorage.selector, bytes(""));
-        vm.expectRevert(abi.encodeWithSelector(FourteenNumbersSolutions.CanNotUpgradeToLowerOrSameVersion.selector, 3));
+        vm.expectRevert(abi.encodeWithSelector(FourteenNumbersSolutions.CanNotUpgradeToLowerOrSameVersion.selector, 4));
         vm.prank(upgradeAdmin);
         fourteenNumbersSolutions.upgradeToAndCall(address(v1Impl), initData);
     }
 
-    function testDowngradeV3ToV2() public {
-        // Attempt to downgrade from V3 to V2.
+    function testDowngradeV4ToV2() public {
+        // Attempt to downgrade from V4 to V2.
         FourteenNumbersSolutionsV2 v2Impl = new FourteenNumbersSolutionsV2();
         bytes memory initData = abi.encodeWithSelector(FourteenNumbersSolutions.upgradeStorage.selector, bytes(""));
-        vm.expectRevert(abi.encodeWithSelector(FourteenNumbersSolutions.CanNotUpgradeToLowerOrSameVersion.selector, 3));
+        vm.expectRevert(abi.encodeWithSelector(FourteenNumbersSolutions.CanNotUpgradeToLowerOrSameVersion.selector, 4));
         vm.prank(upgradeAdmin);
         fourteenNumbersSolutions.upgradeToAndCall(address(v2Impl), initData);
+    }
+
+    function testDowngradeV4ToV3() public {
+        // Attempt to downgrade from V4 to V3.
+        FourteenNumbersSolutionsV3 v3Impl = new FourteenNumbersSolutionsV3();
+        bytes memory initData = abi.encodeWithSelector(FourteenNumbersSolutions.upgradeStorage.selector, bytes(""));
+        vm.expectRevert(abi.encodeWithSelector(FourteenNumbersSolutions.CanNotUpgradeToLowerOrSameVersion.selector, 4));
+        vm.prank(upgradeAdmin);
+        fourteenNumbersSolutions.upgradeToAndCall(address(v3Impl), initData);
     }
 }

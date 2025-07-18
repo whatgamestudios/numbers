@@ -18,25 +18,7 @@ contract FourteenNumbersSolutionsOperationalV3Test is FourteenNumbersSolutionsOp
 
     function setUp() public virtual override {
         super.setUp();
-
-        FourteenNumbersSolutions impl = new FourteenNumbersSolutions();
-        bytes memory initData = abi.encodeWithSelector(
-            FourteenNumbersSolutions.initialize.selector, roleAdmin, owner, upgradeAdmin);
-        proxy = new ERC1967Proxy(address(impl), initData);
-        fourteenNumbersSolutions = FourteenNumbersSolutions(address(proxy));
-
-        FourteenNumbersSolutionsV2 v2Impl = new FourteenNumbersSolutionsV2();
-        initData = abi.encodeWithSelector(FourteenNumbersSolutionsV2.upgradeStorage.selector, bytes(""));
-        vm.prank(upgradeAdmin);
-        fourteenNumbersSolutions.upgradeToAndCall(address(v2Impl), initData);
-
-        FourteenNumbersSolutionsV3 v3Impl = new FourteenNumbersSolutionsV3();
-        initData = abi.encodeWithSelector(FourteenNumbersSolutionsV3.upgradeStorage.selector, bytes(""));
-        vm.prank(upgradeAdmin);
-        fourteenNumbersSolutions.upgradeToAndCall(address(v3Impl), initData);
-
-        uint256 ver = fourteenNumbersSolutions.version();
-        assertEq(ver, 3, "Upgrade did not upgrade version");
+        deployV3();
 
         fourteenNumbersSolutionsV3 = FourteenNumbersSolutionsV3(address(fourteenNumbersSolutions));
     }
@@ -194,4 +176,33 @@ contract FourteenNumbersSolutionsOperationalV3Test is FourteenNumbersSolutionsOp
         assertEq(player, player1, "player");
     }
 
+    function testStoreResultsSameResult() public virtual {
+        // 	Sat Jan 04 2025 13:00:00 GMT+0000
+        vm.warp(1735995600);
+        // Min game day is 34, max is 35
+
+        bytes memory sol1 = "(100+10+1)*4"; // 444: perfect: 70 points
+        bytes memory sol2 = "75*6";         // 450: 6 off:   44 points
+        bytes memory sol3 = "50*9";         // 450: 6 off:   44 points
+
+        vm.expectEmit(true, true, true, true);
+        emit FourteenNumbersSolutionsV3.BestScoreToday(34, player1, "(100+10+1)*4=75*6=50*9", 158, 0);
+        vm.prank(player1);
+        fourteenNumbersSolutions.storeResults(34, sol1, sol2, sol3, true);
+
+        sol2 = "(100+10+1)*4"; // 444: perfect: 70 points
+        sol3 = "75*6";         // 450: 6 off:   44 points
+        sol1 = "50*9";         // 450: 6 off:   44 points
+
+        vm.expectEmit(true, true, true, true);
+        emit FourteenNumbersSolutionsV3.BetterScoreAlready(34, player2, "50*9=(100+10+1)*4=75*6", 158, 158);
+        vm.prank(player2);
+        fourteenNumbersSolutions.storeResults(34, sol1, sol2, sol3, true);
+
+        (bytes memory combinedSolution, uint256 points, address player) = 
+            fourteenNumbersSolutions.solutions(34);
+        assertEq(combinedSolution, "(100+10+1)*4=75*6=50*9", "Combined solution1");
+        assertEq(points, 158, "points");
+        assertEq(player, player1, "player");
+    }
 }

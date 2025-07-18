@@ -22,22 +22,19 @@ contract FourteenNumbersSolutionsV3a is FourteenNumbersSolutionsV2 {
 contract FourteenNumbersSolutionsConfigV2Test is FourteenNumbersSolutionsConfigTest {
     function setUp() public virtual override {
         super.setUp();
+        deployV2();
+    }
 
-        FourteenNumbersSolutions impl = new FourteenNumbersSolutions();
+    function testNonUpgradeDeployV2() public {
+        FourteenNumbersSolutionsV2 impl = new FourteenNumbersSolutionsV2();
         bytes memory initData = abi.encodeWithSelector(
-            FourteenNumbersSolutions.initialize.selector, roleAdmin, owner, upgradeAdmin);
+            FourteenNumbersSolutionsV2.initialize.selector, roleAdmin, owner, upgradeAdmin);
         proxy = new ERC1967Proxy(address(impl), initData);
         fourteenNumbersSolutions = FourteenNumbersSolutions(address(proxy));
 
-        FourteenNumbersSolutionsV2 v2Impl = new FourteenNumbersSolutionsV2();
-        initData = abi.encodeWithSelector(FourteenNumbersSolutionsV2.upgradeStorage.selector, bytes(""));
-        vm.prank(upgradeAdmin);
-        fourteenNumbersSolutions.upgradeToAndCall(address(v2Impl), initData);
-
         uint256 ver = fourteenNumbersSolutions.version();
-        assertEq(ver, 2, "Upgrade did not upgrade version");
+        assertEq(ver, 2, "Wrong version");
     }
-
 
     // Make sure that it is possible to upgrade from V2 to V3.
     function testUpgradeToV3() public {

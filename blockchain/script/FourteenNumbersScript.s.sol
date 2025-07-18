@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {FourteenNumbersSolutions} from "../src/FourteenNumbersSolutions.sol";
 import {FourteenNumbersSolutionsV2} from "../src/FourteenNumbersSolutionsV2.sol";
 import {FourteenNumbersSolutionsV3} from "../src/FourteenNumbersSolutionsV3.sol";
+import {FourteenNumbersSolutionsV4} from "../src/FourteenNumbersSolutionsV4.sol";
 import {FourteenNumbersClaim} from "../src/FourteenNumbersClaim.sol";
 import {FourteenNumbersClaimV2} from "../src/FourteenNumbersClaimV2.sol";
 import {FourteenNumbersClaimV3} from "../src/FourteenNumbersClaimV3.sol";
@@ -70,6 +71,26 @@ contract FourteenNumbersScript is Script {
 
         vm.broadcast();
         fourteenNumbersSolutions.upgradeToAndCall(v3Address, initData);
+
+        console.logString("Done");
+    }
+
+    function deployV4() public {
+        vm.broadcast();
+        FourteenNumbersSolutionsV4 impl = new FourteenNumbersSolutionsV4();
+        console.logString("Deployed v4");
+        console.logAddress(address(impl));
+    }
+
+    function upgradeToV4() public {
+        address proxyDeployedAddress = 0xe2E762770156FfE253C49Da6E008b4bECCCf2812;
+        address v4Address = 0x871c3d3730fB4AaC5a2d16A9249DE265aC03cc2B;
+
+        FourteenNumbersSolutions fourteenNumbersSolutions = FourteenNumbersSolutions(proxyDeployedAddress);
+        bytes memory initData = abi.encodeWithSelector(FourteenNumbersSolutions.upgradeStorage.selector, bytes(""));
+
+        vm.broadcast();
+        fourteenNumbersSolutions.upgradeToAndCall(v4Address, initData);
 
         console.logString("Done");
     }
@@ -145,9 +166,9 @@ contract FourteenNumbersScript is Script {
 
         FourteenNumbersClaim.ClaimableToken memory token = FourteenNumbersClaim.ClaimableToken({
             erc1155Contract: fourteenNumbersScenes,
-            tokenId: 100,
-            balance: 6,
-            percentage: 100
+            tokenId: 202,
+            balance: 5,
+            percentage: 500
         });
 
         FourteenNumbersClaim claimContract = FourteenNumbersClaim(fourteenNumbersClaim);
