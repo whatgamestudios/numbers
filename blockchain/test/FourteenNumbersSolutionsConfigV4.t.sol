@@ -27,6 +27,16 @@ contract FourteenNumbersSolutionsConfigV4Test is FourteenNumbersSolutionsConfigT
         deployV4();
     }
 
+    function testNonUpgradeDeployV4() public {
+        FourteenNumbersSolutionsV4 impl = new FourteenNumbersSolutionsV4();
+        bytes memory initData = abi.encodeWithSelector(
+            FourteenNumbersSolutionsV4.initialize.selector, roleAdmin, owner, upgradeAdmin);
+        proxy = new ERC1967Proxy(address(impl), initData);
+        fourteenNumbersSolutions = FourteenNumbersSolutions(address(proxy));
+
+        uint256 ver = fourteenNumbersSolutions.version();
+        assertEq(ver, 4, "Wrong version");
+    }
 
     // Make sure that it is possible to upgrade from V4 to V5.
     function testUpgradeToV5() public {

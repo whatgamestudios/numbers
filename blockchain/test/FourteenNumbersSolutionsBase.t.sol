@@ -23,6 +23,7 @@ abstract contract FourteenNumbersSolutionsBaseTest is Test {
 
     address public player1;
     address public player2;
+    address public player3;
 
     FourteenNumbersSolutions fourteenNumbersSolutions;
     ERC1967Proxy public proxy;
@@ -33,6 +34,7 @@ abstract contract FourteenNumbersSolutionsBaseTest is Test {
         owner = makeAddr("Owner");
         player1 = makeAddr("Player1");
         player2 = makeAddr("Player2");
+        player3 = makeAddr("Player3");
 
         FourteenNumbersSolutions temp = new FourteenNumbersSolutions();
         defaultAdminRole = temp.DEFAULT_ADMIN_ROLE();
@@ -71,9 +73,7 @@ abstract contract FourteenNumbersSolutionsBaseTest is Test {
         assertEq(ver, 3, "Upgrade did not upgrade version");
     }
 
-    function deployV4() internal {
-        deployV3();
-
+    function upgradeToV4() internal {
         FourteenNumbersSolutionsV4 v4Impl = new FourteenNumbersSolutionsV4();
         bytes memory initData = abi.encodeWithSelector(FourteenNumbersSolutionsV4.upgradeStorage.selector, bytes(""));
         vm.prank(upgradeAdmin);
@@ -81,5 +81,10 @@ abstract contract FourteenNumbersSolutionsBaseTest is Test {
 
         uint256 ver = fourteenNumbersSolutions.version();
         assertEq(ver, 4, "Upgrade did not upgrade version");
+    }
+
+    function deployV4() internal {
+        deployV3();
+        upgradeToV4();
     }
 }

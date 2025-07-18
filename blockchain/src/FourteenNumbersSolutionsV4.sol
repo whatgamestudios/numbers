@@ -231,8 +231,8 @@ contract FourteenNumbersSolutionsV4 is
         _solutions[0].player = firstBestPlayer;
         _solutions[0].combinedSolution = firstBest.combinedSolution;
         for (uint256 i = 1; i < numSolutions; i++) {
-            _solutions[i].player = extraBestSolutions[i].player;
-            _solutions[i].combinedSolution = extraBestSolutions[i].combinedSolution;
+            _solutions[i].player = extraBestSolutions[i - 1].player;
+            _solutions[i].combinedSolution = extraBestSolutions[i - 1].combinedSolution;
         }
     }
 
