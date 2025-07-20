@@ -152,11 +152,15 @@ namespace FourteenNumbers {
                 return;
             }
 
-            string player = "";
-            if (todaysResult.Solutions.Count != 0) {
-                player = todaysResult.Solutions[index].Player;
+            if (todaysResult.Solutions.Count != 0)
+            {
+                string player = todaysResult.Solutions[index].Player;
+                bestPlayerText.text = player.Substring(0, 6) + "...." + player.Substring(player.Length - 4, 4);
             }
-            bestPlayerText.text = player.Substring(0,6) + "...." + player.Substring(player.Length - 4, 4);
+            else
+            {
+                bestPlayerText.text = "";
+            }
             bestPointsTotalText.text = todaysResult.Points.ToString();
 
             byte[] combinedSolutionBytes = {};
