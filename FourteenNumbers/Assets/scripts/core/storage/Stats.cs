@@ -144,11 +144,12 @@ namespace FourteenNumbers
         }
 
 
-        public static (int, int, int, int, int) GetStats()
+        public static (int, int, int, int, int, int) GetStats()
         {
             return (PlayerPrefs.GetInt(STATS_FIRST_PLAYED, 0),
             PlayerPrefs.GetInt(STATS_LAST_PLAYED, 0),
             PlayerPrefs.GetInt(STATS_TIMES_PLAYED, 0),
+            GetNumTimesPublished(),
             PlayerPrefs.GetInt(STATS_TOTAL_POINTS, 0),
             PlayerPrefs.GetInt(STATS_PERFECT_SCORE_DAYS, 0));
         }
