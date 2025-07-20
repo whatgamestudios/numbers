@@ -56,8 +56,13 @@ namespace FourteenNumbers {
                 return;
             }
 
+            if (Stats.HasPublishedToday())
+            {
+                return;
+            }
+
             uint pointsToday = gameState.PointsEarnedTotal();
-            if (pointsToday <= BestScoreLoader.BestScore)
+            if (pointsToday < BestScoreLoader.BestScore)
             {
                 return;
             }
