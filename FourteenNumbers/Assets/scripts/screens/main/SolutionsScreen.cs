@@ -17,6 +17,8 @@ namespace FourteenNumbers {
 
         public Button buttonUp;
         public Button buttonDown;
+        public Button buttonLeft;
+        public Button buttonRight;
 
         // Output
         public TextMeshProUGUI targetText;
@@ -51,12 +53,19 @@ namespace FourteenNumbers {
 
         private uint gameDayDisplaying = 0;
 
+        private int indexDisplaying = 0;
+
+        private GetAllSolutionsOutputDTO todaysResult = null;
+
         public void Start() {
             AuditLog.Log("Solutions screen");
             uint gameDay = (uint) Timeline.GameDay();
             gameDayToday = gameDay;
-            show(gameDay);
+            showNewDay(gameDay);
             buttonUp.interactable = false;
+
+            buttonRight.interactable = false;
+            buttonLeft.interactable = false;
         }
 
         public void OnButtonClick(string buttonText) {
@@ -66,7 +75,9 @@ namespace FourteenNumbers {
                 if (newDay >= gameDayToday) {
                     buttonUp.interactable = false;
                 }
-                show(newDay);
+                buttonRight.interactable = false;
+                buttonLeft.interactable = false;
+                showNewDay(newDay);
             }
             else if (buttonText == "Down") {
                 uint newDay = gameDayDisplaying - 1;
@@ -74,7 +85,25 @@ namespace FourteenNumbers {
                 if (newDay == 0) {
                     buttonDown.interactable = false;
                 }
-                show(newDay);
+                buttonRight.interactable = false;
+                buttonLeft.interactable = false;
+                showNewDay(newDay);
+            }
+            else if (buttonText == "Left") {
+                int newIndex = indexDisplaying - 1;
+                if (newIndex == 0) {
+                    buttonLeft.interactable = false;
+                }
+                buttonRight.interactable = true;
+                showSolution(newIndex);
+            }
+            else if (buttonText == "Right") {
+                int newIndex = indexDisplaying + 1;
+                if (newIndex == todaysResult.Solutions.Count - 1) {
+                    buttonRight.interactable = false;
+                }
+                buttonLeft.interactable = true;
+                showSolution(newIndex);
             }
             else {
                 AuditLog.Log($"Unknown button: {buttonText}");
@@ -82,8 +111,9 @@ namespace FourteenNumbers {
         }
 
 
-        public void show(uint gameDay) {
+        public void showNewDay(uint gameDay) {
             gameDayDisplaying = gameDay;
+            indexDisplaying = 0;
             gameDayText.text = "" + gameDay;
 
             gameDateText.text = Timeline.GetRelativeDateString((int) gameDay);
@@ -95,20 +125,44 @@ namespace FourteenNumbers {
             StartCoroutine(GetResultRoutine());
         }
 
+        public void showSolution(int index) {
+            indexDisplaying = index;
+            showCached(gameDayDisplaying, indexDisplaying);
+        }
 
         IEnumerator GetResultRoutine() {
             GetResult();
             yield return new WaitForSeconds(0f);
         }
-        async void GetResult() {
+        async void GetResult()
+        {
             FourteenNumbersSolutionsContract fourteenNumbersContracts = new FourteenNumbersSolutionsContract();
-            SolutionsOutputDTO result = await fourteenNumbersContracts.GetSolution(gameDayDisplaying);
+            todaysResult = await fourteenNumbersContracts.GetAllSolutions(gameDayDisplaying);
+            showCached(gameDayDisplaying, indexDisplaying);
 
-            string player = result.Player;
+            if (todaysResult.Solutions.Count > 1)
+            {
+                buttonRight.interactable = true;
+            }
+        }
+
+        public void showCached(uint gameDay, int index) {
+            if (todaysResult == null) {
+                AuditLog.Log("Todays result is null");
+                return;
+            }
+
+            string player = "";
+            if (todaysResult.Solutions.Count != 0) {
+                player = todaysResult.Solutions[index].Player;
+            }
             bestPlayerText.text = player.Substring(0,6) + "...." + player.Substring(player.Length - 4, 4);
-            bestPointsTotalText.text = result.Points.ToString();
+            bestPointsTotalText.text = todaysResult.Points.ToString();
 
-            byte[] combinedSolutionBytes = result.CombinedSolution;
+            byte[] combinedSolutionBytes = {};
+            if (todaysResult.Solutions.Count != 0) {
+                combinedSolutionBytes = todaysResult.Solutions[index].CombinedSolution;
+            }
             var combinedSolution = System.Text.Encoding.Default.GetString(combinedSolutionBytes);
             string sol1 = "";
             string sol2 = "";

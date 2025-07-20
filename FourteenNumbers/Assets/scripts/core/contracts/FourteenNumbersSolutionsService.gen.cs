@@ -52,6 +52,14 @@ namespace FourteenNumbers {
             return ContractHandler.QueryDeserializingToObjectAsync<SolutionsFunction, SolutionsOutputDTO>(solutionsFunction, blockParameter);
         }
 
+        public virtual Task<GetAllSolutionsOutputDTO> GetAllSolutionsQueryAsync(BigInteger gameDay, BlockParameter blockParameter = null)
+        {
+            var solutionsFunction = new GetAllSolutionsFunction();
+                solutionsFunction.GameDay = gameDay;
+            
+            return ContractHandler.QueryDeserializingToObjectAsync<GetAllSolutionsFunction, GetAllSolutionsOutputDTO>(solutionsFunction, blockParameter);
+        }
+
         public virtual Task<StatsOutputDTO> StatsQueryAsync(StatsFunction statsFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryDeserializingToObjectAsync<StatsFunction, StatsOutputDTO>(statsFunction, blockParameter);

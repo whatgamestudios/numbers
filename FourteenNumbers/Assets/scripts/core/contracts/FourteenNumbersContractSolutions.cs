@@ -48,6 +48,9 @@ namespace FourteenNumbers {
             return await service.SolutionsQueryAsync(gameDay);
         }
 
+        public async Task<GetAllSolutionsOutputDTO> GetAllSolutions(uint gameDay) {
+            return await service.GetAllSolutionsQueryAsync(gameDay);
+        }
 
         public async Task<uint> GetDaysPlayed(string address) {
             StatsOutputDTO stats = await service.StatsQueryAsync(address);
