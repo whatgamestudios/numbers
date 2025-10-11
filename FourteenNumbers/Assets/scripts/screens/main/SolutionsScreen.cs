@@ -186,9 +186,9 @@ namespace FourteenNumbers {
                 bestInput3Text.text = replace(sol3);
             }
             else {
-                bestInput1Text.text = sol1;
-                bestInput2Text.text = sol2;
-                bestInput3Text.text = sol3;
+                bestInput1Text.text = replace(sol1, true);
+                bestInput2Text.text = replace(sol2, true);
+                bestInput3Text.text = replace(sol3, true);
             }
 
             uint points1 = 0;
