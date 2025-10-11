@@ -11,6 +11,7 @@ namespace FourteenNumbers {
         public TextMeshProUGUI pointsAveText;
         public TextMeshProUGUI perfectScoreDaysText;
         public TextMeshProUGUI daysPlayedText;
+        public TextMeshProUGUI daysPublishedText;
         public TextMeshProUGUI firstDayPlayedText;
         public TextMeshProUGUI firstDatePlayedText;
         public TextMeshProUGUI lastDayPlayedText;
@@ -34,10 +35,11 @@ namespace FourteenNumbers {
             int firstPlayed;
             int lastPlayed;
             int timesPlayed;
+            int timesPublished;
             int totalPoints;
             int perfectScoreDays;
 
-            (firstPlayed, lastPlayed, timesPlayed, totalPoints, perfectScoreDays) = Stats.GetStats();
+            (firstPlayed, lastPlayed, timesPlayed, timesPublished, totalPoints, perfectScoreDays) = Stats.GetStats();
 
             string firstPlayedS;
             string lastPlayedS;
@@ -62,6 +64,7 @@ namespace FourteenNumbers {
             pointsAveText.text = ave.ToString();
             perfectScoreDaysText.text = perfectScoreDays.ToString();
             daysPlayedText.text = timesPlayed.ToString();
+            daysPublishedText.text = timesPublished.ToString();
             firstDayPlayedText.text = firstPlayed.ToString();
             firstDatePlayedText.text = firstPlayedS;
             lastDayPlayedText.text = lastPlayed.ToString();

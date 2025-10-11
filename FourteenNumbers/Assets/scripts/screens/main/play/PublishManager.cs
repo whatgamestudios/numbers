@@ -51,17 +51,17 @@ namespace FourteenNumbers {
         public void Update()
         {
             GameState gameState = GameState.Instance();
-            if (!gameState.IsPlayerStateDone() || !BestScoreLoader.LoadedBestScore || publishButtonPressed)
-            {
-                return;
-            }
-
             uint pointsToday = gameState.PointsEarnedTotal();
-            if (pointsToday <= BestScoreLoader.BestScore)
+            if (!gameState.IsPlayerStateDone() ||
+                !BestScoreLoader.LoadedBestScore ||
+                publishButtonPressed ||
+                Stats.HasPublishedToday() ||
+                pointsToday < BestScoreLoader.BestScore)
             {
+                panelPublish.SetActive(false);
                 return;
             }
-
+            
             if (!PassportStore.IsLoggedIn())
             {
                 buttonPublishText.text = "Sign in to Publish";

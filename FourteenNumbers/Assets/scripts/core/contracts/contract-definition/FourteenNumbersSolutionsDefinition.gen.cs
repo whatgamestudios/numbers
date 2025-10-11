@@ -217,6 +217,15 @@ namespace FourteenNumbers {
         public virtual string Account { get; set; }
     }
 
+    public partial class GetAllSolutionsFunction : GetAllSolutionsFunctionBase { }
+
+    [Function("getAllSolutions", typeof(GetAllSolutionsOutputDTO))]
+    public class GetAllSolutionsFunctionBase : FunctionMessage
+    {
+        [Parameter("uint256", "", 1)]
+        public virtual BigInteger GameDay { get; set; }
+    }
+
     public partial class SolutionsFunction : SolutionsFunctionBase { }
 
     [Function("solutions", typeof(SolutionsOutputDTO))]
@@ -774,6 +783,27 @@ namespace FourteenNumbers {
         [Parameter("address", "player", 3)]
         public virtual string Player { get; set; }
     }
+
+    public partial class GetAllSolutionsOutputDTO : GetAllSolutionsOutputDTOBase { }
+
+    [FunctionOutput]
+    public class GetAllSolutionsOutputDTOBase : IFunctionOutputDTO 
+    {
+        [Parameter("uint256", "points", 1)]
+        public virtual BigInteger Points { get; set; }
+
+        [Parameter("tuple[]", "", 2)]
+        public virtual List<ExtraSolutionDTO> Solutions { get; set; }
+    }
+
+    public class ExtraSolutionDTO
+    {
+        [Parameter("bytes", "combinedSolution", 1)]
+        public virtual byte[] CombinedSolution { get; set; }
+        [Parameter("address", "player", 2)]
+        public virtual string Player { get; set; }
+    }
+
 
     public partial class StatsOutputDTO : StatsOutputDTOBase { }
 

@@ -164,23 +164,19 @@ namespace FourteenNumbers {
                 while (!publishSuccess)
                 {
                     publishSuccess = await contract.SubmitBestScore(gameDay, sol1, sol2, sol3);
-                    if (!publishSuccess)
+                    if (publishSuccess)
                     {
-                        uint bestScore = await contract.GetBestScore(gameDay);
-                        if (pointsToday <= bestScore)
-                        {
-                            AuditLog.Log($"Someone published first: points: {pointsToday}, best points: {bestScore}");
-                            hasError = true;
-                            errorMessage = "Oh no! Someone published before you";
-                            break;
-                        }
+                        Stats.SetPublished();
+                    }
+                    else
+                    {
                         retry++;
                         if (retry > 3)
                         {
                             AuditLog.Log("Failed to publish");
                             hasError = true;
                             errorMessage = "Failed to publish. Please try again later";
-                            break;                           
+                            break;
                         }
                     }
                 }
