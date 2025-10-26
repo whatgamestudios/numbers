@@ -78,6 +78,7 @@ crashlytics-build.properties
 
 # location for iOS and Androis build
 builds
+build
 
 # Android intermediate build directory
 .utmp
