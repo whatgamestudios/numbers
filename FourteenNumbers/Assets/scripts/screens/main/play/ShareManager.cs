@@ -60,22 +60,10 @@ namespace FourteenNumbers {
         }
 
         private string replace(string solution) {
-            string output = solution.Replace("100", "?");
-            output = output.Replace("75", "?");
-            output = output.Replace("50", "?");
-            output = output.Replace("25", "?");
-            output = output.Replace("10", "?");
-            output = output.Replace('9', '?');
-            output = output.Replace('8', '?');
-            output = output.Replace('7', '?');
-            output = output.Replace('6', '?');
-            output = output.Replace('5', '?');
-            output = output.Replace('4', '?');
-            output = output.Replace('3', '?');
-            output = output.Replace('2', '?');
-            output = output.Replace('1', '?');
-            output = output.Replace('×', '*');
-            output = output.Replace('÷', '/');
+            string output = solution.Replace("*", " × ");
+            output = output.Replace("/", " ÷ ");
+            output = output.Replace("+", " + ");
+            output = output.Replace("-", " - ");
             return output;
         }
 

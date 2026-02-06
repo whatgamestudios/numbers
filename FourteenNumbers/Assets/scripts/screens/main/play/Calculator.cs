@@ -571,6 +571,10 @@ namespace FourteenNumbers {
                 }
             }
             if (lastChar == "5") {
+                if (currentInput.Length == 1)
+                {
+                    return "5";
+                }
                 string twoChars = currentInput.Substring(currentInput.Length - 2, 2);
                 if (twoChars == "25") {
                     return "25";
