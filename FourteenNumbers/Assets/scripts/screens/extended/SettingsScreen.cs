@@ -40,7 +40,8 @@ namespace FourteenNumbers {
                 SunShineNativeShare.instance.ShareText(msg, msg);
             }
             else if (buttonText == "Delete") {
-                Application.OpenURL("https://whatgamestudios.com/14numbers/account-deletion/");
+                SceneStack.Instance().PushScene();
+                SceneManager.LoadScene("DeleteScene", LoadSceneMode.Single);
             }
             else if (buttonText == "HiddenA")
             {
