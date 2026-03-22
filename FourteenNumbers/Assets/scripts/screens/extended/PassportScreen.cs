@@ -39,7 +39,8 @@ namespace FourteenNumbers {
         public void OnButtonClick(string buttonText) {
             bool isLoggedIn = PassportStore.IsLoggedIn();
             if (buttonText == "Passport") {
-                string url = "https://play.immutable.com/collection/zkEvm/0x29c3a209d8423f9a53bf8ad39bbb85087a2a938b/";
+                //string url = "https://play.immutable.com/collection/zkEvm/0x29c3a209d8423f9a53bf8ad39bbb85087a2a938b/";
+                string url = "https://play.immutable.com/";
                 Application.OpenURL(url);
             }
             else if (buttonText == "Account") {
