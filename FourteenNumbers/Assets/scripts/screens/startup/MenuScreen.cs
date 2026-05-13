@@ -19,33 +19,13 @@ namespace FourteenNumbers {
         public Button buttonOther;
 
 
-        public TextMeshProUGUI loggedIn;
-
-
         public async void Start() {
             AuditLog.Log("Menu screen");
-            loggedIn.text = "Loading";
 
             bool isLoggedIn = PassportStore.IsLoggedIn();
             if (isLoggedIn) {
                 await PassportLogin.Init();
                 await PassportLogin.Login();
-
-                // Set up wallet (includes creating a wallet for new players)
-                List<string> accounts = await Passport.Instance.ZkEvmRequestAccounts();
-                if (accounts.Count ==0) {
-                    loggedIn.text = "Logged In";
-                }
-                else {
-                    string account = accounts[0];
-                    loggedIn.text = "Logged In (" + 
-                                    DeepLinkManager.Instance.LoginPath + 
-                                    ") as\n" + 
-                                    account;
-                }
-            }
-            else {
-                loggedIn.text = "Not Logged In";
             }
         }
 
