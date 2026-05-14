@@ -29,9 +29,6 @@ namespace FourteenNumbers {
                     onDeepLinkActivated(Application.absoluteURL);
                 }
                 DontDestroyOnLoad(gameObject);
-                
-                // Start-up other long term services
-                AssetSyncManager.StartInstance(this);
             }
             else
             {
