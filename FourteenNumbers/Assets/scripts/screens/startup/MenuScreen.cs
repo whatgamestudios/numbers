@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
-using Immutable.Passport;
 
 namespace FourteenNumbers {
 
@@ -19,14 +18,8 @@ namespace FourteenNumbers {
         public Button buttonOther;
 
 
-        public async void Start() {
+        public void Start() {
             AuditLog.Log("Menu screen");
-
-            bool isLoggedIn = PassportStore.IsLoggedIn();
-            if (isLoggedIn) {
-                await PassportLogin.Init();
-                await PassportLogin.Login();
-            }
         }
 
 

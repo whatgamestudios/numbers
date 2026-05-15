@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
-using Immutable.Passport;
 
 namespace FourteenNumbers {
 
@@ -17,11 +16,7 @@ namespace FourteenNumbers {
         }
 
         public void OnButtonClick(string buttonText) {
-            if (buttonText == "Passport") {
-                SceneStack.Instance().PushScene();
-                SceneManager.LoadScene("PassportScene", LoadSceneMode.Single);
-            }
-            else if (buttonText == "Socials") {
+            if (buttonText == "Socials") {
                 SceneStack.Instance().PushScene();
                 SceneManager.LoadScene("SocialsScene", LoadSceneMode.Single);
             }

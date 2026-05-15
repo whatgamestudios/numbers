@@ -1,4 +1,4 @@
-// Copyright (c) Whatgame Studios 2024 - 2025
+// Copyright (c) Whatgame Studios 2024 - 2026
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -55,7 +55,9 @@ namespace FourteenNumbers {
 
         private int indexDisplaying = 0;
 
-        private GetAllSolutionsOutputDTO todaysResult = null;
+        private SolutionProcessor solutionProcessor = new SolutionProcessor();
+
+        private SolutionResultsResult todaysResult = null;
 
         public void Start() {
             AuditLog.Log("Solutions screen");
@@ -99,7 +101,7 @@ namespace FourteenNumbers {
             }
             else if (buttonText == "Right") {
                 int newIndex = indexDisplaying + 1;
-                if (newIndex == todaysResult.Solutions.Count - 1) {
+                if (newIndex == todaysResult.Solutions.Length - 1) {
                     buttonRight.interactable = false;
                 }
                 buttonLeft.interactable = true;
@@ -134,14 +136,11 @@ namespace FourteenNumbers {
             GetResult();
             yield return new WaitForSeconds(0f);
         }
-        async void GetResult()
-        {
-            FourteenNumbersSolutionsContract fourteenNumbersContracts = new FourteenNumbersSolutionsContract();
-            todaysResult = await fourteenNumbersContracts.GetAllSolutions(gameDayDisplaying);
+        async void GetResult() {
+            todaysResult = await solutionProcessor.GetResults((int) gameDayDisplaying);
             showCached(gameDayDisplaying, indexDisplaying);
 
-            if (todaysResult.Solutions.Count > 1)
-            {
+            if (todaysResult.Solutions.Length > 1) {
                 buttonRight.interactable = true;
             }
         }
@@ -152,73 +151,42 @@ namespace FourteenNumbers {
                 return;
             }
 
-            if (todaysResult.Solutions.Count != 0)
-            {
-                string player = todaysResult.Solutions[index].Player;
-                bestPlayerText.text = player.Substring(0, 6) + "...." + player.Substring(player.Length - 4, 4);
-            }
-            else
-            {
-                bestPlayerText.text = "";
-            }
-            bestPointsTotalText.text = todaysResult.Points.ToString();
-
-            byte[] combinedSolutionBytes = {};
-            if (todaysResult.Solutions.Count != 0) {
-                combinedSolutionBytes = todaysResult.Solutions[index].CombinedSolution;
-            }
-            var combinedSolution = System.Text.Encoding.Default.GetString(combinedSolutionBytes);
             string sol1 = "";
             string sol2 = "";
             string sol3 = "";
-            if (combinedSolution.Length != 0) {
-                int indexOfEquals = combinedSolution.IndexOf('=');
-                sol1 = combinedSolution.Substring(0, indexOfEquals);
-                combinedSolution = combinedSolution.Substring(indexOfEquals+1);
-                indexOfEquals = combinedSolution.IndexOf('=');
-                sol2 = combinedSolution.Substring(0, indexOfEquals);
-                sol3 = combinedSolution.Substring(indexOfEquals+1);
+            int res1 = 0;
+            int res2 = 0;
+            int res3 = 0;
+
+            if (todaysResult.Solutions.Length != 0) {
+                SolutionEntry entry = todaysResult.Solutions[index];
+                bestPlayerText.text = entry.UserId;
+                sol1 = entry.Part1;
+                sol2 = entry.Part2;
+                sol3 = entry.Part3;
+                res1 = entry.Result1;
+                res2 = entry.Result2;
+                res3 = entry.Result3;
+            } else {
+                bestPlayerText.text = "";
             }
+            bestPointsTotalText.text = (todaysResult.BestScore ?? 0).ToString();
 
             if (gameDayDisplaying == gameDayToday) {
                 bestInput1Text.text = replace(sol1);
                 bestInput2Text.text = replace(sol2);
                 bestInput3Text.text = replace(sol3);
-            }
-            else {
+            } else {
                 bestInput1Text.text = replace(sol1, true);
                 bestInput2Text.text = replace(sol2, true);
                 bestInput3Text.text = replace(sol3, true);
             }
 
-            uint points1 = 0;
-            uint points2 = 0;
-            uint points3 = 0;
-            CalcProcessor processor = new CalcProcessor();
             uint targetValue = TargetValue.GetTarget(gameDayDisplaying);
-            int errorCode;
-            int res1 = 0;
-            int res2 = 0;
-            int res3 = 0;
-            if (sol1.Length != 0) {
-                (res1, errorCode) = processor.Calc(sol1);
-                if (errorCode == CalcProcessor.ERR_NO_ERROR) {
-                    points1 = Points.CalcPoints((uint) res1, targetValue);
-                }
+            uint points1 = sol1.Length != 0 ? Points.CalcPoints((uint) res1, targetValue) : 0;
+            uint points2 = sol2.Length != 0 ? Points.CalcPoints((uint) res2, targetValue) : 0;
+            uint points3 = sol3.Length != 0 ? Points.CalcPoints((uint) res3, targetValue) : 0;
 
-            }
-            if (sol2.Length != 0) {
-                (res2, errorCode) = processor.Calc(sol2);
-                if (errorCode == CalcProcessor.ERR_NO_ERROR) {
-                    points2 = Points.CalcPoints((uint) res2, targetValue);
-                }
-            }
-            if (sol3.Length != 0) {
-                (res3, errorCode) = processor.Calc(sol3);
-                if (errorCode == CalcProcessor.ERR_NO_ERROR) {
-                    points3 = Points.CalcPoints((uint) res3, targetValue);
-                }
-            }
             bestCalculated1Text.text = res1.ToString();
             bestCalculated2Text.text = res2.ToString();
             bestCalculated3Text.text = res3.ToString();
@@ -289,22 +257,22 @@ namespace FourteenNumbers {
 
         private string replace(string solution, bool symbolsOnly = false) {
             string output = solution;
-            if (!symbolsOnly) {
-                output = output.Replace("100", "?");
-                output = output.Replace("75", "?");
-                output = output.Replace("50", "?");
-                output = output.Replace("25", "?");
-                output = output.Replace("10", "?");
-                output = output.Replace('9', '?');
-                output = output.Replace('8', '?');
-                output = output.Replace('7', '?');
-                output = output.Replace('6', '?');
-                output = output.Replace('5', '?');
-                output = output.Replace('4', '?');
-                output = output.Replace('3', '?');
-                output = output.Replace('2', '?');
-                output = output.Replace('1', '?');
-            }
+            // if (!symbolsOnly) {
+            //     output = output.Replace("100", "?");
+            //     output = output.Replace("75", "?");
+            //     output = output.Replace("50", "?");
+            //     output = output.Replace("25", "?");
+            //     output = output.Replace("10", "?");
+            //     output = output.Replace('9', '?');
+            //     output = output.Replace('8', '?');
+            //     output = output.Replace('7', '?');
+            //     output = output.Replace('6', '?');
+            //     output = output.Replace('5', '?');
+            //     output = output.Replace('4', '?');
+            //     output = output.Replace('3', '?');
+            //     output = output.Replace('2', '?');
+            //     output = output.Replace('1', '?');
+            // }
             output = output.Replace('*', '×');
             output = output.Replace('/', '÷');
             return output;

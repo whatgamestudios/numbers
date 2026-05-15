@@ -5,7 +5,6 @@ using TMPro;
 using System;
 using System.Collections;
 using UnityEngine.SceneManagement;
-using Immutable.Passport;
 using System.Threading.Tasks;
 
 namespace FourteenNumbers {
@@ -103,14 +102,14 @@ namespace FourteenNumbers {
 
 
 
-        public async void Start()
+        public void Start()
         {
             uint todaysGameDay = Timeline.GameDay();
             gameDayInt = todaysGameDay;
             AuditLog.Log($"Game Play screen for day {todaysGameDay}");
+            PostHogStats.GetInstance().LogPlayingGame();
             startANewDay(todaysGameDay);
             setGameState(todaysGameDay);
-            await PassportLogin.InitAndLogin();
         }
         
 

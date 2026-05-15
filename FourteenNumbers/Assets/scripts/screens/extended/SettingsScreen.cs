@@ -12,11 +12,6 @@ namespace FourteenNumbers {
         public Button LocalTimezoneButton;
         public Button KiribatiTimezoneButton;
 
-        public GameObject DemoModePanel;
-
-        private int state = 0;
-        private const int DONE = 6;
-
         public void Start() {
             AuditLog.Log("Settings screen");
             if (TimezoneStore.UseLocalTimeZone()) {
@@ -31,7 +26,6 @@ namespace FourteenNumbers {
                 LocalTimezoneButton.interactable = true;
                 KiribatiTimezoneButton.interactable = false;
             }
-            DemoModePanel.SetActive(false);
         }
 
         public void OnButtonClick(string buttonText) {
@@ -42,36 +36,6 @@ namespace FourteenNumbers {
             else if (buttonText == "Delete") {
                 SceneStack.Instance().PushScene();
                 SceneManager.LoadScene("DeleteScene", LoadSceneMode.Single);
-            }
-            else if (buttonText == "HiddenA")
-            {
-                if ((state & 1) == 0)
-                {
-                    state++;
-                    AuditLog.Log($"Settings A: {state}");
-                }
-                else
-                {
-                    AuditLog.Log($"Settings A: Reseting");
-                    state = 0;
-                }
-            }
-            else if (buttonText == "HiddenB")
-            {
-                if ((state & 1) == 1)
-                {
-                    state++;
-                    AuditLog.Log($"Settings B: {state}");
-                    if (state > DONE)
-                    {
-                        DemoModePanel.SetActive(true);
-                    }
-                }
-                else
-                {
-                    AuditLog.Log($"Settings A: Reseting");
-                    state = 0;
-                }
             }
             else if (buttonText == "Local" || buttonText == "Kiribati")
             {
