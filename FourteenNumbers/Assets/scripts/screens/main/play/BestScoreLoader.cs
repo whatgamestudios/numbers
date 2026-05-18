@@ -36,7 +36,7 @@ namespace FourteenNumbers {
             uint statsGameDay = (uint) Stats.GetLastGameDay();
             uint gameDay = (uint) Timeline.GameDay();
             if (statsGameDay == gameDay) {
-                BestScore = (uint) Stats.GetBestPointsToday();
+                BestScore = (uint) BestScoreStorage.GetBestPointsToday();
                 if (BestScore == 210) {
                     LoadedBestScore = true;
                 }
@@ -57,7 +57,7 @@ namespace FourteenNumbers {
             SolutionResultsResult results = await solutionProcessor.GetResults((int) gameDay);
             BestScore = (uint)(results.BestScore ?? 0);
             LoadedBestScore = true;
-            Stats.SetBestPointsToday((int) BestScore);
+            BestScoreStorage.SetBestPointsToday((int) BestScore);
         }
     }
 }

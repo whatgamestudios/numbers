@@ -39,6 +39,11 @@ namespace FourteenNumbers {
             uint pointsToday = GameState.Instance().PointsEarnedTotal();
             (bool publishedToday, uint publishedScore) = Stats.HasPublishedToday();
 
+            //AuditLog.Log($"Done: {GameState.Instance().IsPlayerStateDone()}, Loaded: {BestScoreLoader.LoadedBestScore}, Points today: {pointsToday}, Best: {BestScoreLoader.BestScore}, Published: {publishedToday}, PublishedScore: {publishedScore}");
+
+            if (!GameState.Instance().IsPlayerStateDone()) {
+                return;
+            }
             if (!BestScoreLoader.LoadedBestScore &&
                 pointsToday != 210) 
             {
@@ -49,8 +54,7 @@ namespace FourteenNumbers {
             {
                 return;
             }
-            if (!publishedToday ||
-                publishedToday && pointsToday <= publishedScore)
+            if (publishedToday && pointsToday <= publishedScore)
             {
                 return;
             }

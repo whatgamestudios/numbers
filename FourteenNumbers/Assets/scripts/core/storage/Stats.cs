@@ -8,6 +8,7 @@ namespace FourteenNumbers
     public class Stats
     {
         public const string STATS_SOLUTIONS = "STATS_SOLUTIONS_";
+        public const string STATS_SCORES = "STATS_SCORES_";
         public const string STATS_SOLUTION1 = "STATS_SOLUTION1";
         public const string STATS_SOLUTION2 = "STATS_SOLUTION2";
         public const string STATS_SOLUTION3 = "STATS_SOLUTION3";
@@ -21,7 +22,6 @@ namespace FourteenNumbers
 
         public const string STATS_DAYS_PLAYED = "STATS_DAYS_PLAYED";
         public const string STATS_DAYS_CLAIMED = "STATS_DAYS_CLAIMED";
-        public const string BEST_TODAY = "BEST_TODAY";
 
         public const string STATS_MOST_RECENT_PUBLISHED_DAY = "STATS_MOST_RECENT_PUBLISHED_DAY";
         public const string STATS_NUM_TIMES_PUBLISHED = "STATS_NUM_TIMES_PUBLISHED";
@@ -169,18 +169,6 @@ namespace FourteenNumbers
         //     return PlayerPrefs.GetInt(STATS_POINTS_TODAY, 0);
         // }
 
-
-
-        public static void SetBestPointsToday(int points)
-        {
-            PlayerPrefs.SetInt(BEST_TODAY, points);
-        }
-
-        public static int GetBestPointsToday()
-        {
-            return PlayerPrefs.GetInt(BEST_TODAY, 0);
-        }
-
         public static void SetDaysPlayed(int daysPlayed)
         {
             PlayerPrefs.SetInt(STATS_DAYS_PLAYED, daysPlayed);
@@ -203,6 +191,16 @@ namespace FourteenNumbers
 
         private static void setCombinedSolution(uint gameDay)
         {
+            string scoreKey = STATS_SCORES + gameDay.ToString();
+            int currentBestScore = PlayerPrefs.GetInt(scoreKey, -1);
+            int currentScore = PlayerPrefs.GetInt(STATS_POINTS_TODAY, 0);
+            // Don't have <= because want to handle a zero point second or third solution.
+            if (currentScore < currentBestScore) 
+            {
+                return;
+            }
+            PlayerPrefs.GetInt(scoreKey, currentScore);
+
             string key = STATS_SOLUTIONS + gameDay.ToString();
             (string sol1, string sol2, string sol3) = GetSolutions();
             string combinedSolution = sol1 + "=" + sol2 + "=" + sol3;

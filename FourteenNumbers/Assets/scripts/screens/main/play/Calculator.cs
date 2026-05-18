@@ -107,7 +107,7 @@ namespace FourteenNumbers {
             uint todaysGameDay = Timeline.GameDay();
             gameDayInt = todaysGameDay;
             AuditLog.Log($"Game Play screen for day {todaysGameDay}");
-            startANewDay(todaysGameDay);
+            startANewDay(todaysGameDay, false);
             setGameState(todaysGameDay);
         }
         
@@ -148,8 +148,11 @@ namespace FourteenNumbers {
 
             if (buttonText == "C")
             {
-                clearUsedButtons(true);
-                clearCurrentAttempt();
+                AuditLog.Log("Play: Clear");
+                startANewDay(gameDayInt, true);
+                setGameState(gameDayInt);
+                // clearUsedButtons(true);
+                // clearCurrentAttempt();
             }
             else if (buttonText == "B")
             {
@@ -329,7 +332,7 @@ namespace FourteenNumbers {
             }
         }
 
-        private void startANewDay(uint todaysGameDay) {
+        private void startANewDay(uint todaysGameDay, bool forceReset) {
             targetValue = TargetValue.GetTarget(todaysGameDay);
             target.text = targetValue.ToString();
 
@@ -367,7 +370,7 @@ namespace FourteenNumbers {
 
             clearCurrentAttempt();
             int lastPlayedGameDay = Stats.GetLastGameDay();
-            if (lastPlayedGameDay == todaysGameDay) {
+            if (!forceReset && lastPlayedGameDay == todaysGameDay) {
                 // The game was knocked out of memory after one or more solutions for today's game.
                 reprocessSolutions();
             }
