@@ -161,7 +161,7 @@ namespace FourteenNumbers {
 
                 (_, string userId) = UserId.GetUserId();
                 await solutionProcessor.Submit((int) gameDay, userId, sol1, sol2, sol3);
-                Stats.SetPublished();
+                Stats.SetPublished(pointsToday);
             }
             catch (Exception ex) {
                 hasError = true;

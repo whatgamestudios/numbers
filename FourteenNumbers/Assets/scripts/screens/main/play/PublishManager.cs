@@ -34,13 +34,24 @@ namespace FourteenNumbers {
 
         public void Update()
         {
-            GameState gameState = GameState.Instance();
-            uint pointsToday = gameState.PointsEarnedTotal();
-            if (!BestScoreLoader.LoadedBestScore ||
-                Stats.HasPublishedToday() ||
+            panelPublish.SetActive(false);
+
+            uint pointsToday = GameState.Instance().PointsEarnedTotal();
+            (bool publishedToday, uint publishedScore) = Stats.HasPublishedToday();
+
+            if (!BestScoreLoader.LoadedBestScore &&
+                pointsToday != 210) 
+            {
+                return;
+            }
+            if (BestScoreLoader.LoadedBestScore &&
                 pointsToday < BestScoreLoader.BestScore)
             {
-                panelPublish.SetActive(false);
+                return;
+            }
+            if (!publishedToday ||
+                publishedToday && pointsToday <= publishedScore)
+            {
                 return;
             }
 

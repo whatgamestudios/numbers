@@ -25,6 +25,7 @@ namespace FourteenNumbers
 
         public const string STATS_MOST_RECENT_PUBLISHED_DAY = "STATS_MOST_RECENT_PUBLISHED_DAY";
         public const string STATS_NUM_TIMES_PUBLISHED = "STATS_NUM_TIMES_PUBLISHED";
+        public const string STATS_PUBLISHED_SCORE = "STATS_PUBLISHED_SCORE";
 
         public const string STATS_SILVER_STREAK_LENGTH = "STATS_SSTREAK_LEN";
         public const string STATS_SILVER_STREAK_LONGEST_LENGTH = "STATS_SSTREAK_LONGEST_LEN";
@@ -290,7 +291,7 @@ namespace FourteenNumbers
             return (silverLen, goldLen, diamondLen, bdiamondLen);
         }
 
-        public static void SetPublished()
+        public static void SetPublished(uint score)
         {
             int gameDay = GetLastGameDay();
             if (gameDay != GetMostRecentDayPublished())
@@ -299,15 +300,17 @@ namespace FourteenNumbers
                 int timesPlayed = GetNumTimesPublished();
                 PlayerPrefs.SetInt(STATS_NUM_TIMES_PUBLISHED, timesPlayed + 1);
             }
+            PlayerPrefs.SetInt(STATS_PUBLISHED_SCORE, (int) score);
         }
 
         public static int GetMostRecentDayPublished() {
             return PlayerPrefs.GetInt(STATS_MOST_RECENT_PUBLISHED_DAY, 0);
         }
 
-        public static bool HasPublishedToday()
+        public static (bool, uint) HasPublishedToday()
         {
-            return GetLastGameDay() == GetMostRecentDayPublished();
+            return (GetLastGameDay() == GetMostRecentDayPublished(), 
+                    (uint) PlayerPrefs.GetInt(STATS_PUBLISHED_SCORE, 0));
         }
 
         public static int GetNumTimesPublished()
