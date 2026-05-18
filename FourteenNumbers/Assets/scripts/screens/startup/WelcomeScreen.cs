@@ -14,7 +14,6 @@ namespace FourteenNumbers {
         public void Start()
         {
             AuditLog.Log("Welcome screen");
-            PostHogStats.GetInstance().LogWelcome();
             SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
         }
     }

@@ -107,7 +107,6 @@ namespace FourteenNumbers {
             uint todaysGameDay = Timeline.GameDay();
             gameDayInt = todaysGameDay;
             AuditLog.Log($"Game Play screen for day {todaysGameDay}");
-            PostHogStats.GetInstance().LogPlayingGame();
             startANewDay(todaysGameDay);
             setGameState(todaysGameDay);
         }

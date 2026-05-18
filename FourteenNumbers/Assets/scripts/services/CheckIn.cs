@@ -36,7 +36,6 @@ namespace FourteenNumbers {
             }
             catch (Exception ex) {
                 AuditLog.Log($"Exception in checkin process: {ex.Message}");
-                PostHogStats.GetInstance().LogCheckinError(ex.Message);
             }
             finally {
                 isProcessing = false;

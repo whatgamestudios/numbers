@@ -1,17 +1,5 @@
 {
   "dependencies": {
-    "com.posthog.unity": {
-      "version": "https://github.com/PostHog/posthog-unity.git?path=com.posthog.unity",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.unity.modules.unitywebrequest": "1.0.0",
-        "com.unity.modules.jsonserialize": "1.0.0",
-        "com.unity.modules.imageconversion": "1.0.0",
-        "com.unity.modules.screencapture": "1.0.0"
-      },
-      "hash": "79fb5e6e73e707f2ab6e0d3a3503c9ae42006c02"
-    },
     "com.unity.2d.animation": {
       "version": "13.0.4",
       "depth": 0,
