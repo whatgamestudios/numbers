@@ -57,45 +57,48 @@ namespace FourteenNumbers {
         public Button buttonLeft;
         public Button buttonRight;
 
+        // All three solutions concatenated, with = sign at the end of each to indicate
+        // that particular solution is done.
+        private string allSolutions = "";
 
-        private string currentInput = "";
+        // The solution number being attempts. Attempt 0 is the first solution.
+        uint attempt;
+
 
         private uint targetValue = 0;
 
         // Counts of the number of numbers, and left and right brackets.
         private uint leftBracketCount;
         private uint rightBracketCount;
-        int numberCount;
+        private int numberCount;
 
         // Indicates if a button corresponding to a number has been used.
-        bool used1;
-        bool used2;
-        bool used3;
-        bool used4;
-        bool used5;
-        bool used6;
-        bool used7;
-        bool used8;
-        bool used9;
-        bool used10;
-        bool used25;
-        bool used50;
-        bool used75;
-        bool used100;
+        private bool used1;
+        private bool used2;
+        private bool used3;
+        private bool used4;
+        private bool used5;
+        private bool used6;
+        private bool used7;
+        private bool used8;
+        private bool used9;
+        private bool used10;
+        private bool used25;
+        private bool used50;
+        private bool used75;
+        private bool used100;
 
-        Stack usedThisAttemptStack;
+        private uint pointsEarned1;
+        private uint pointsEarned2;
+        private uint pointsEarned3;
 
-        uint pointsEarned1;
-        uint pointsEarned2;
-        uint pointsEarned3;
-
-        uint attempt;
 
         // Int representing which game day is being played.
         // Stored here to detect when the game was loaded into memory, switch focus away and then 
         // back to the game, but the game day had changed.
-        uint gameDayInt;
+        private uint TodaysGameDay;
 
+        // Used for flashing ? at the end of the active equation.
         private const int TIME_PER_FLASH = 500;
         DateTime timeOfLastFlash = DateTime.Now;
         bool cursorOn = false;
@@ -104,11 +107,11 @@ namespace FourteenNumbers {
 
         public void Start()
         {
-            uint todaysGameDay = Timeline.GameDay();
-            gameDayInt = todaysGameDay;
-            AuditLog.Log($"Game Play screen for day {todaysGameDay}");
-            startANewDay(todaysGameDay, false);
-            setGameState(todaysGameDay);
+            TodaysGameDay = Timeline.GameDay();
+            gameDay.text = Timeline.GameDayStr();
+            AuditLog.Log($"Game Play screen for day {TodaysGameDay}");
+            startANewDay(false);
+            setGameState();
         }
         
 
@@ -117,9 +120,9 @@ namespace FourteenNumbers {
             GameState.Instance().SetPlayerState(GameState.PlayerState.Unknown);
         }
 
-        private void setGameState(uint todaysGameDay) {
+        private void setGameState() {
             GameState gameState = GameState.Instance();
-            gameState.SetGameDayBeingPlayed(todaysGameDay);
+            gameState.SetGameDayBeingPlayed(TodaysGameDay);
             gameState.SetPointsEarnedTotal(pointsEarnedTotalToday());
             if (gameState.IsPlayerStateUnknown())
             {
@@ -127,213 +130,12 @@ namespace FourteenNumbers {
             }
         }
 
-        public void OnButtonClick(string buttonText) {
-            OnButtonClickInternal(buttonText, true);
-        }
-
-        public void OnButtonClickInternal(string buttonText, bool updateStats) {
-            if (buttonText == "Help") {
-                MessagePass.SetMsg(help);
-                SceneStack.Instance().PushScene();
-                SceneManager.LoadScene("HelpContextScene", LoadSceneMode.Additive);
-                return;
-            }
-
-            // No more button presses after the game is done.
-            if (attempt >= NUM_ATTEMPTS)
-            {
-                return;
-            }
-
-
-            if (buttonText == "C")
-            {
-                AuditLog.Log("Play: Clear");
-                startANewDay(gameDayInt, true);
-                setGameState(gameDayInt);
-                // clearUsedButtons(true);
-                // clearCurrentAttempt();
-            }
-            else if (buttonText == "B")
-            {
-                if (currentInput.Length == 0)
-                {
-                    // Ignore backspace when there is no text.
-                    return;
-                }
-                string lastChars = determineLastSymbol();
-                updateUsed(lastChars, false);
-
-                // Decrease the bracket counts if necessary.
-                if (isLeftBracket(lastChars))
-                {
-                    leftBracketCount--;
-                }
-                if (isRightBracket(lastChars))
-                {
-                    rightBracketCount--;
-                }
-                if (isNumber(lastChars))
-                {
-                    numberCount--;
-                }
-
-
-                // Remove the character(s) from the input string.
-                currentInput = currentInput.Substring(0, currentInput.Length - lastChars.Length);
-
-                if (currentInput.Length == 0)
-                {
-                    clearCurrentAttempt();
-                }
-                else
-                {
-                    lastChars = determineLastSymbol();
-                    enableButtons(lastChars);
-                }
-            }
-            else if (buttonText == "=")
-            {
-                bool success = calculateResult(updateStats);
-                if (success)
-                {
-                    attempt++;
-                    if (attempt == NUM_ATTEMPTS)
-                    {
-                        GameState.Instance().SetPlayerState(GameState.PlayerState.Done);
-                    }
-                    clearCurrentAttempt();
-                }
-                return;
-            }
-            else
-            {
-                if (isLeftBracket(buttonText))
-                {
-                    leftBracketCount++;
-                }
-                else if (isRightBracket(buttonText))
-                {
-                    rightBracketCount++;
-                }
-                currentInput += buttonText;
-                updateUsed(buttonText, true);
-                if (isNumber(buttonText))
-                {
-                    usedThisAttemptStack.Push(buttonText);
-                    numberCount++;
-                }
-                enableButtons(buttonText);
-            }
-            updateInputGui(currentInput);
-        }
-
         /**
-         * Calculate the result of the current solution.
-         * If the solution results in an error, then reject the calculation.
-         *
-         * @param publishStats True if the statistics for this run should be published.
-         * @retunr true If no error was encountered while calculating.
+         * Reset board and optionally reload current state.
+         * @param forceReset true if current state should be discarded.
          */
-        private bool calculateResult(bool publishStats) {
-            // If the last character will make the equation invalid, remove it.
-            if (currentInput.EndsWith("+") || currentInput.EndsWith("-") || 
-                currentInput.EndsWith("*") || currentInput.EndsWith("/")) {
-                currentInput = currentInput.Substring(0, currentInput.Length - 1);
-            }
-            // If the brackets don't match, add extra brackets.
-            int left = 0;
-            int right = 0;
-            foreach (char c in currentInput) {
-                if (c == '(') {
-                    left++;
-                }
-                else if (c == ')') {
-                    right++;
-                }
-            }
-            for (uint i = 0; i < (left - right); i++) {
-                currentInput += ')';
-            }
-
-            string resultText;
-            uint pointsEarnedThisAttempt;
-            try {
-                CalcProcessor calcProcessor = new CalcProcessor();
-                int resultInt;
-                int err;
-                (resultInt, err) = calcProcessor.Calc(currentInput);
-                if (err != CalcProcessor.ERR_NO_ERROR) {
-                    resultText = "E" + err;
-                    pointsEarnedThisAttempt = 0;
-                    switch (err) {
-                        case CalcProcessor.ERR_DIVIDE_BY_ZERO:
-                            MessagePass.SetErrorMsg("Divide by zero detected.");
-                            break;
-                        case CalcProcessor.ERR_NOT_DIVISIBLE:
-                            MessagePass.SetErrorMsg("Division with remainder detected.");
-                            break;
-                        case CalcProcessor.ERR_LESS_THAN_ZERO:
-                            MessagePass.SetErrorMsg("Subtraction resulted in negative number.");
-                            break;
-                        default:
-                            MessagePass.SetErrorMsg("CalcProcessor error: " + err);
-                            break;
-                    }
-                    SceneManager.LoadScene("ErrorScene", LoadSceneMode.Additive);
-                    return false;
-                }
-                else {
-                    // double result = System.Convert.ToDouble(new System.Data.DataTable().Compute(currentInput, ""));
-                    // int resultInt = Convert.ToInt32(result);
-                    resultText =  resultInt.ToString();
-                    pointsEarnedThisAttempt = Points.CalcPoints((uint) resultInt, targetValue);
-                    updatePointsEarned(pointsEarnedThisAttempt);
-                }
-            }
-            catch (System.Exception ex) {
-                MessagePass.SetErrorMsg("Err: " + ex.Message);
-                AuditLog.Log("Error: " + ex.Message);
-                SceneManager.LoadScene("ErrorScene", LoadSceneMode.Additive);
-                return false;
-            }
-            updateCalcGui(resultText);
-            updateInputGui(currentInput);
-            updatePointsGui();
-            if (publishStats) {
-                publishStatsThisSolution(currentInput, pointsEarnedThisAttempt);
-            }
-            return true;
-        }   
-
-        public void Update() {
-            gameDay.text = Timeline.GameDayStr();
-            timeToNext.text = Timeline.TimeToNextDayStr();
-
-            if (attempt < NUM_ATTEMPTS) {
-                // Show a flashing ? as the end of the input line.
-                DateTime now = DateTime.Now;
-                if ((now - timeOfLastFlash).TotalMilliseconds > TIME_PER_FLASH) {
-                    timeOfLastFlash = now;
-                    if (cursorOn) {
-                        updateInputGui(currentInput);
-                        cursorOn = false;
-                    }
-                    else {
-                        if (currentInput.Length > 0) {
-                            updateInputGui(currentInput + " ?");
-                        }
-                        else {
-                            updateInputGui(currentInput + "?");
-                        }
-                        cursorOn = true;
-                    }
-                }
-            }
-        }
-
-        private void startANewDay(uint todaysGameDay, bool forceReset) {
-            targetValue = TargetValue.GetTarget(todaysGameDay);
+        private void startANewDay(bool forceReset) {
+            targetValue = TargetValue.GetTarget(TodaysGameDay);
             target.text = targetValue.ToString();
 
             pointsEarned1 = 0;
@@ -366,11 +168,11 @@ namespace FourteenNumbers {
             used50 = false;
             used75 = false;
             used100 = false;
-            usedThisAttemptStack = new Stack();
 
-            clearCurrentAttempt();
-            int lastPlayedGameDay = Stats.GetLastGameDay();
-            if (!forceReset && lastPlayedGameDay == todaysGameDay) {
+            allSolutions = "";
+            prepStartSolutionEntry();
+            uint lastPlayedGameDay = Stats.GetLastGameDay();
+            if (!forceReset && lastPlayedGameDay == TodaysGameDay) {
                 // The game was knocked out of memory after one or more solutions for today's game.
                 reprocessSolutions();
             }
@@ -380,26 +182,180 @@ namespace FourteenNumbers {
             }
         }
 
-        private void clearUsedButtons(bool resetButtons) {
-            while (usedThisAttemptStack.Count > 0) {
-                var buttonPressed = (string) usedThisAttemptStack.Pop(); 
-                if (resetButtons) {
-                    updateUsed(buttonPressed, false);
+
+        public void OnButtonClick(string buttonText) {
+            OnButtonClickInternal(buttonText);
+        }
+
+        public void OnButtonClickInternal(string buttonText) {
+            if (buttonText == "Help") {
+                MessagePass.SetMsg(help);
+                SceneStack.Instance().PushScene();
+                SceneManager.LoadScene("HelpContextScene", LoadSceneMode.Additive);
+                return;
+            }
+
+            // No more button presses after the game is done, except C and B.
+            if (attempt >= NUM_ATTEMPTS)
+            {
+                if (buttonText != "C" && (buttonText != "B"))
+                {
+                    return;
+                }
+            }
+
+
+            if (buttonText == "C")
+            {
+                startANewDay(true);
+                setGameState();
+            }
+            else if (buttonText == "B")
+            {
+                if (allSolutions.Length != 0) {
+                    // Back is not enabled initially, so there should always be some
+                    // text to backspace.
+                    string lastChars = determineLastSymbol();
+                    //Remove the character(s) from the input string.
+                    allSolutions = allSolutions.Substring(0, allSolutions.Length - lastChars.Length);
+                    Stats.SetSolution(TodaysGameDay, allSolutions, pointsEarnedTotalToday());
+                    // Reset and replay the solution.
+                    startANewDay(false);
+                    setGameState();
+                }
+            } 
+            else if (buttonText == "=")
+            {
+                bool success = calculateResult();
+                if (success)
+                {
+                    attempt++;
+                    if (attempt == NUM_ATTEMPTS)
+                    {
+                        GameState.Instance().SetPlayerState(GameState.PlayerState.Done);
+                    }
+                    prepStartSolutionEntry();
+                    allSolutions += "=";
+                    Stats.SetSolution(TodaysGameDay, allSolutions, pointsEarnedTotalToday());
+                }
+            }
+            else
+            {
+                allSolutions += buttonText;
+                Stats.SetSolution(TodaysGameDay, allSolutions, pointsEarnedTotalToday());
+
+                if (isLeftBracket(buttonText))
+                {
+                    leftBracketCount++;
+                }
+                else if (isRightBracket(buttonText))
+                {
+                    rightBracketCount++;
+                }
+                if (isNumber(buttonText))
+                {
+                    numberCount++;
+                    indicateNumberUsed(buttonText);
+                }
+                enableButtons(buttonText);
+            }
+        }
+
+        /**
+         * Calculate the result of the current solution.
+         * If the solution results in an error, then reject the calculation.
+         *
+         * @return true If no error was encountered while calculating.
+         */
+        private bool calculateResult() {
+            string inProgressSolution = SolutionResolver.ResolveInProgress(allSolutions);
+
+            // If the last character will make the equation invalid, remove it.
+            if (inProgressSolution.EndsWith("+") || inProgressSolution.EndsWith("-") || 
+                inProgressSolution.EndsWith("*") || inProgressSolution.EndsWith("/")) {
+                allSolutions = allSolutions.Substring(0, allSolutions.Length - 1);
+                inProgressSolution = inProgressSolution.Substring(0, inProgressSolution.Length - 1);
+            }
+            // If the brackets don't match, add extra brackets.
+            int left = 0;
+            int right = 0;
+            foreach (char c in inProgressSolution) {
+                if (c == '(') {
+                    left++;
+                }
+                else if (c == ')') {
+                    right++;
+                }
+            }
+            for (uint i = 0; i < (left - right); i++) {
+                allSolutions += ')';
+                inProgressSolution += ')';
+            }
+
+            string resultText;
+            uint pointsEarnedThisAttempt;
+            try {
+                CalcProcessor calcProcessor = new CalcProcessor();
+                int resultInt;
+                int err;
+                (resultInt, err) = calcProcessor.Calc(inProgressSolution);
+                if (err != CalcProcessor.ERR_NO_ERROR) {
+                    resultText = "E" + err;
+                    pointsEarnedThisAttempt = 0;
+                    switch (err) {
+                        case CalcProcessor.ERR_DIVIDE_BY_ZERO:
+                            MessagePass.SetErrorMsg("Divide by zero detected.");
+                            break;
+                        case CalcProcessor.ERR_NOT_DIVISIBLE:
+                            MessagePass.SetErrorMsg("Division with remainder detected.");
+                            break;
+                        case CalcProcessor.ERR_LESS_THAN_ZERO:
+                            MessagePass.SetErrorMsg("Subtraction resulted in negative number.");
+                            break;
+                        default:
+                            AuditLog.Log("CalcProcessor error: " + err);
+                            MessagePass.SetErrorMsg("CalcProcessor error: " + err);
+                            break;
+                    }
+                    SceneManager.LoadScene("ErrorScene", LoadSceneMode.Additive);
+                    return false;
+                }
+
+                resultText =  resultInt.ToString();
+                pointsEarnedThisAttempt = Points.CalcPoints((uint) resultInt, targetValue);
+                updatePointsEarned(pointsEarnedThisAttempt);
+                updateCalcGui(resultText);
+                return true;
+            }
+            catch (System.Exception ex) {
+                MessagePass.SetErrorMsg("Err: " + ex.Message);
+                AuditLog.Log("Calc Error: " + ex.Message);
+                SceneManager.LoadScene("ErrorScene", LoadSceneMode.Additive);
+                return false;
+            }
+        }   
+
+        public void Update() {
+            timeToNext.text = Timeline.TimeToNextDayStr();
+
+            if (attempt < NUM_ATTEMPTS) {
+                // Show a flashing ? as the end of the input line.
+                DateTime now = DateTime.Now;
+                if ((now - timeOfLastFlash).TotalMilliseconds > TIME_PER_FLASH) {
+                    timeOfLastFlash = now;
+                    cursorOn = !cursorOn;
+                    updateInputGui(cursorOn);
                 }
             }
         }
 
-        private void clearCurrentAttempt() {
-            currentInput = "";
-            clearUsedButtons(false);
 
-            updateInputGui("");
-
+        private void prepStartSolutionEntry() {
             leftBracketCount = 0;
             rightBracketCount = 0;
             numberCount = 0;
 
-            enableAllNumbers();
+            enableAllAvailableNumbers();
             enableLeftBracket();
             disableRightBracket();
             disableAllOperations();
@@ -419,7 +375,7 @@ namespace FourteenNumbers {
                     enableAllOperations();
                 }
                 else if (isLeftBracket(buttonText)) {
-                    enableAllNumbers();
+                    enableAllAvailableNumbers();
                     enableLeftBracket();
                     disableRightBracket();
                     disableAllOperations();
@@ -437,7 +393,7 @@ namespace FourteenNumbers {
                 }
                 else {
                     // Else it is an operation
-                    enableAllNumbers();
+                    enableAllAvailableNumbers();
                     enableLeftBracket();
                     disableRightBracket();
                     disableAllOperations();
@@ -462,7 +418,7 @@ namespace FourteenNumbers {
             button100.interactable = false;
         }
 
-        private void enableAllNumbers() {
+        private void enableAllAvailableNumbers() {
             if (numberCount < MAX_NUMBERS) {
                 if (!used1) {
                     button1.interactable = true;
@@ -558,9 +514,10 @@ namespace FourteenNumbers {
         }
 
         private string determineLastSymbol() {
-            string lastChar = currentInput.Substring(currentInput.Length - 1, 1);
+            int len = allSolutions.Length;
+            string lastChar = allSolutions.Substring(len - 1, 1);
             if (lastChar == "0") {
-                string twoChars = currentInput.Substring(currentInput.Length - 2, 2);
+                string twoChars = allSolutions.Substring(len - 2, 2);
                 if (twoChars == "00") {
                     return "100";
                 }
@@ -572,82 +529,109 @@ namespace FourteenNumbers {
                 }
             }
             if (lastChar == "5") {
-                if (currentInput.Length == 1)
+                if (len == 1)
                 {
                     return "5";
                 }
-                string twoChars = currentInput.Substring(currentInput.Length - 2, 2);
+                string twoChars = allSolutions.Substring(len - 2, 2);
                 if (twoChars == "25") {
                     return "25";
                 }
                 else if (twoChars == "75") {
                     return "75";
                 }
-                // Else it will be some symbol followed by 5. Just return 5.
             }
             return lastChar;
         }
 
 
-        public void updateUsed(string buttonText, bool updateTo) {
+        /**
+         * When a number button is pressed, indicate that it can no longer be used.
+         * @param buttonText The string representing the number. 
+         */
+        private void indicateNumberUsed(string buttonText) {
             if (buttonText == "1") {
-                used1 = updateTo;
+                used1 = true;
             }
             if (buttonText == "2") {
-                used2 = updateTo;
+                used2 = true;
             }
             if (buttonText == "3") {
-                used3 = updateTo;
+                used3 = true;
             }
             if (buttonText == "4") {
-                used4 = updateTo;
+                used4 = true;
             }
             if (buttonText == "5") {
-                used5 = updateTo;
+                used5 = true;
             }
             if (buttonText == "6") {
-                used6 = updateTo;
+                used6 = true;
             }
             if (buttonText == "7") {
-                used7 = updateTo;
+                used7 = true;
             }
             if (buttonText == "8") {
-                used8 = updateTo;
+                used8 = true;
             }
             if (buttonText == "9") {
-                used9 = updateTo;
+                used9 = true;
             }
             if (buttonText == "10") {
-                used10 = updateTo;
+                used10 = true;
             }
             if (buttonText == "25") {
-                used25 = updateTo;
+                used25 = true;
             }
             if (buttonText == "50") {
-                used50 = updateTo;
+                used50 = true;
             }
             if (buttonText == "75") {
-                used75 = updateTo;
+                used75 = true;
             }
             if (buttonText == "100") {
-                used100 = updateTo;
+                used100 = true;
             }
         }
 
-        private void updateInputGui(string val) {
-            val = val.Replace('*', '×');
+        private void updateInputGui(bool cursorOn) {
+            (string sol1, bool complete1, string sol2, bool complete2, string sol3, bool complete3) =
+                SolutionResolver.Resolve(allSolutions);
+            input1.text = fix(sol1, complete1, true, 1, cursorOn);
+            input2.text = fix(sol2, complete2, complete1, 2, cursorOn);
+            input3.text = fix(sol3, complete3, complete2, 3, cursorOn);
+        }
+        private string fix(string sol, bool complete, bool prevComplete, int solNumber, bool cursorOn) {
+            string val = sol.Replace('*', '×');
             val = val.Replace('/', '÷');
-            switch (attempt) {
-                case 0:
-                    input1.text = val;
-                    break;
-                case 1:
-                    input2.text = val;
-                    break;
-                case 2:
-                    input3.text = val;
-                    break;
+
+            if (prevComplete) 
+            {
+                if (!complete && cursorOn) {
+                    if (val.Length == 0) 
+                    {
+                        val = "?";
+                    }
+                    else 
+                    {
+                        val += " ?";
+                    }
+                }
             }
+            else 
+            {
+                switch (solNumber) {
+                    case 1:
+                        break;
+                    case 2:
+                        val = "Solution 2";
+                        break;
+                    case 3:
+                        val = "Soluiton 3";
+                        break;
+                }
+            }
+            return val;
         }
 
         private void updateCalcGui(string val) {
@@ -683,15 +667,7 @@ namespace FourteenNumbers {
                     AuditLog.Log("ERROR: Attempt not supported3: {attempt}");
                     break;
             }
-        }
 
-        private uint pointsEarnedTotalToday() {
-            return pointsEarned1 + pointsEarned2 + pointsEarned3;
-        }
-
-
-        private void updatePointsGui()
-        {
             points1.text = pointsEarned1.ToString();
             points2.text = pointsEarned2.ToString();
             points3.text = pointsEarned3.ToString();
@@ -700,23 +676,10 @@ namespace FourteenNumbers {
             GameState.Instance().SetPointsEarnedTotal(total);
         }
 
-        private void publishStatsThisSolution(string solution, uint points) {
-            switch (attempt)
-            {
-                case 0:
-                    Stats.SetSolution1(gameDayInt, solution, (int)points);
-                    break;
-                case 1:
-                    Stats.SetSolution2(gameDayInt, solution, (int)points);
-                    break;
-                case 2:
-                    Stats.SetSolution3(gameDayInt, solution, (int)points);
-                    break;
-                default:
-                    AuditLog.Log("ERROR: Attempt not supported4: {attempt}");
-                    break;
-            }
+        private uint pointsEarnedTotalToday() {
+            return pointsEarned1 + pointsEarned2 + pointsEarned3;
         }
+
 
 
         /**
@@ -724,40 +687,56 @@ namespace FourteenNumbers {
         * Process all solutions.
         */
         private void reprocessSolutions() {
-            string solution1;
-            string solution2;
-            string solution3;
-            (solution1, solution2, solution3) = Stats.GetSolutions();
-            if (solution1.Length == 0) {
-                // This shouldn't happen, because the first solution should have been submitted
-                // to register the new game day.
-                AuditLog.Log("Unexpectedly, solution1 has zero length");
-                return;
+            string solutions = Stats.GetSolutions();
+            (string sol1, bool sol1Done, string sol2, bool sol2Done, string sol3, bool sol3Done) = 
+                SolutionResolver.Resolve(solutions);
+            if (sol3Done) 
+            {
+                reprocessSingleSolution(sol1);
+                reprocessSingleSolution(sol2);
+                reprocessSingleSolution(sol3);
             }
-            reprocessSingleSolution(solution1);
-
-            if (solution3.Length != 0) {
-                reprocessSingleSolution(solution2);
-                reprocessSingleSolution(solution3);
+            else if (sol2Done) 
+            {
+                reprocessSingleSolution(sol1);
+                reprocessSingleSolution(sol2);
+                reprocessPartialSolution(sol3);
             }
-            else if (solution2.Length != 0) {
-                reprocessSingleSolution(solution2);
+            else if (sol1Done) 
+            {
+                reprocessSingleSolution(sol1);
+                reprocessPartialSolution(sol2);
+            }
+            else 
+            {
+                reprocessPartialSolution(sol1);
             }
         }
 
         private void reprocessSingleSolution(string solution) {
+            reprocess(solution, false);
+            OnButtonClickInternal("=");
+        }
+
+        private void reprocessPartialSolution(string solution) {
+            reprocess(solution, true);
+        }
+
+
+        private void reprocess(string solution, bool okToHaveInvalidCharAtEnd) {
             CalcProcessor processor = new CalcProcessor();
             int errorCode = processor.Parse(solution);
-            if (errorCode != CalcProcessor.ERR_NO_ERROR) {
+            if (errorCode != CalcProcessor.ERR_NO_ERROR &&
+               (!okToHaveInvalidCharAtEnd || errorCode != CalcProcessor.ERR_ENDED_ON_INVALID_CHARACTER)) 
+            {
                 // This shouldn't happen as the input should be valid coming from storage.
                 AuditLog.Log("Reprocessing solution error: " + errorCode);
-                return;
             }
             string[] buttonPresses = processor.GetTokensAsStrings();
-            foreach (string buttonPress in buttonPresses) {
-                OnButtonClickInternal(buttonPress, false);
+            foreach (string buttonPress in buttonPresses) 
+            {
+                OnButtonClickInternal(buttonPress);
             }
-            OnButtonClickInternal("=", false);
         }
     }
 }

@@ -157,7 +157,7 @@ namespace FourteenNumbers {
                 AuditLog.Log("Publish transaction");
                 uint pointsToday = GameState.Instance().PointsEarnedTotal();
                 uint gameDay = (uint) Stats.GetLastGameDay();
-                (string sol1, string sol2, string sol3) = Stats.GetSolutions();
+                (string sol1, string sol2, string sol3) = Stats.GetAllCompleteSolutions();
 
                 (_, string userId) = UserId.GetUserId();
                 await solutionProcessor.Submit((int) gameDay, userId, sol1, sol2, sol3);
