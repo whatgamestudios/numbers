@@ -212,16 +212,56 @@ namespace FourteenNumbers {
             }
             else if (buttonText == "B")
             {
+                // if (allSolutions.Length != 0) {
+                //     // Back is not enabled initially, so there should always be some
+                //     // text to backspace.
+                //     string lastChars = determineLastSymbol();
+                //     //Remove the character(s) from the input string.
+                //     allSolutions = allSolutions.Substring(0, allSolutions.Length - lastChars.Length);
+                //     Stats.SetSolution(TodaysGameDay, allSolutions, pointsEarnedTotalToday());
+                //     // Reset and replay the solution.
+                //     startANewDay(false);
+                //     setGameState();
+                // }
+
+
                 if (allSolutions.Length != 0) {
                     // Back is not enabled initially, so there should always be some
                     // text to backspace.
                     string lastChars = determineLastSymbol();
-                    //Remove the character(s) from the input string.
+                    indicateNumberNotUsed(lastChars);
+
+                    // Decrease the bracket counts if necessary.
+                    if (isLeftBracket(lastChars))
+                    {
+                        leftBracketCount--;
+                    }
+                    if (isRightBracket(lastChars))
+                    {
+                        rightBracketCount--;
+                    }
+                    if (isNumber(lastChars))
+                    {
+                        numberCount--;
+                    }
+                    if (lastChars == "=")
+                    {
+                        attempt--;
+                        setGameState();
+                    }
+
+
+                    // Remove the character(s) from the input string.
                     allSolutions = allSolutions.Substring(0, allSolutions.Length - lastChars.Length);
-                    Stats.SetSolution(TodaysGameDay, allSolutions, pointsEarnedTotalToday());
-                    // Reset and replay the solution.
-                    startANewDay(false);
-                    setGameState();
+                    if (allSolutions.Length == 0)
+                    {
+                        prepStartSolutionEntry();
+                    }
+                    else
+                    {
+                        lastChars = determineLastSymbol();
+                        enableButtons(lastChars);
+                    }
                 }
             } 
             else if (buttonText == "=")
@@ -549,48 +589,56 @@ namespace FourteenNumbers {
          * When a number button is pressed, indicate that it can no longer be used.
          * @param buttonText The string representing the number. 
          */
-        private void indicateNumberUsed(string buttonText) {
+        private void indicateNumberUsed(string buttonText)
+        {
+            updateNumberUsed(buttonText, true);
+        }
+        private void indicateNumberNotUsed(string buttonText)
+        {
+            updateNumberUsed(buttonText, false);
+        }
+        private void updateNumberUsed(string buttonText, bool used) {
             if (buttonText == "1") {
-                used1 = true;
+                used1 = used;
             }
             if (buttonText == "2") {
-                used2 = true;
+                used2 = used;
             }
             if (buttonText == "3") {
-                used3 = true;
+                used3 = used;
             }
             if (buttonText == "4") {
-                used4 = true;
+                used4 = used;
             }
             if (buttonText == "5") {
-                used5 = true;
+                used5 = used;
             }
             if (buttonText == "6") {
-                used6 = true;
+                used6 = used;
             }
             if (buttonText == "7") {
-                used7 = true;
+                used7 = used;
             }
             if (buttonText == "8") {
-                used8 = true;
+                used8 = used;
             }
             if (buttonText == "9") {
-                used9 = true;
+                used9 = used;
             }
             if (buttonText == "10") {
-                used10 = true;
+                used10 = used;
             }
             if (buttonText == "25") {
-                used25 = true;
+                used25 = used;
             }
             if (buttonText == "50") {
-                used50 = true;
+                used50 = used;
             }
             if (buttonText == "75") {
-                used75 = true;
+                used75 = used;
             }
             if (buttonText == "100") {
-                used100 = true;
+                used100 = used;
             }
         }
 
