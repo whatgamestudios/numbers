@@ -384,9 +384,9 @@ namespace FourteenNumbers {
                 if ((now - timeOfLastFlash).TotalMilliseconds > TIME_PER_FLASH) {
                     timeOfLastFlash = now;
                     cursorOn = !cursorOn;
-                    updateInputGui(cursorOn);
                 }
             }
+            updateInputGui(cursorOn);
         }
 
 
@@ -736,13 +736,16 @@ namespace FourteenNumbers {
         */
         private void reprocessSolutions() {
             string solutions = Stats.GetSolutions();
+            AuditLog.Log($"Reprocessing: {solutions}");
             (string sol1, bool sol1Done, string sol2, bool sol2Done, string sol3, bool sol3Done) = 
                 SolutionResolver.Resolve(solutions);
             if (sol3Done) 
             {
+                AuditLog.Log($"Reprocessing: sol3Done");
                 reprocessSingleSolution(sol1);
                 reprocessSingleSolution(sol2);
                 reprocessSingleSolution(sol3);
+
             }
             else if (sol2Done) 
             {
@@ -759,6 +762,7 @@ namespace FourteenNumbers {
             {
                 reprocessPartialSolution(sol1);
             }
+            AuditLog.Log("Reprocessing: done");
         }
 
         private void reprocessSingleSolution(string solution) {
