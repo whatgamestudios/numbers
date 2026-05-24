@@ -33,7 +33,6 @@ namespace FourteenNumbers {
         public TextMeshProUGUI bestCalculated3Text;
         public TextMeshProUGUI bestPoints3Text;
         public TextMeshProUGUI bestPointsTotalText;
-        public TextMeshProUGUI bestPlayerText;
 
 
         public TextMeshProUGUI playerInput1Text;
@@ -160,15 +159,12 @@ namespace FourteenNumbers {
 
             if (todaysResult.Solutions.Length != 0) {
                 SolutionEntry entry = todaysResult.Solutions[index];
-                bestPlayerText.text = entry.UserId;
                 sol1 = entry.Part1;
                 sol2 = entry.Part2;
                 sol3 = entry.Part3;
                 res1 = entry.Result1;
                 res2 = entry.Result2;
                 res3 = entry.Result3;
-            } else {
-                bestPlayerText.text = "";
             }
             bestPointsTotalText.text = (todaysResult.BestScore ?? 0).ToString();
 
@@ -199,17 +195,8 @@ namespace FourteenNumbers {
         void DisplayMyResult(uint gameDay) {
 
             var combinedSolution = Stats.GetCombinedSolution(gameDay);
-            string sol1 = "";
-            string sol2 = "";
-            string sol3 = "";
-            if (combinedSolution.Length != 0) {
-                int indexOfEquals = combinedSolution.IndexOf('=');
-                sol1 = combinedSolution.Substring(0, indexOfEquals);
-                combinedSolution = combinedSolution.Substring(indexOfEquals+1);
-                indexOfEquals = combinedSolution.IndexOf('=');
-                sol2 = combinedSolution.Substring(0, indexOfEquals);
-                sol3 = combinedSolution.Substring(indexOfEquals+1);
-            }
+            (string sol1, bool complete1, string sol2, bool complete2, string sol3, bool complete3) =
+                SolutionResolver.Resolve(combinedSolution);
 
             playerInput1Text.text = replace(sol1, true);
             playerInput2Text.text = replace(sol2, true);
@@ -224,20 +211,20 @@ namespace FourteenNumbers {
             int res1 = 0;
             int res2 = 0;
             int res3 = 0;
-            if (sol1.Length != 0) {
+            if (complete1) {
                 (res1, errorCode) = processor.Calc(sol1);
                 if (errorCode == CalcProcessor.ERR_NO_ERROR) {
                     points1 = Points.CalcPoints((uint) res1, targetValue);
                 }
 
             }
-            if (sol2.Length != 0) {
+            if (complete2) {
                 (res2, errorCode) = processor.Calc(sol2);
                 if (errorCode == CalcProcessor.ERR_NO_ERROR) {
                     points2 = Points.CalcPoints((uint) res2, targetValue);
                 }
             }
-            if (sol3.Length != 0) {
+            if (complete3) {
                 (res3, errorCode) = processor.Calc(sol3);
                 if (errorCode == CalcProcessor.ERR_NO_ERROR) {
                     points3 = Points.CalcPoints((uint) res3, targetValue);
