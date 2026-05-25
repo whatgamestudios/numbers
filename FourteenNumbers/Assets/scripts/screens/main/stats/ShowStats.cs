@@ -14,17 +14,7 @@ namespace FourteenNumbers {
         public TextMeshProUGUI daysPublishedText;
         public TextMeshProUGUI firstDayPlayedText;
         public TextMeshProUGUI firstDatePlayedText;
-        public TextMeshProUGUI lastDayPlayedText;
-        public TextMeshProUGUI lastDatePlayedText;
 
-        public TextMeshProUGUI silverText;
-        public TextMeshProUGUI silverLongestText;
-        public TextMeshProUGUI goldText;
-        public TextMeshProUGUI goldLongestText;
-        public TextMeshProUGUI diamondText;
-        public TextMeshProUGUI diamondLongestText;
-        public TextMeshProUGUI blueDiamondText;
-        public TextMeshProUGUI blueDiamondLongestText;
 
         private string help = "" +
             "Streaks are sequential days played.";
@@ -67,8 +57,6 @@ namespace FourteenNumbers {
             daysPublishedText.text = timesPublished.ToString();
             firstDayPlayedText.text = firstPlayed.ToString();
             firstDatePlayedText.text = firstPlayedS;
-            lastDayPlayedText.text = lastPlayed.ToString();
-            lastDatePlayedText.text = lastPlayedS;
         }
 
         public void OnButtonClick(string buttonText) {
