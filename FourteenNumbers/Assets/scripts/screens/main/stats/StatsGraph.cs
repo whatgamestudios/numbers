@@ -16,13 +16,15 @@ namespace FourteenNumbers {
 
         // Make sure (max - min) / increment is integer divisible.
         private const uint MIN_SCORE = 110;
-        private const uint MAX_SCORE = 210;
+        private const uint MAX_SCORE = 190;
+        private const uint PERFECT_SCORE = 210;
+        private const uint PERFECT_SCORE_SPACE = 2;
         private const uint SCORE_INCREMENT = 5;
 
         private const uint MAX_NUM_Y_TICKS = 5;
 
         private const uint MAX_SCORE_LABEL_WIDTH = 50;
-        private const uint MAX_SCORE_LABEL_HEIGHT = 20;
+        private const uint MAX_SCORE_LABEL_HEIGHT = 12;
 
         private const uint X_LEFT_OFFSET = 80;
         private const uint X_RIGHT_OFFSET = 50;
@@ -70,12 +72,13 @@ namespace FourteenNumbers {
             uint[] scoreDist = new uint[MAX_SCORE];
             scoreDist[0] = 10;
             scoreDist[1] = 20;
-            scoreDist[2] = 15;
+            scoreDist[2] = 130;
             scoreDist[3] = 10;
             scoreDist[5] = 5;
             scoreDist[10] = 1;
-            scoreDist[15] = 5;
-            scoreDist[MAX_SCORE - MIN_SCORE - 1] = 1;
+            int maxScaled = (int)(PERFECT_SCORE_SPACE + (MAX_SCORE - MIN_SCORE) / SCORE_INCREMENT);
+            scoreDist[maxScaled - PERFECT_SCORE_SPACE] = 65;
+            scoreDist[maxScaled] = 33;
             scoreDistribution = scoreDist;
         }
 
@@ -96,7 +99,7 @@ namespace FourteenNumbers {
             yMax = Mathf.Max(yMax, 1); // Avoid division by zero
             AuditLog.Log($"Stats: ymax: {yMax}");
 
-            int maxScaled = (int)((MAX_SCORE - MIN_SCORE) / SCORE_INCREMENT);
+            int maxScaled = (int)(PERFECT_SCORE_SPACE + (MAX_SCORE - MIN_SCORE) / SCORE_INCREMENT);
             float xSize = graphWidth / maxScaled;
             AuditLog.Log($"Stats: xSize: {xSize}");
 
@@ -116,21 +119,21 @@ namespace FourteenNumbers {
             }
 
             // 2. Draw X-Axis Labels
-            for (int i = 0; i <= maxScaled; i++) {
+            for (int i = 0; i <= maxScaled - PERFECT_SCORE_SPACE; i++) {
                 float xPos = i * xSize + X_LEFT_OFFSET;
-                string xLabel = (MIN_SCORE + i * SCORE_INCREMENT).ToString();
-                CreateLabel(new Vector2(xPos, MAX_SCORE_LABEL_WIDTH), xLabel, TextAlignmentOptions.Top, true);
-            }
+                string xLabel = (MIN_SCORE + i * SCORE_INCREMENT).ToString() + "  .";
+                CreateLabel(new Vector2(xPos, MAX_SCORE_LABEL_WIDTH), xLabel, TextAlignmentOptions.Center, true);
 
-
-            for (int i = 0; i <= maxScaled; i++)
-            {
-                float xPosition = i * xSize + X_LEFT_OFFSET;
                 // Scale Y relative to the container height and max value
                 float yPosition = (scoreDistribution[i] / (float)yMax) * graphHeight + Y_TOP_OFFSET;
-                
-                CreateDot(new Vector2(xPosition, yPosition));
+                CreateDot(new Vector2(xPos, yPosition));
             }
+
+            // Put in perfect score.
+            float xPos1 = graphWidth + X_LEFT_OFFSET;
+            CreateLabel(new Vector2(xPos1, MAX_SCORE_LABEL_WIDTH), PERFECT_SCORE.ToString(), TextAlignmentOptions.Top, false);
+            float yPosition1 = (scoreDistribution[maxScaled] / (float)yMax) * graphHeight + Y_TOP_OFFSET;
+            CreateDot(new Vector2(xPos1, yPosition1));
         }
 
         private void CreateLabel(Vector2 anchoredPosition, string text, TextAlignmentOptions anchor, bool rotate)
@@ -175,12 +178,11 @@ namespace FourteenNumbers {
             // rt.offsetMin = Vector2.zero;
             // rt.offsetMax = Vector2.zero;
             rt.anchoredPosition = anchoredPosition;
-            rt.sizeDelta = new Vector2(50, 20); // Large enough for the number
+            rt.sizeDelta = new Vector2(100, 20); // Large enough for the number
             rt.anchorMin = rt.anchorMax = new Vector2(0, 0);
 
             if (rotate) 
             {
-                rt.sizeDelta = new Vector2(100, 20); // Large enough for the number
                 rt.eulerAngles = new Vector3(0, 0, 90f);
             }
 
