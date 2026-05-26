@@ -657,16 +657,6 @@ MonoBehaviour:
   daysPublishedText: {fileID: 931666458}
   firstDayPlayedText: {fileID: 1293443975}
   firstDatePlayedText: {fileID: 1894126946}
-  lastDayPlayedText: {fileID: 0}
-  lastDatePlayedText: {fileID: 0}
-  silverText: {fileID: 0}
-  silverLongestText: {fileID: 0}
-  goldText: {fileID: 0}
-  goldLongestText: {fileID: 0}
-  diamondText: {fileID: 0}
-  diamondLongestText: {fileID: 0}
-  blueDiamondText: {fileID: 0}
-  blueDiamondLongestText: {fileID: 0}
 --- !u!114 &289835297
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2345,7 +2335,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -240, y: -45}
+  m_AnchoredPosition: {x: -240, y: -50}
   m_SizeDelta: {x: 400, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1356848240
