@@ -23,8 +23,9 @@ namespace FourteenNumbers {
 
         private const uint MAX_NUM_Y_TICKS = 5;
 
-        private const uint MAX_SCORE_LABEL_WIDTH = 50;
-        private const uint MAX_SCORE_LABEL_HEIGHT = 12;
+        private const uint X_AXIS_HORIZONTAL_LABEL_Y_OFFS = 50;
+        private const uint X_AXIS_VERTICAL_LABEL_Y_OFFS = 35;
+        private const uint Y_AXIS_HORIZONTAL_LABEL_X_OFFS = 12;
 
         private const uint X_LEFT_OFFSET = 80;
         private const uint X_RIGHT_OFFSET = 50;
@@ -115,14 +116,14 @@ namespace FourteenNumbers {
                 float normalizedValue = i / (float)separatorCount;
                 float yPos = normalizedValue * graphHeight + Y_TOP_OFFSET;
                 string labelText = Mathf.RoundToInt(normalizedValue * yMax).ToString();
-                CreateLabel(new Vector2(MAX_SCORE_LABEL_HEIGHT, yPos), labelText, TextAlignmentOptions.Right, false);
+                CreateLabel(new Vector2(Y_AXIS_HORIZONTAL_LABEL_X_OFFS, yPos), labelText, TextAlignmentOptions.Right, false);
             }
 
             // 2. Draw X-Axis Labels
             for (int i = 0; i <= maxScaled - PERFECT_SCORE_SPACE; i++) {
                 float xPos = i * xSize + X_LEFT_OFFSET;
-                string xLabel = (MIN_SCORE + i * SCORE_INCREMENT).ToString() + "  .";
-                CreateLabel(new Vector2(xPos, MAX_SCORE_LABEL_WIDTH), xLabel, TextAlignmentOptions.Center, true);
+                string xLabel = (MIN_SCORE + i * SCORE_INCREMENT).ToString();
+                CreateLabel(new Vector2(xPos, X_AXIS_VERTICAL_LABEL_Y_OFFS), xLabel, TextAlignmentOptions.Center, true);
 
                 // Scale Y relative to the container height and max value
                 float yPosition = (scoreDistribution[i] / (float)yMax) * graphHeight + Y_TOP_OFFSET;
@@ -131,7 +132,7 @@ namespace FourteenNumbers {
 
             // Put in perfect score.
             float xPos1 = graphWidth + X_LEFT_OFFSET;
-            CreateLabel(new Vector2(xPos1, MAX_SCORE_LABEL_WIDTH), PERFECT_SCORE.ToString(), TextAlignmentOptions.Top, false);
+            CreateLabel(new Vector2(xPos1, X_AXIS_HORIZONTAL_LABEL_Y_OFFS), PERFECT_SCORE.ToString(), TextAlignmentOptions.Top, false);
             float yPosition1 = (scoreDistribution[maxScaled] / (float)yMax) * graphHeight + Y_TOP_OFFSET;
             CreateDot(new Vector2(xPos1, yPosition1));
         }
