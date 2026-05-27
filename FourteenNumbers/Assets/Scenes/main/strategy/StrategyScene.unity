@@ -665,18 +665,23 @@ MonoBehaviour:
       m_Calls: []
   m_text: '
 
-    The strategy used on a particular day depends on the target number.
-    That said, you may find these stategies helpful:
+    You may find these stategies helpful:
 
 
     - Don''t try to create
-    three similar styled equations. For instance: for a target of 388, you could
-    have one solution like 4 x (100 - 3), which is effectively subtracting from 400,
-    and another solution 7 x (5 + 50) + 9 - 6, which is effectively adding to 350,
-    and (25 + 2 x 8)
+    three similar styled equations. For instance: for a target of 521, you could
+    have 75 x 7 - 4, (50 + 2) x 10 + 1, and (100 + 6) x 5 - 9. These equations come
+    at 521 from different directions, hence making it easier to use a variety of
+    numbers.
 
 
-    - Remember operator precedence:'
+    - Remember operator precedence: Evaluate equations in brackets
+    first, then multiply and divide from left to right, and finally add and subtract
+    left to right.
+
+
+    - Be flexible with your strategies. Different target numbers
+    require different strategies.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1196d8ee02bde47a7ace907b29a0660b, type: 2}
   m_sharedMaterial: {fileID: -1750055789576322554, guid: 1196d8ee02bde47a7ace907b29a0660b, type: 2}

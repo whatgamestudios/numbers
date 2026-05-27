@@ -647,12 +647,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\nThe rules of 14Numbers:\n- Type in an equation with the aim to calculate
-    to the target number. \n- Press the = sign to indicate the end of an equation.\n-
-    Each number can only be used once.\n- Each equation can only contain five numbers.\n-
-    Division rules: no divide by zero, and whole number division only.\n\nPoints:\n-
-    70 points per equation that precisely matches the target. \n- 49 points for 1
-    off the target\n- 48 points for 2 off the target\n"
+  m_text: "\nThe rules of 14Numbers:\n- Each number can only be used once.\n- Each
+    equation can only contain five numbers.\n- Division rules: no divide by zero,
+    and whole number division only.\n- Equations are only counted once the = sign
+    is pressed.\n\nPoints:\n- 70 points per equation that precisely matches the target
+    number. \n- 49 points for 1 off the target number.\n- 48 points for 2 off the
+    target number.\nUntil eventually:\n- 1 point for 49 off the target number.\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1196d8ee02bde47a7ace907b29a0660b, type: 2}
   m_sharedMaterial: {fileID: -1750055789576322554, guid: 1196d8ee02bde47a7ace907b29a0660b, type: 2}
