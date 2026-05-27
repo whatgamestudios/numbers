@@ -30,6 +30,7 @@ namespace FourteenNumbers {
             int perfectScoreDays;
 
             (firstPlayed, lastPlayed, timesPlayed, timesPublished, totalPoints, perfectScoreDays) = Stats.GetStats();
+            AuditLog.Log($"Stats: firstPlayed: {firstPlayed}, lastPlayed: {lastPlayed}, timesPlayed: {timesPlayed}, timesPublished: {timesPublished}, totalPoints: {totalPoints}, perfectScoreDays: {perfectScoreDays}");
 
             string firstPlayedS;
             string lastPlayedS;

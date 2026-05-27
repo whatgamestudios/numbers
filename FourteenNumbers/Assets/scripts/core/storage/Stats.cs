@@ -18,7 +18,7 @@ namespace FourteenNumbers
         public const string STATS_FIRST_PLAYED = "STATS_FIRST_PLAYED";
         public const string STATS_LAST_PLAYED = "STATS_LAST_PLAYED";
         public const string STATS_TIMES_PLAYED = "STATS_TIMES_PLAYED";
-        public const string STATS_TOTAL_POINTS_ALL_TIME = "STATS_TOTAL_POINTS_ALL_TIME";
+        public const string STATS_TOTAL_POINTS_ALL_TIME = "STATS_TOTAL_POINTS";
         public const string STATS_PERFECT_SCORE_DAYS = "STATS_PERFECT_SCORE_DAYS";
 
         public const string STATS_MOST_RECENT_PUBLISHED_DAY = "STATS_MOST_RECENT_PUBLISHED_DAY";

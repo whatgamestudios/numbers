@@ -97,7 +97,7 @@ namespace FourteenNumbers {
             float graphHeight = graphContainer.sizeDelta.y - Y_TOP_OFFSET - Y_BOTTOM_OFFSET;
             float graphWidth = graphContainer.sizeDelta.x - X_LEFT_OFFSET - X_RIGHT_OFFSET;
 
-            AuditLog.Log($"Stats: h: {graphHeight}, w:{graphWidth}");
+            //AuditLog.Log($"Stats: h: {graphHeight}, w:{graphWidth}");
 
 
             // Auto-scale Y: Find the max value in your list
@@ -113,11 +113,10 @@ namespace FourteenNumbers {
                 yMax = (int) scoreDistributionPerfectScore;   
             }
             yMax = Mathf.Max(yMax, 1); // Avoid division by zero
-            AuditLog.Log($"Stats: ymax: {yMax}");
+            //AuditLog.Log($"Stats: ymax: {yMax}");
 
             float xSize = graphWidth / MAX_SCALED;
-            AuditLog.Log($"Stats: xSize: {xSize}");
-
+            //AuditLog.Log($"Stats: xSize: {xSize}");
 
             // 1. Draw Y-Axis Labels
             // Separator count is the y axis lines
@@ -153,24 +152,7 @@ namespace FourteenNumbers {
 
         private void CreateLabel(Vector2 anchoredPosition, string text, TextAlignmentOptions anchor, bool rotate)
         {
-            AuditLog.Log($"Stats: create label: {text}");
-
-            // GameObject labelObj = new GameObject("Label", typeof(Text));
-            // labelObj.transform.SetParent(graphContainer, false);
-            
-            // TextMeshProUGUI txt = labelObj.GetComponent<TextMeshProUGUI>();
-            // txt.text = text;
-            // //txt.font = labelFont;
-            // txt.fontSize = 100;
-            // txt.color = Color.black;
-            // //txt.alignment = anchor;
-
-            // RectTransform rect = labelObj.GetComponent<RectTransform>();
-            // rect.anchoredPosition = anchoredPosition;
-            // rect.sizeDelta = new Vector2(50, 20); // Large enough for the number
-            // rect.anchorMin = rect.anchorMax = new Vector2(0, 0);
-
-
+            //AuditLog.Log($"Stats: create label: {text}");
             // 1. Create a new GameObject for the text
             GameObject textObj = new GameObject("DynamicText");
 
@@ -200,10 +182,6 @@ namespace FourteenNumbers {
             {
                 rt.eulerAngles = new Vector3(0, 0, 90f);
             }
-
-            //textComponent.transform.eulerAngles = new Vector3(0, 0, 90f);
-
-
         }
 
         private void CreateDot(Vector2 anchoredPosition)
@@ -233,22 +211,5 @@ namespace FourteenNumbers {
             rect.sizeDelta = new Vector2(8, 8);
             rect.anchorMin = rect.anchorMax = new Vector2(0, 0);
         }
-
-
-
-
-
-        // old private void CreateDot(Vector2 anchoredPosition)
-        // {
-        //     GameObject gameObject = new GameObject("dot", typeof(Image));
-        //     gameObject.transform.SetParent(graphContainer, false);
-        //     gameObject.GetComponent<Image>().sprite = dotSprite;
-            
-        //     RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
-        //     rectTransform.anchoredPosition = anchoredPosition;
-        //     rectTransform.sizeDelta = new Vector2(10, 10);
-        //     rectTransform.anchorMin = new Vector2(0, 0);
-        //     rectTransform.anchorMax = new Vector2(0, 0);
-        // }
     }
 }
