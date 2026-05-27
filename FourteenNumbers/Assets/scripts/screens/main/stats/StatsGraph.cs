@@ -13,13 +13,17 @@ namespace FourteenNumbers {
         [SerializeField] private Sprite dotSprite;
         public Font labelFont;
 
+        private const uint GRAPH_GENESIS_GAME_DAY = 540;
 
         // Make sure (max - min) / increment is integer divisible.
         private const uint MIN_SCORE = 110;
         private const uint MAX_SCORE = 190;
         private const uint PERFECT_SCORE = 210;
-        private const uint PERFECT_SCORE_SPACE = 2;
+        private const uint PERFECT_SCORE_SPACE = 1;
         private const uint SCORE_INCREMENT = 5;
+        private const int MAX_SCALED = (int)(PERFECT_SCORE_SPACE + (MAX_SCORE - MIN_SCORE) / SCORE_INCREMENT);
+        private const int DATA_SIZE = (int)((MAX_SCORE - MIN_SCORE) / SCORE_INCREMENT);
+
 
         private const uint MAX_NUM_Y_TICKS = 5;
 
@@ -35,12 +39,13 @@ namespace FourteenNumbers {
         private const float BAR_LINE_WIDTH = 25f;
 
         private uint[] scoreDistribution;
+        private uint scoreDistributionPerfectScore;
 
 
         public void Start() {
             AuditLog.Log("Stats graph screen");
-            //createScoreDistribution();
-            createDummyScoreDistribution();
+            createScoreDistribution();
+            //createDummyScoreDistribution();
 
 
             showGraph();
@@ -48,39 +53,42 @@ namespace FourteenNumbers {
 
 
         private void createScoreDistribution() {
-            // uint[] scoreDist = new uint[MAX_SCORE];
-            // int firstPlayed = Stats.GetFirstDayPlayed();
-            // int lastPlayed = (int) Stats.GetLastGameDay();
-            // if ((firstPlayed != 0) && (lastPlayed != 0))
-            // {
-            //     for (int i = firstPlayed; i <= lastPlayed; i++)
-            //     {
-            //         (bool exists, Solution sol) = Stats.GetSolution((uint)i);
-            //         if (exists)
-            //         {
-            //             uint score = sol.Score;
-            //             if (score < MAX_SCORE)
-            //             {
-            //                 scoreDist[score]++;
-            //             }
-            //         }
-            //     }
-            // }
-            // scoreDistribution = scoreDist;
+            scoreDistribution = new uint[MAX_SCORE];
+            uint todaysGameDay = Timeline.GameDay();
+
+            for (uint i = GRAPH_GENESIS_GAME_DAY; i <= todaysGameDay; i++)
+            {
+                uint score = Stats.GetBestScoreForDay((uint)i);
+                if (score == PERFECT_SCORE) 
+                {
+                    scoreDistributionPerfectScore++;
+                }
+                else 
+                {
+                    // Round score up and normalise to the data set.
+                    // Discard scores below roundup(MIN_SCORE)
+                    uint index = score + (SCORE_INCREMENT - 1);
+                    if (index >= MIN_SCORE) 
+                    {
+                        index -= MIN_SCORE;
+                        index /= SCORE_INCREMENT;
+                        scoreDistribution[index]++;
+                    }
+                }
+            }
         }
 
         private void createDummyScoreDistribution() {
-            uint[] scoreDist = new uint[MAX_SCORE];
+            uint[] scoreDist = new uint[DATA_SIZE];
             scoreDist[0] = 10;
             scoreDist[1] = 20;
             scoreDist[2] = 130;
             scoreDist[3] = 10;
             scoreDist[5] = 5;
             scoreDist[10] = 1;
-            int maxScaled = (int)(PERFECT_SCORE_SPACE + (MAX_SCORE - MIN_SCORE) / SCORE_INCREMENT);
-            scoreDist[maxScaled - PERFECT_SCORE_SPACE] = 65;
-            scoreDist[maxScaled] = 33;
+            scoreDist[DATA_SIZE - 1] = 65;
             scoreDistribution = scoreDist;
+            scoreDistributionPerfectScore = 33;
         }
 
 
@@ -100,8 +108,7 @@ namespace FourteenNumbers {
             yMax = Mathf.Max(yMax, 1); // Avoid division by zero
             AuditLog.Log($"Stats: ymax: {yMax}");
 
-            int maxScaled = (int)(PERFECT_SCORE_SPACE + (MAX_SCORE - MIN_SCORE) / SCORE_INCREMENT);
-            float xSize = graphWidth / maxScaled;
+            float xSize = graphWidth / MAX_SCALED;
             AuditLog.Log($"Stats: xSize: {xSize}");
 
 
@@ -120,7 +127,7 @@ namespace FourteenNumbers {
             }
 
             // 2. Draw X-Axis Labels
-            for (int i = 0; i <= maxScaled - PERFECT_SCORE_SPACE; i++) {
+            for (int i = 0; i < DATA_SIZE; i++) {
                 float xPos = i * xSize + X_LEFT_OFFSET;
                 string xLabel = (MIN_SCORE + i * SCORE_INCREMENT).ToString();
                 CreateLabel(new Vector2(xPos, X_AXIS_VERTICAL_LABEL_Y_OFFS), xLabel, TextAlignmentOptions.Center, true);
@@ -133,7 +140,7 @@ namespace FourteenNumbers {
             // Put in perfect score.
             float xPos1 = graphWidth + X_LEFT_OFFSET;
             CreateLabel(new Vector2(xPos1, X_AXIS_HORIZONTAL_LABEL_Y_OFFS), PERFECT_SCORE.ToString(), TextAlignmentOptions.Top, false);
-            float yPosition1 = (scoreDistribution[maxScaled] / (float)yMax) * graphHeight + Y_TOP_OFFSET;
+            float yPosition1 = (scoreDistributionPerfectScore / (float)yMax) * graphHeight + Y_TOP_OFFSET;
             CreateDot(new Vector2(xPos1, yPosition1));
         }
 

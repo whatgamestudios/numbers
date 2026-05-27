@@ -44,7 +44,7 @@ namespace FourteenNumbers
             PlayerPrefs.SetString(STATS_SOLUTION, solution);
             PlayerPrefs.SetInt(STATS_POINTS_TODAY, (int) points);
 
-            uint currentBestScore = getBestScoreForDay(gameDay);
+            uint currentBestScore = GetBestScoreForDay(gameDay);
             // Don't have <= because want to handle a zero point second or third solution.
             if (points >= currentBestScore) 
             {
@@ -121,7 +121,7 @@ namespace FourteenNumbers
         }
 
 
-        private static uint getBestScoreForDay(uint gameDay) {
+        public static uint GetBestScoreForDay(uint gameDay) {
             string scoreKey = STATS_SCORES + gameDay.ToString();
             return (uint) PlayerPrefs.GetInt(scoreKey, 0);
         }
