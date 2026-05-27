@@ -129,7 +129,19 @@ namespace FourteenNumbers
         public static string GetCombinedSolution(uint gameDay)
         {
             string key = STATS_SOLUTIONS + gameDay.ToString();
-            return PlayerPrefs.GetString(key, "==");
+            string solutions = PlayerPrefs.GetString(key, "");
+            if (solutions == "") 
+            {
+                return "===";
+            }
+            if (UpgradeStorage.GetStorageV3UpgradeDay() >= gameDay) 
+            {
+                return solutions;
+            }
+            else 
+            {
+                return solutions + "=";
+            }
         }
 
          public static void SetPublished(uint score)

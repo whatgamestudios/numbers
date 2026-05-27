@@ -10,6 +10,9 @@ namespace FourteenNumbers {
         // Storage version keys.
         public const string STORAGE_VERSION = "STORAGE_VERSION";
 
+        // Game day that the contract was upgraded to storage v3
+        public const string STORAGE_VERSION3_UPGRADE_DAY = "STORAGE_VERSION3_UPGRADE_DAY";
+
         // Old storage variables
         public const string STATS_SOLUTION1 = "STATS_SOLUTION1";
         public const string STATS_SOLUTION2 = "STATS_SOLUTION2";
@@ -18,6 +21,7 @@ namespace FourteenNumbers {
         public const int STORAGE_VERSION_0 = 0;
         public const int STORAGE_VERSION_1 = 1;
         public const int STORAGE_VERSION_2 = 2;
+        public const int STORAGE_VERSION_3 = 3;
 
 
         /**
@@ -38,19 +42,32 @@ namespace FourteenNumbers {
                 SceneStore.SetBackground(SceneStore.BG_DEFAULT);
             }
 
-            if (currentStorageVersion == STORAGE_VERSION_0 || 
-                currentStorageVersion == STORAGE_VERSION_1) 
+            if (currentStorageVersion <= STORAGE_VERSION_1) 
             {
-                    string sol1 = PlayerPrefs.GetString(STATS_SOLUTION1, "");
-                    string sol2 = PlayerPrefs.GetString(STATS_SOLUTION2, "");
-                    string sol3 = PlayerPrefs.GetString(STATS_SOLUTION3, "");
-                    string solution = sol1 + "=" + sol2 + "=" + sol3 + "=";
-                    uint lastGameDay = Stats.GetLastGameDay();
-                    Stats.SetSolution(lastGameDay, solution, 0);
-
-                    PlayerPrefs.SetInt(STORAGE_VERSION, STORAGE_VERSION_2);
-                    PlayerPrefs.Save();
+                string sol1 = PlayerPrefs.GetString(STATS_SOLUTION1, "");
+                string sol2 = PlayerPrefs.GetString(STATS_SOLUTION2, "");
+                string sol3 = PlayerPrefs.GetString(STATS_SOLUTION3, "");
+                string solution = sol1 + "=" + sol2 + "=" + sol3 + "=";
+                uint lastGameDay = Stats.GetLastGameDay();
+                Stats.SetSolution(lastGameDay, solution, 0);
             }
+
+            if (currentStorageVersion <= STORAGE_VERSION_2) 
+            {
+                uint lastGameDay = Stats.GetLastGameDay();
+                PlayerPrefs.SetInt(STORAGE_VERSION3_UPGRADE_DAY, (int) lastGameDay);
+            }
+
+
+            PlayerPrefs.SetInt(STORAGE_VERSION, STORAGE_VERSION_3);
+            PlayerPrefs.Save();
         }
+
+        public static uint GetStorageV3UpgradeDay() 
+        {
+            uint lastGameDay = Stats.GetLastGameDay();
+            return (uint) PlayerPrefs.GetInt(STORAGE_VERSION3_UPGRADE_DAY, (int) lastGameDay);
+        }
+
     }
 }
