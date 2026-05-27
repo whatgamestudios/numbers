@@ -212,57 +212,57 @@ namespace FourteenNumbers {
             }
             else if (buttonText == "B")
             {
+                if (allSolutions.Length != 0) {
+                    // Only act on back button when there are at least some letters.
+                    string lastChars = determineLastSymbol();
+                    //Remove the character(s) from the input string.
+                    allSolutions = allSolutions.Substring(0, allSolutions.Length - lastChars.Length);
+                    Stats.SetSolution(TodaysGameDay, allSolutions, pointsEarnedTotalToday());
+                    // Reset and replay the solution.
+                    startANewDay(false);
+                    setGameState();
+                }
+
+
                 // if (allSolutions.Length != 0) {
                 //     // Back is not enabled initially, so there should always be some
                 //     // text to backspace.
                 //     string lastChars = determineLastSymbol();
-                //     //Remove the character(s) from the input string.
+                //     indicateNumberNotUsed(lastChars);
+
+                //     // Decrease the bracket counts if necessary.
+                //     if (isLeftBracket(lastChars))
+                //     {
+                //         leftBracketCount--;
+                //     }
+                //     if (isRightBracket(lastChars))
+                //     {
+                //         rightBracketCount--;
+                //     }
+                //     if (isNumber(lastChars))
+                //     {
+                //         numberCount--;
+                //     }
+                //     if (lastChars == "=")
+                //     {
+                //         attempt--;
+                //         // TODO need to do something about number of numbers and brackets
+                //         setGameState();
+                //     }
+
+
+                //     // Remove the character(s) from the input string.
                 //     allSolutions = allSolutions.Substring(0, allSolutions.Length - lastChars.Length);
-                //     Stats.SetSolution(TodaysGameDay, allSolutions, pointsEarnedTotalToday());
-                //     // Reset and replay the solution.
-                //     startANewDay(false);
-                //     setGameState();
+                //     if (allSolutions.Length == 0)
+                //     {
+                //         prepStartSolutionEntry();
+                //     }
+                //     else
+                //     {
+                //         lastChars = determineLastSymbol();
+                //         enableButtons(lastChars);
+                //     }
                 // }
-
-
-                if (allSolutions.Length != 0) {
-                    // Back is not enabled initially, so there should always be some
-                    // text to backspace.
-                    string lastChars = determineLastSymbol();
-                    indicateNumberNotUsed(lastChars);
-
-                    // Decrease the bracket counts if necessary.
-                    if (isLeftBracket(lastChars))
-                    {
-                        leftBracketCount--;
-                    }
-                    if (isRightBracket(lastChars))
-                    {
-                        rightBracketCount--;
-                    }
-                    if (isNumber(lastChars))
-                    {
-                        numberCount--;
-                    }
-                    if (lastChars == "=")
-                    {
-                        attempt--;
-                        setGameState();
-                    }
-
-
-                    // Remove the character(s) from the input string.
-                    allSolutions = allSolutions.Substring(0, allSolutions.Length - lastChars.Length);
-                    if (allSolutions.Length == 0)
-                    {
-                        prepStartSolutionEntry();
-                    }
-                    else
-                    {
-                        lastChars = determineLastSymbol();
-                        enableButtons(lastChars);
-                    }
-                }
             } 
             else if (buttonText == "=")
             {
