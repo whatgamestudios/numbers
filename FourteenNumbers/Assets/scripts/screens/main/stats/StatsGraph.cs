@@ -103,7 +103,14 @@ namespace FourteenNumbers {
             // Auto-scale Y: Find the max value in your list
             int yMax = 0;
             foreach (int val in scoreDistribution) {
-                if (val > yMax) yMax = val;
+                if (val > yMax) 
+                {
+                    yMax = val;
+                }
+            }
+            if (scoreDistributionPerfectScore > yMax)
+            {
+                yMax = (int) scoreDistributionPerfectScore;   
             }
             yMax = Mathf.Max(yMax, 1); // Avoid division by zero
             AuditLog.Log($"Stats: ymax: {yMax}");
