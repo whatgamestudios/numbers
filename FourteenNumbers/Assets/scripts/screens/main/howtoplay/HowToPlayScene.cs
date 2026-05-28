@@ -259,10 +259,75 @@ namespace FourteenNumbers {
                     pressButton("=");
                     NextMove = 6;
                     break;
-
-
-
+                case 47:
+                    InfoPanel.SetActive(false);
+                    NextMove = 1;
+                    break;
+                case 48:
+                    InfoText.text = "You can use the backspace button";
+                    InfoPanel.SetActive(true);
+                    NextMove = 6;
+                    break;
+                case 49:
+                    InfoText.text = "at any time";
+                    NextMove = 6;
+                    break;
+                case 50:
+                    InfoText.text = "to retry an equation";
+                    NextMove = 6;
+                    break;
+                case 51:
+                    InfoText.text = "<size=+50>←</size>";
+                    NextMove = 3;
+                    break;
+                case 52:
+                    pressButton("B");
+                    NextMove = 6;
+                    break;
+                case 53:
+                    InfoPanel.SetActive(false);
+                    NextMove = 1;
+                    break;
+                case 54:
+                    InfoText.text = "You can use the clear button";
+                    InfoPanel.SetActive(true);
+                    NextMove = 6;
+                    break;
+                case 55:
+                    InfoText.text = "<size=+50>¢</size>";
+                    NextMove = 3;
+                    break;
+                case 56:
+                    InfoText.text = "to restart";
+                    NextMove = 6;
+                    break;
+                case 57:
+                    pressButton("C");
+                    NextMove = 10;
+                    break;
                 case 58:
+                    InfoPanel.SetActive(false);
+                    NextMove = 1;
+                    break;
+                case 59:
+                    InfoText.text = "There is a new target value";
+                    InfoPanel.SetActive(true);
+                    NextMove = 6;
+                    break;
+                case 60:
+                    InfoText.text = "each day";
+                    resetGame(919);
+                    NextMove = 3;
+                    break;
+                case 61:
+                    resetGame(267);
+                    NextMove = 3;
+                    break;
+                case 62:
+                    resetGame(625);
+                    NextMove = 3;
+                    break;
+                case 63:
                     TimeInShow = 0;
                     NextMove = 10;
                     InfoPanel.SetActive(false);

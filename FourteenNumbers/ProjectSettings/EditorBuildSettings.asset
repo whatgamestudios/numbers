@@ -65,6 +65,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/main/tables/TablesScene.unity
     guid: f8b8f1886d9364595ae1a7989d520d80
+  - enabled: 1
+    path: Assets/Scenes/main/howtoplay/HowToPlayScene.unity
+    guid: 584b65c0d9f8140279c974387c40fe1d
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
