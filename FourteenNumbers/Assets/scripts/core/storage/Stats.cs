@@ -46,7 +46,7 @@ namespace FourteenNumbers
 
             uint currentBestScore = GetBestScoreForDay(gameDay);
             // Don't have <= because want to handle a zero point second or third solution.
-            if (points >= currentBestScore) 
+            if (points >= currentBestScore && currentBestScore != 210) 
             {
                 setBestSolutionToday(gameDay, points, solution);
 
