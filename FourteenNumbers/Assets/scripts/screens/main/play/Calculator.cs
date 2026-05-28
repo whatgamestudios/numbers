@@ -65,7 +65,11 @@ namespace FourteenNumbers {
         uint attempt;
 
 
+        // The value that players are trying to construct equations for.
         private uint targetValue = 0;
+
+        // Overrides target value. Used with HowToPlay scene.
+        private uint targetValueOverride = 0;
 
         // Counts of the number of numbers, and left and right brackets.
         private uint leftBracketCount;
@@ -108,7 +112,10 @@ namespace FourteenNumbers {
         public void Start()
         {
             TodaysGameDay = Timeline.GameDay();
-            gameDay.text = Timeline.GameDayStr();
+            if (gameDay != null)
+            {
+                gameDay.text = Timeline.GameDayStr();            
+            }
             AuditLog.Log($"Game Play screen for day {TodaysGameDay}");
             startANewDay(false);
             setGameState();
@@ -118,6 +125,12 @@ namespace FourteenNumbers {
         public void OnDisable()
         {
             GameState.Instance().SetPlayerState(GameState.PlayerState.Unknown);
+        }
+
+        public void SetTargetOverride(uint targetOverride)
+        {
+            targetValueOverride = targetOverride;
+            startANewDay(true);
         }
 
         private void setGameState() {
@@ -136,6 +149,10 @@ namespace FourteenNumbers {
          */
         private void startANewDay(bool forceReset) {
             targetValue = TargetValue.GetTarget(TodaysGameDay);
+            if (targetValueOverride != 0)
+            {
+                targetValue = targetValueOverride;
+            }
             target.text = targetValue.ToString();
 
             pointsEarned1 = 0;
@@ -376,7 +393,10 @@ namespace FourteenNumbers {
         }   
 
         public void Update() {
-            timeToNext.text = Timeline.TimeToNextDayStr();
+            if (timeToNext != null)
+            {
+                timeToNext.text = Timeline.TimeToNextDayStr();            
+            }
 
             if (attempt < NUM_ATTEMPTS) {
                 // Show a flashing ? as the end of the input line.
