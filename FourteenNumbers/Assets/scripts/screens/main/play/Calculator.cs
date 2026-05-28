@@ -61,6 +61,9 @@ namespace FourteenNumbers {
         // that particular solution is done.
         private string allSolutions = "";
 
+        // Overrides solutions. Used with HowToPlay scene.
+        private string allSolutionsOverride = "";
+
         // The solution number being attempts. Attempt 0 is the first solution.
         uint attempt;
 
@@ -70,6 +73,7 @@ namespace FourteenNumbers {
 
         // Overrides target value. Used with HowToPlay scene.
         private uint targetValueOverride = 0;
+        private uint lastGameDayOverride = 0;
 
         // Counts of the number of numbers, and left and right brackets.
         private uint leftBracketCount;
@@ -188,7 +192,7 @@ namespace FourteenNumbers {
 
             allSolutions = "";
             prepStartSolutionEntry();
-            uint lastPlayedGameDay = Stats.GetLastGameDay();
+            uint lastPlayedGameDay = getLastGameDay();
             if (!forceReset && lastPlayedGameDay == TodaysGameDay) {
                 // The game was knocked out of memory after one or more solutions for today's game.
                 reprocessSolutions();
@@ -754,6 +758,11 @@ namespace FourteenNumbers {
             {
                 Stats.StartNewGameDay();
             }
+            else
+            {
+                allSolutionsOverride = "";
+                TodaysGameDay = lastGameDayOverride;
+            }
         }
 
         private void setSolution()
@@ -761,6 +770,35 @@ namespace FourteenNumbers {
             if (targetValueOverride == 0)
             {
                 Stats.SetSolution(TodaysGameDay, allSolutions, pointsEarnedTotalToday());
+            }
+            else
+            {
+                allSolutionsOverride = allSolutions;
+                lastGameDayOverride = TodaysGameDay;
+            }
+        }
+
+        private string getSolutions() 
+        {
+            if (targetValueOverride == 0)
+            {
+                return Stats.GetSolutions();
+            }
+            else
+            {
+                return allSolutionsOverride;
+            }
+        }
+
+        private uint getLastGameDay()
+        {
+            if (targetValueOverride == 0)
+            {
+                return Stats.GetLastGameDay();
+            }
+            else
+            {
+                return lastGameDayOverride;
             }
         }
 
@@ -770,7 +808,7 @@ namespace FourteenNumbers {
         * Process all solutions.
         */
         private void reprocessSolutions() {
-            string solutions = Stats.GetSolutions();
+            string solutions = getSolutions();
             AuditLog.Log($"Reprocessing: {solutions}");
             (string sol1, bool sol1Done, string sol2, bool sol2Done, string sol3, bool sol3Done) = 
                 SolutionResolver.Resolve(solutions);
