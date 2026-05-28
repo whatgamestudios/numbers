@@ -195,7 +195,7 @@ namespace FourteenNumbers {
             }
             else {
                 // The game has not been played today yet.
-                Stats.StartNewGameDay();
+                statsStartGameDay();
             }
         }
 
@@ -234,7 +234,7 @@ namespace FourteenNumbers {
                     string lastChars = determineLastSymbol();
                     //Remove the character(s) from the input string.
                     allSolutions = allSolutions.Substring(0, allSolutions.Length - lastChars.Length);
-                    Stats.SetSolution(TodaysGameDay, allSolutions, pointsEarnedTotalToday());
+                    setSolution();
                     // Reset and replay the solution.
                     startANewDay(false);
                     setGameState();
@@ -293,13 +293,13 @@ namespace FourteenNumbers {
                     }
                     prepStartSolutionEntry();
                     allSolutions += "=";
-                    Stats.SetSolution(TodaysGameDay, allSolutions, pointsEarnedTotalToday());
+                    setSolution();
                 }
             }
             else
             {
                 allSolutions += buttonText;
-                Stats.SetSolution(TodaysGameDay, allSolutions, pointsEarnedTotalToday());
+                setSolution();
 
                 if (isLeftBracket(buttonText))
                 {
@@ -748,6 +748,21 @@ namespace FourteenNumbers {
             return pointsEarned1 + pointsEarned2 + pointsEarned3;
         }
 
+        private void statsStartGameDay()
+        {
+            if (targetValueOverride == 0)
+            {
+                Stats.StartNewGameDay();
+            }
+        }
+
+        private void setSolution()
+        {
+            if (targetValueOverride == 0)
+            {
+                Stats.SetSolution(TodaysGameDay, allSolutions, pointsEarnedTotalToday());
+            }
+        }
 
 
         /**

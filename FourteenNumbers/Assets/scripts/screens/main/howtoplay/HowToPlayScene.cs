@@ -39,6 +39,7 @@ namespace FourteenNumbers {
             InfoPanel.SetActive(false);
             Delay = 0;
             NextMove = 1;
+            resetGame(583);
         }
         
         void Update()

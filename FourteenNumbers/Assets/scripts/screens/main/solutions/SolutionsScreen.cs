@@ -197,6 +197,7 @@ namespace FourteenNumbers {
             var combinedSolution = Stats.GetCombinedSolution(gameDay);
             (string sol1, bool complete1, string sol2, bool complete2, string sol3, bool complete3) =
                 SolutionResolver.Resolve(combinedSolution);
+            AuditLog.Log($"Solutions: MyResult: sol1: {sol1}, {complete1}, sol2: {sol2}, {complete2}, sol3: {sol3}, {complete3}");
 
             playerInput1Text.text = replace(sol1, true);
             playerInput2Text.text = replace(sol2, true);
@@ -226,6 +227,7 @@ namespace FourteenNumbers {
             }
             if (complete3) {
                 (res3, errorCode) = processor.Calc(sol3);
+                AuditLog.Log($"Solutions: MyResult: 3: {res3}, {errorCode}");
                 if (errorCode == CalcProcessor.ERR_NO_ERROR) {
                     points3 = Points.CalcPoints((uint) res3, targetValue);
                 }
