@@ -45,8 +45,11 @@ namespace FourteenNumbers
             PlayerPrefs.SetInt(STATS_POINTS_TODAY, (int) points);
 
             uint currentBestScore = GetBestScoreForDay(gameDay);
+            string currentBestSolution = GetCombinedSolution(gameDay);
+            bool longer = solution.Length > currentBestSolution.Length;
             // Don't have <= because want to handle a zero point second or third solution.
-            if (points >= currentBestScore && currentBestScore != 210) 
+            if (points > currentBestScore || 
+                (points == currentBestScore && currentBestScore != 210 && longer) )
             {
                 setBestSolutionToday(gameDay, points, solution);
 
