@@ -1,10 +1,9 @@
-// Copyright (c) Whatgame Studios 2024 - 2025
+// Copyright (c) Whatgame Studios 2024 - 2026
 using UnityEngine;
 using System.Collections;
 
 namespace FourteenNumbers
 {
-
     public class Stats
     {
         // Solutions in format <equation1>=<equation2>=<equation3>=
