@@ -1465,7 +1465,6 @@ MonoBehaviour:
   bestCalculated3Text: {fileID: 493338773}
   bestPoints3Text: {fileID: 621714517}
   bestPointsTotalText: {fileID: 1660792972}
-  bestPlayerText: {fileID: 0}
   playerInput1Text: {fileID: 901455923}
   playerCalculated1Text: {fileID: 241442013}
   playerPoints1Text: {fileID: 2106297289}
@@ -4900,7 +4899,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 400, y: -1080}
+  m_AnchoredPosition: {x: 400, y: -1040}
   m_SizeDelta: {x: 200, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1301609206
@@ -5398,7 +5397,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 35.533}
-  m_SizeDelta: {x: 1060, y: 668.934}
+  m_SizeDelta: {x: 1060, y: 660}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1481761601
 MonoBehaviour:
@@ -6389,8 +6388,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -659.2554}
-  m_SizeDelta: {x: 1060, y: 652.511}
+  m_AnchoredPosition: {x: 0, y: -650}
+  m_SizeDelta: {x: 1060, y: 645}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1668030331
 MonoBehaviour:

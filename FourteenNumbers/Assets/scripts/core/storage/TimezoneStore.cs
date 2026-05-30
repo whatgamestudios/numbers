@@ -13,8 +13,10 @@ namespace FourteenNumbers {
         }
 
         public static bool UseLocalTimeZone() {
-            int useLocalInt = PlayerPrefs.GetInt(TIMEZONE, 0);
-            return useLocalInt == 0;
+            // From v3 onwards, always use local time zone. 
+            // int useLocalInt = PlayerPrefs.GetInt(TIMEZONE, 0);
+            // return useLocalInt == 0;
+            return true;
         }
     }
 }
