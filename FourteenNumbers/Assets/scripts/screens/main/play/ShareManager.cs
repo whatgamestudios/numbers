@@ -31,10 +31,24 @@ namespace FourteenNumbers {
             {
                 uint gameDay = (uint)Stats.GetLastGameDay();
                 uint target = TargetValue.GetTarget(gameDay);
-                (string sol1, string sol2, string sol3) = Stats.GetSolutions();
-                (int result1, int err1) = (new CalcProcessor()).Calc(sol1);
-                (int result2, int err2) = (new CalcProcessor()).Calc(sol2);
-                (int result3, int err3) = (new CalcProcessor()).Calc(sol3);
+                (string sol1, bool complete1, string sol2, bool complete2, string sol3, bool complete3) = Stats.GetAllSolutions();
+                int result1 = 0;
+                int result2 = 0;
+                int result3 = 0;
+                int err = 0;
+                if (complete1) 
+                {
+                    (result1, err) = (new CalcProcessor()).Calc(sol1);
+                }
+                if (complete2) 
+                {
+                    (result2, err) = (new CalcProcessor()).Calc(sol2);
+
+                }
+                if (complete3)
+                {
+                    (result3, err) = (new CalcProcessor()).Calc(sol3);
+                }
                 sol1 = replace(sol1);
                 sol2 = replace(sol2);
                 sol3 = replace(sol3);

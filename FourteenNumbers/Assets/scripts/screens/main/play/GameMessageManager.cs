@@ -42,22 +42,6 @@ namespace FourteenNumbers {
             }
             else {
                 text = "Find three solutions for the target number\n";
-                if (pointsToday < Stats.STATS_SILVER_STREAK_THRESHOLD) {
-                    uint diff = Stats.STATS_SILVER_STREAK_THRESHOLD - pointsToday;
-                    text = text + diff + " points to extend silver streak";
-                }
-                else if (pointsToday < Stats.STATS_GOLD_STREAK_THRESHOLD) {
-                    uint diff = Stats.STATS_GOLD_STREAK_THRESHOLD - pointsToday;
-                    text = text + diff + " points to extend gold streak";
-                }
-                else if (pointsToday < Stats.STATS_DIAMOND_STREAK_THRESHOLD) {
-                    uint diff = Stats.STATS_DIAMOND_STREAK_THRESHOLD - pointsToday;
-                    text = text + diff + " points to extend diamond streak";
-                }
-                else if (pointsToday < Stats.STATS_BDIAMOND_STREAK_THRESHOLD) {
-                    uint diff = Stats.STATS_BDIAMOND_STREAK_THRESHOLD - pointsToday;
-                    text = text + diff + " points to extend blue diamond streak";
-                }
             }
 
             helpTextMesh.text = text;

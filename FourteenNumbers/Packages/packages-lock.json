@@ -1,29 +1,5 @@
 {
   "dependencies": {
-    "com.cysharp.unitask": {
-      "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.3.3",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "b992a061fbf68ff1eb475d0837065b0549ed31ba"
-    },
-    "com.immutable.passport": {
-      "version": "https://github.com/immutable/unity-immutable-sdk.git?path=/src/Packages/Passport",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.unity.nuget.newtonsoft-json": "3.2.0",
-        "com.cysharp.unitask": "2.3.3"
-      },
-      "hash": "2cb51269488ed6f56019ab545b4c159fa3b92c41"
-    },
-    "com.nethereum.unity": {
-      "version": "4.29.0",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://package.openupm.com"
-    },
     "com.unity.2d.animation": {
       "version": "13.0.4",
       "depth": 0,
@@ -200,7 +176,7 @@
     },
     "com.unity.nuget.newtonsoft-json": {
       "version": "3.2.2",
-      "depth": 1,
+      "depth": 0,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"

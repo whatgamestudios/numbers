@@ -252,10 +252,6 @@ namespace FourteenNumbers {
                 }
             }
 
-
-            if (!inNumber && tokens[index - 1] != TOKEN_RIGHT) {
-                return ERR_ENDED_ON_INVALID_CHARACTER;
-            }
             if (inNumber) {
                 if (!isValidNumber(currentNumber)) {
                     return ERR_INVALID_NUMBER4;
@@ -268,6 +264,10 @@ namespace FourteenNumbers {
             }
 
             tokensUsed = index;
+
+            if (!inNumber && tokens[index - 1] != TOKEN_RIGHT) {
+                return ERR_ENDED_ON_INVALID_CHARACTER;
+            }
             return ERR_NO_ERROR;
         }
 

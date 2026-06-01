@@ -11,14 +11,6 @@ namespace FourteenNumbers {
     public class PublishManager : MonoBehaviour
     {
         public GameObject panelPublish;
-        public TextMeshProUGUI buttonPublishText;
-
-        private bool publishButtonPressed = false;
-
-        private const int TIME_PER_FLASH = 500;
-        DateTime timeOfLastFlash = DateTime.Now;
-        bool cursorOn = false;
-
 
         public void Start()
         {
@@ -30,17 +22,9 @@ namespace FourteenNumbers {
             if (buttonText == "Publish")
             {
                 AuditLog.Log("Publish");
-                publishButtonPressed = true;
                 panelPublish.SetActive(false);
-                if (PassportStore.IsLoggedIn())
-                {
-                    SceneStack.Instance().PushScene();
-                    SceneManager.LoadScene("PublishScene", LoadSceneMode.Additive);
-                }
-                else
-                {
-                    SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
-                }
+                SceneStack.Instance().PushScene();
+                SceneManager.LoadScene("PublishScene", LoadSceneMode.Additive);
             }
             else
             {
@@ -50,42 +34,29 @@ namespace FourteenNumbers {
 
         public void Update()
         {
-            GameState gameState = GameState.Instance();
-            uint pointsToday = gameState.PointsEarnedTotal();
-            if (!gameState.IsPlayerStateDone() ||
-                !BestScoreLoader.LoadedBestScore ||
-                publishButtonPressed ||
-                Stats.HasPublishedToday() ||
-                pointsToday < BestScoreLoader.BestScore)
-            {
-                panelPublish.SetActive(false);
+            panelPublish.SetActive(false);
+
+            uint pointsToday = GameState.Instance().PointsEarnedTotal();
+            (bool publishedToday, uint publishedScore) = Stats.HasPublishedToday();
+
+            //AuditLog.Log($"Done: {GameState.Instance().IsPlayerStateDone()}, Loaded: {BestScoreLoader.LoadedBestScore}, Points today: {pointsToday}, Best: {BestScoreLoader.BestScore}, Published: {publishedToday}, PublishedScore: {publishedScore}");
+
+            if (!GameState.Instance().IsPlayerStateDone()) {
                 return;
             }
-            
-            if (!PassportStore.IsLoggedIn())
+            if (!BestScoreLoader.LoadedBestScore &&
+                pointsToday != 210) 
             {
-                buttonPublishText.text = "Sign in to Publish";
-                buttonPublishText.fontSize = 50;
+                return;
             }
-
-            // Flash the colour of the publish panel.
-            // Note: the publish panel may not be active.
-            DateTime now = DateTime.Now;
-            if ((now - timeOfLastFlash).TotalMilliseconds > TIME_PER_FLASH)
+            if (BestScoreLoader.LoadedBestScore &&
+                pointsToday < BestScoreLoader.BestScore)
             {
-                timeOfLastFlash = now;
-
-                Image img = panelPublish.GetComponent<Image>();
-                if (cursorOn)
-                {
-                    img.color = UnityEngine.Color.green;
-                    cursorOn = false;
-                }
-                else
-                {
-                    img.color = UnityEngine.Color.red;
-                    cursorOn = true;
-                }
+                return;
+            }
+            if (publishedToday && pointsToday <= publishedScore)
+            {
+                return;
             }
 
             panelPublish.SetActive(true);

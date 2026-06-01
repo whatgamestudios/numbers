@@ -3,50 +3,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
-using System.Collections;
-using System.Collections.Generic;
-using Immutable.Passport;
 
 namespace FourteenNumbers {
 
     public class MenuScreen : MonoBehaviour {
 
-        public Button buttonPlay;
-        public Button buttonStats;
-        public Button buttonBackgrounds;
-        public Button buttonSolutions;
-        public Button buttonHelp;
-        public Button buttonOther;
-
-
-        public TextMeshProUGUI loggedIn;
-
-
-        public async void Start() {
+        public void Start() {
             AuditLog.Log("Menu screen");
-            loggedIn.text = "Loading";
-
-            bool isLoggedIn = PassportStore.IsLoggedIn();
-            if (isLoggedIn) {
-                await PassportLogin.Init();
-                await PassportLogin.Login();
-
-                // Set up wallet (includes creating a wallet for new players)
-                List<string> accounts = await Passport.Instance.ZkEvmRequestAccounts();
-                if (accounts.Count ==0) {
-                    loggedIn.text = "Logged In";
-                }
-                else {
-                    string account = accounts[0];
-                    loggedIn.text = "Logged In (" + 
-                                    DeepLinkManager.Instance.LoginPath + 
-                                    ") as\n" + 
-                                    account;
-                }
-            }
-            else {
-                loggedIn.text = "Not Logged In";
-            }
         }
 
 
@@ -54,6 +17,7 @@ namespace FourteenNumbers {
         {
             if (buttonText == "Play")
             {
+                MessagePass.SetMsg(null);
                 SceneStack.Instance().PushScene();
                 SceneManager.LoadScene("GamePlayScene", LoadSceneMode.Single);
             }
@@ -72,15 +36,40 @@ namespace FourteenNumbers {
                 SceneStack.Instance().PushScene();
                 SceneManager.LoadScene("BackgroundsScene", LoadSceneMode.Single);
             }
-            else if (buttonText == "Help")
+            else if (buttonText == "Lore")
             {
                 SceneStack.Instance().PushScene();
-                SceneManager.LoadScene("HelpScene", LoadSceneMode.Single);
+                SceneManager.LoadScene("LoreScene", LoadSceneMode.Single);
             }
-            else if (buttonText == "Other")
+            else if (buttonText == "Rules")
             {
                 SceneStack.Instance().PushScene();
-                SceneManager.LoadScene("OtherMenuScene", LoadSceneMode.Single);
+                SceneManager.LoadScene("RulesScene", LoadSceneMode.Single);
+            }
+            else if (buttonText == "Strategy")
+            {
+                SceneStack.Instance().PushScene();
+                SceneManager.LoadScene("StrategyScene", LoadSceneMode.Single);
+            }
+            else if (buttonText == "Socials") {
+                SceneStack.Instance().PushScene();
+                SceneManager.LoadScene("SocialsScene", LoadSceneMode.Single);
+            }
+            else if (buttonText == "Settings") {
+                SceneStack.Instance().PushScene();
+                SceneManager.LoadScene("SettingsScene", LoadSceneMode.Single);
+            }
+            else if (buttonText == "Credits") {
+                SceneStack.Instance().PushScene();
+                SceneManager.LoadScene("CreditsScene", LoadSceneMode.Single);
+            }
+            else if (buttonText == "Tables") {
+                SceneStack.Instance().PushScene();
+                SceneManager.LoadScene("TablesScene", LoadSceneMode.Single);
+            }
+            else if (buttonText == "HowToPlay") {
+                SceneStack.Instance().PushScene();
+                SceneManager.LoadScene("HowToPlayScene", LoadSceneMode.Single);
             }
             else
             {

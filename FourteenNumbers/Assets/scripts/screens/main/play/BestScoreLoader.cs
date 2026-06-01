@@ -1,8 +1,6 @@
-// Copyright (c) Whatgame Studios 2024 - 2025
+// Copyright (c) Whatgame Studios 2024 - 2026
 using UnityEngine;
-using System;
 using System.Collections;
-using System.Numerics;
 
 
 namespace FourteenNumbers {
@@ -14,7 +12,7 @@ namespace FourteenNumbers {
 
         public static bool LoadedBestScore { get; private set; }
 
-        private FourteenNumbersSolutionsContract fourteenNumbersContracts = new FourteenNumbersSolutionsContract();
+        private SolutionProcessor solutionProcessor = new SolutionProcessor();
         private Coroutine loadRoutine;
 
 
@@ -38,7 +36,7 @@ namespace FourteenNumbers {
             uint statsGameDay = (uint) Stats.GetLastGameDay();
             uint gameDay = (uint) Timeline.GameDay();
             if (statsGameDay == gameDay) {
-                BestScore = (uint) Stats.GetBestPointsToday();
+                BestScore = (uint) BestScoreStorage.GetBestPointsToday();
                 if (BestScore == 210) {
                     LoadedBestScore = true;
                 }
@@ -56,9 +54,10 @@ namespace FourteenNumbers {
 
         private async void FetchBestScore() {
             uint gameDay = Timeline.GameDay();
-            BestScore = await fourteenNumbersContracts.GetBestScore(gameDay);
+            SolutionResultsResult results = await solutionProcessor.GetResults((int) gameDay);
+            BestScore = (uint)(results.BestScore ?? 0);
             LoadedBestScore = true;
-            Stats.SetBestPointsToday((int) BestScore);
+            BestScoreStorage.SetBestPointsToday((int) BestScore);
         }
     }
 }

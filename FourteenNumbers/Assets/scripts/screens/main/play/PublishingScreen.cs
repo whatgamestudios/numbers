@@ -1,4 +1,4 @@
-// Copyright (c) Whatgame Studios 2024 - 2025
+// Copyright (c) Whatgame Studios 2024 - 2026
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -6,7 +6,6 @@ using TMPro;
 using System.Collections;
 using System.Threading.Tasks;
 using System;
-using System.Numerics;
 using System.Collections.Generic;
 
 namespace FourteenNumbers {
@@ -19,7 +18,7 @@ namespace FourteenNumbers {
         private const int TIME_PER_DOT = 1000;
         DateTime timeOfLastDot = DateTime.Now;
 
-        FourteenNumbersSolutionsContract contract;
+        SolutionProcessor solutionProcessor;
 
         private bool isProcessing = false;
         private bool hasError = false;
@@ -46,7 +45,7 @@ namespace FourteenNumbers {
 
         public void Start() {
             AuditLog.Log("Publishing screen");
-            contract = new FourteenNumbersSolutionsContract();
+            solutionProcessor = new SolutionProcessor();
             timeOfLastDot = DateTime.Now;
             canvasRect = backgroundCanvas.GetComponent<RectTransform>();
             
@@ -158,28 +157,11 @@ namespace FourteenNumbers {
                 AuditLog.Log("Publish transaction");
                 uint pointsToday = GameState.Instance().PointsEarnedTotal();
                 uint gameDay = (uint) Stats.GetLastGameDay();
-                (string sol1, string sol2, string sol3) = Stats.GetSolutions();
-                bool publishSuccess = false;
-                uint retry = 0;
-                while (!publishSuccess)
-                {
-                    publishSuccess = await contract.SubmitBestScore(gameDay, sol1, sol2, sol3);
-                    if (publishSuccess)
-                    {
-                        Stats.SetPublished();
-                    }
-                    else
-                    {
-                        retry++;
-                        if (retry > 3)
-                        {
-                            AuditLog.Log("Failed to publish");
-                            hasError = true;
-                            errorMessage = "Failed to publish. Please try again later";
-                            break;
-                        }
-                    }
-                }
+                (string sol1, string sol2, string sol3) = Stats.GetAllCompleteSolutions();
+
+                (_, string userId) = UserId.GetUserId();
+                await solutionProcessor.Submit((int) gameDay, userId, sol1, sol2, sol3);
+                Stats.SetPublished(pointsToday);
             }
             catch (Exception ex) {
                 hasError = true;
