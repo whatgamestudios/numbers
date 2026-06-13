@@ -19,10 +19,10 @@ namespace FourteenNumbers {
         private const uint MIN_SCORE = 110;
         private const uint MAX_SCORE = 190;
         private const uint PERFECT_SCORE = 210;
-        private const uint PERFECT_SCORE_SPACE = 1;
+        private const uint PERFECT_SCORE_SPACE = 2;
         private const uint SCORE_INCREMENT = 5;
         private const int MAX_SCALED = (int)(PERFECT_SCORE_SPACE + (MAX_SCORE - MIN_SCORE) / SCORE_INCREMENT);
-        private const int DATA_SIZE = (int)((MAX_SCORE - MIN_SCORE) / SCORE_INCREMENT);
+        private const int DATA_SIZE = 1 + (int)((MAX_SCORE - MIN_SCORE) / SCORE_INCREMENT);
 
 
         private const uint MAX_NUM_Y_TICKS = 5;
@@ -53,7 +53,7 @@ namespace FourteenNumbers {
 
 
         private void createScoreDistribution() {
-            scoreDistribution = new uint[MAX_SCORE];
+            scoreDistribution = new uint[DATA_SIZE];
             uint todaysGameDay = Timeline.GameDay();
 
             for (uint i = GRAPH_GENESIS_GAME_DAY; i <= todaysGameDay; i++)
