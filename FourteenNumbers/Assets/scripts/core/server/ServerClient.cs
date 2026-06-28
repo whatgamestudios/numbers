@@ -68,13 +68,13 @@ namespace FourteenNumbers {
                         throw new ServerException(-32603, $"Unexpected result format from {method}");
                     }
                     return (JObject)result;
-                } catch (ServerException) {
-                    throw;
+                // } catch (ServerException) {
+                //     throw;
                 } catch (Exception ex) {
                     lastException = ex;
                     AuditLog.Log($"Server RPC attempt {attempt}/{maxAttempts} failed for {method}: {ex.Message}");
                     if (attempt < maxAttempts) {
-                        await Task.Delay(100 + _random.Next(0, 101));
+                        await Task.Delay(500 + _random.Next(0, 501));
                     }
                 }
             }
