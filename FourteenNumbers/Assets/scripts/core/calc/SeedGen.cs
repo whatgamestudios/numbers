@@ -12,7 +12,7 @@ namespace FourteenNumbers {
     * the game. Using this class should ensure people all around the world have to 
     * tackle the same problem each day.
     */
-    public class SeedGen{
+    public static class SeedGen{
 
         /**
         * Generate a seed value to generate values from, based on the number of days since 
