@@ -2,8 +2,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System;
 using TMPro;
-
 
 namespace FourteenNumbers {
 
@@ -11,9 +11,10 @@ namespace FourteenNumbers {
     {
         public TextMeshProUGUI helpTextMesh;
 
-        string helpScreenMessage;
+        public GameObject helpPanel;
 
-        private bool gameDoneMessageGenerated = false;
+
+        string helpScreenMessage;
 
 
         public void Update()
@@ -21,14 +22,12 @@ namespace FourteenNumbers {
             GameState gameState = GameState.Instance();
             bool done = gameState.IsPlayerStateDone();
             uint pointsToday = gameState.PointsEarnedTotal();
-            if (done && !gameDoneMessageGenerated) {
-                setEndResult(pointsToday);
-                gameDoneMessageGenerated = true;
-            }
 
             string text = "";
 
             if (done) {
+                helpPanel.SetActive(true);
+                setEndResult(pointsToday);
                 text = helpScreenMessage + "\n";
                 if (BestScoreLoader.LoadedBestScore) {
                     if (pointsToday > BestScoreLoader.BestScore) {
@@ -41,6 +40,10 @@ namespace FourteenNumbers {
                 text = text + "Next game in " + Timeline.TimeToNextDayStrShort();
             }
             else {
+                if (Stats.GetNumTimesPublished() != 0)
+                {
+                    helpPanel.SetActive(false);                
+                }
                 text = "Find three solutions for the target number\n";
             }
 
